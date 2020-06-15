@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <ctime>
 
-#include <iostream>
+#include <fmt/chrono.h>
 
 #include "log.hpp"
 
@@ -21,7 +21,7 @@ void defaultLogger(LogLevel level, const char* filename, int line, const std::st
     // Should this be Error?
     const auto t = std::time(nullptr);
     const auto toStderr = static_cast<int>(level) >= static_cast<int>(LogLevel::Warning);
-    fmt::print(toStderr ? stderr : stdout, "[{%Y-%m-%d %H:%M:%S}] [{}] [{}:{}] {}", t, level,
-        filename, line, message);
+    fmt::print(toStderr ? stderr : stdout, "[{:%Y-%m-%d %H:%M:%S}] [{}] [{}:{}] {}",
+        *std::localtime(&t), level, filename, line, message);
 }
 }

@@ -37,11 +37,11 @@ void log(LogLevel level, const char* filename, int line, const std::string& form
 
 // http://stackoverflow.com/questions/5588855/standard-alternative-to-gccs-va-args-trick
 #define LOG_LEVEL(level, ...) glw::log(level, __FILE__, __LINE__, __VA_ARGS__)
-#define LOG_DEBUG(...) glw::log(glw::LogLevel::Debug, __FILE__, __LINE__, __VA_ARGS__)
-#define LOG_INFO(...) glw::log(glw::LogLevel::Info, __FILE__, __LINE__, __VA_ARGS__)
-#define LOG_WARNING(...) glw::log(glw::LogLevel::Warning, __FILE__, __LINE__, __VA_ARGS__)
-#define LOG_ERROR(...) glw::log(glw::LogLevel::Error, __FILE__, __LINE__, __VA_ARGS__)
-#define LOG_CRITICAL(...) glw::log(glw::LogLevel::Critical, __FILE__, __LINE__, __VA_ARGS__)
+#define LOG_DEBUG(...) LOG_LEVEL(glw::LogLevel::Debug, __VA_ARGS__)
+#define LOG_INFO(...) LOG_LEVEL(glw::LogLevel::Info, __VA_ARGS__)
+#define LOG_WARNING(...) LOG_LEVEL(glw::LogLevel::Warning, __VA_ARGS__)
+#define LOG_ERROR(...) LOG_LEVEL(glw::LogLevel::Error, __VA_ARGS__)
+#define LOG_CRITICAL(...) LOG_LEVEL(glw::LogLevel::Critical, __VA_ARGS__)
 }
 
 template <>
