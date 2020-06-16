@@ -9,11 +9,20 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "log.hpp"
 #include "state.hpp"
 #include "uniforminfo.hpp"
 
 namespace glw {
-class ShaderProgram {
+struct ShaderResult {
+    bool success;
+    std::string log;
+
+    ShaderResult(bool success, const std::string& log);
+    explicit operator bool() const;
+};
+
+class Shader {
 public:
     enum class Type : GLenum {
         Vertex = GL_VERTEX_SHADER,
@@ -21,79 +30,92 @@ public:
         Geometry = GL_GEOMETRY_SHADER,
     };
 
-    enum class State {
-        Empty,
-        Unlinked,
-        Linked,
-        CompileFailed,
-        LinkFailed,
-    };
+    // Consider saving Type, because according to the OpenGL wiki, you should
+    // avoid attaching multiple shaders of the same type and I might want to check for that.
+    Shader(Type type);
 
+    ~Shader();
+
+    Shader(const Shader&) = delete;
+    Shader& operator=(const Shader&) = delete;
+
+    Shader(Shader&& other);
+
+    Shader& operator=(Shader&& other);
+
+    void free();
+
+    void setSource(const char* source, int length) const;
+
+    void setSource(std::string_view source) const;
+
+    // Different name, so I have to do less work to have the correct overload get chosen
+    void setSources(size_t count, const char** sources, const int* lengths) const;
+
+    template <typename Iterator>
+    void setSources(Iterator begin, Iterator end) const
+    {
+        // We take a detour to a vector<string_view> so we can consume elmeents of type
+        // const char*, string and string_view.
+        // It's not cool, but it does what I want it to.
+        // You can use the other functions, if you hate it.
+        std::vector<std::string_view> sources(begin, end);
+        std::vector<const char*> ptrs;
+        std::vector<int> lengths;
+        for (const auto& source : sources) {
+            ptrs.push_back(source.data());
+            lengths.push_back(source.size());
+        }
+        setSources(sources.size(), ptrs.data(), lengths.data());
+    }
+
+    template <typename Container>
+    void setSources(const Container& sources) const
+    {
+        setSources(sources.cbegin(), sources.cend());
+    }
+
+    void setSources(std::initializer_list<std::string_view> sources) const;
+
+    ShaderResult compile() const;
+
+    GLuint getShaderObject() const;
+
+private:
+    GLuint shader_ = 0;
+};
+
+class ShaderProgram {
+public:
     using UniformLocation = GLint;
     using AttributeLocation = GLint;
     static constexpr GLint invalidLocation = -1;
 
-    ShaderProgram() = default;
+    ShaderProgram();
 
-    ~ShaderProgram()
-    {
-        if (glIsProgram(program_))
-            glDeleteProgram(program_);
-    }
+    ~ShaderProgram();
 
-    bool compile(Type type, const std::string& source);
-    bool compile(Type type, const std::filesystem::path& path);
+    ShaderProgram(const ShaderProgram&) = delete;
+    ShaderProgram& operator=(const ShaderProgram&) = delete;
 
-    bool compile(const std::string& vert, const std::string& frag)
-    {
-        return compile(Type::Vertex, vert) && compile(Type::Fragment, frag);
-    }
+    ShaderProgram(ShaderProgram&& other);
+    ShaderProgram& operator=(ShaderProgram&& other);
 
-    bool compile(const std::filesystem::path& vertPath, const std::filesystem::path& fragPath)
-    {
-        return compile(Type::Vertex, vertPath) && compile(Type::Fragment, fragPath);
-    }
+    void free();
 
-    bool compileAndLink(const std::string& vert, const std::string& frag)
-    {
-        return compile(Type::Vertex, vert) && compile(Type::Fragment, frag) && link();
-    }
+    void attach(const Shader& shader);
+    void detach(const Shader& shader);
+    void detach();
 
-    bool compileAndLink(
-        const std::filesystem::path& fragPath, const std::filesystem::path& vertPath)
-    {
-        return compile(Type::Vertex, vertPath) && compile(Type::Fragment, fragPath) && link();
-    }
-
-    bool link();
+    ShaderResult link();
 
     AttributeLocation getAttributeLocation(const std::string& name) const;
     UniformLocation getUniformLocation(const std::string& name) const;
 
-    const std::unordered_map<std::string, UniformInfo>& getUniformInfo()
-    {
-        return uniformInfo_;
-    }
+    const std::unordered_map<std::string, UniformInfo>& getUniformInfo() const;
 
-    void bind() const
-    {
-        glw::State::instance().bindShader(program_);
-    }
-
-    static void unbind()
-    {
-        glw::State::instance().unbindShader();
-    }
-
-    GLuint getProgramObject() const
-    {
-        return program_;
-    }
-
-    State getState() const
-    {
-        return state_;
-    }
+    void bind() const;
+    static void unbind();
 
     template <typename... Args>
     void setUniform(const std::string& name, Args&&... args) const
@@ -103,101 +125,22 @@ public:
             setUniform(loc, std::forward<Args>(args)...);
     }
 
-    void setUniform(UniformLocation loc, int value) const
-    {
-        bind();
-        glUniform1i(loc, value);
-    }
-
-    void setUniform(UniformLocation loc, const int* vals, size_t count = 1)
-    {
-        bind();
-        glUniform1iv(loc, count, vals);
-    }
-
-    void setUniform(UniformLocation loc, float value) const
-    {
-        bind();
-        glUniform1f(loc, value);
-    }
-
-    void setUniform(UniformLocation loc, const float* vals, size_t count = 1) const
-    {
-        bind();
-        glUniform1fv(loc, count, vals);
-    }
-
-    void setUniform(UniformLocation loc, const glm::vec2& val) const
-    {
-        bind();
-        glUniform2fv(loc, 1, glm::value_ptr(val));
-    }
-
-    void setUniform(UniformLocation loc, const glm::vec2* vals, size_t count = 1) const
-    {
-        bind();
-        glUniform2fv(loc, count, glm::value_ptr(*vals));
-    }
-
-    void setUniform(UniformLocation loc, const glm::vec3& val) const
-    {
-        bind();
-        glUniform3fv(loc, 1, glm::value_ptr(val));
-    }
-
-    void setUniform(UniformLocation loc, const glm::vec3* vals, size_t count = 1) const
-    {
-        bind();
-        glUniform3fv(loc, count, glm::value_ptr(*vals));
-    }
-
-    void setUniform(UniformLocation loc, const glm::vec4& val) const
-    {
-        bind();
-        glUniform4fv(loc, 1, glm::value_ptr(val));
-    }
-
-    void setUniform(UniformLocation loc, const glm::vec4* vals, size_t count = 1) const
-    {
-        bind();
-        glUniform4fv(loc, count, glm::value_ptr(*vals));
-    }
-
-    void setUniform(UniformLocation loc, const glm::mat2& val) const
-    {
-        bind();
-        glUniformMatrix2fv(loc, 1, GL_FALSE, glm::value_ptr(val));
-    }
-
-    void setUniform(UniformLocation loc, const glm::mat2* vals, size_t count = 1) const
-    {
-        bind();
-        glUniformMatrix2fv(loc, count, GL_FALSE, glm::value_ptr(*vals));
-    }
-
-    void setUniform(UniformLocation loc, const glm::mat3& val) const
-    {
-        bind();
-        glUniformMatrix3fv(loc, 1, GL_FALSE, glm::value_ptr(val));
-    }
-
-    void setUniform(UniformLocation loc, const glm::mat3* vals, size_t count = 1) const
-    {
-        bind();
-        glUniformMatrix3fv(loc, count, GL_FALSE, glm::value_ptr(*vals));
-    }
-
-    void setUniform(UniformLocation loc, const glm::mat4& val) const
-    {
-        bind();
-        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(val));
-    }
-
-    void setUniform(UniformLocation loc, const glm::mat4* vals, size_t count = 1) const
-    {
-        bind();
-        glUniformMatrix4fv(loc, count, GL_FALSE, glm::value_ptr(*vals));
-    }
+    void setUniform(UniformLocation loc, int value) const;
+    void setUniform(UniformLocation loc, const int* vals, size_t count = 1);
+    void setUniform(UniformLocation loc, float value) const;
+    void setUniform(UniformLocation loc, const float* vals, size_t count = 1) const;
+    void setUniform(UniformLocation loc, const glm::vec2& val) const;
+    void setUniform(UniformLocation loc, const glm::vec2* vals, size_t count = 1) const;
+    void setUniform(UniformLocation loc, const glm::vec3& val) const;
+    void setUniform(UniformLocation loc, const glm::vec3* vals, size_t count = 1) const;
+    void setUniform(UniformLocation loc, const glm::vec4& val) const;
+    void setUniform(UniformLocation loc, const glm::vec4* vals, size_t count = 1) const;
+    void setUniform(UniformLocation loc, const glm::mat2& val) const;
+    void setUniform(UniformLocation loc, const glm::mat2* vals, size_t count = 1) const;
+    void setUniform(UniformLocation loc, const glm::mat3& val) const;
+    void setUniform(UniformLocation loc, const glm::mat3* vals, size_t count = 1) const;
+    void setUniform(UniformLocation loc, const glm::mat4& val) const;
+    void setUniform(UniformLocation loc, const glm::mat4* vals, size_t count = 1) const;
 
     /*void setUniform(UniformLocation loc, const Texture& tex) const
     {
@@ -218,10 +161,40 @@ private:
     void retrieveUniformInfo();
 
     GLuint program_ = 0;
-    std::vector<GLuint> shaders_;
-    State state_ = State::Empty;
+    std::vector<GLuint> attachedShaders_;
     mutable std::unordered_map<std::string, UniformLocation> attribLocations_;
     mutable std::unordered_map<std::string, UniformLocation> uniformLocations_;
     std::unordered_map<std::string, UniformInfo> uniformInfo_;
 };
+
+const char* getDefine(Shader::Type type);
+
+std::optional<Shader> makeShader(Shader::Type type, const std::string& source);
+std::optional<Shader> makeShader(Shader::Type type, const std::filesystem::path& path);
+
+std::optional<ShaderProgram> makeShaderProgram(const Shader& vert, const Shader& frag);
+
+template <typename V, typename F>
+std::optional<ShaderProgram> makeShaderProgram(const V& vertSource, const F& fragSource)
+{
+    const auto vert = makeShader(Shader::Type::Vertex, vertSource);
+    if (!vert) {
+        LOG_ERROR("Could not compile vertex shader");
+        return std::nullopt;
+    }
+
+    const auto frag = makeShader(Shader::Type::Fragment, fragSource);
+    if (!frag) {
+        LOG_ERROR("Could not compile fragment shader");
+        return std::nullopt;
+    }
+
+    return makeShaderProgram(*vert, *frag);
+}
+
+// I wanted to add an overload that takes a single const T&, which would use that T&
+// for both shaders, but include VERTEX_SHADER and FRAGMENT_SHADER defines.
+// Sadly those defines would have to be at the given as the first source string, which
+// would result in the version directive potentially being after that define, which would
+// yield an invalid shader.
 }

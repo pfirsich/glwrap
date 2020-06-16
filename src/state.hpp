@@ -36,6 +36,8 @@ public:
 
     void bindShader(GLuint prog)
     {
+        if (currentShaderProgram_ == prog)
+            return;
         glUseProgram(prog);
         currentShaderProgram_ = prog;
     }

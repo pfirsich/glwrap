@@ -104,8 +104,7 @@ int main(int, char**)
         return 1;
     }
 
-    glw::ShaderProgram prog;
-    assert(prog.compileAndLink(R"(
+    const auto prog = glw::makeShaderProgram(R"(
         #version 330 core
         in vec2 position;
         void main() {
@@ -118,7 +117,10 @@ int main(int, char**)
         void main() {
             fragColor = vec4(1.0);
         }
-    )"s));
+    )"s);
+    if (!prog) {
+        return 1;
+    }
 
     // clang-format off
     const std::array<float, 8> vertices {
@@ -162,7 +164,7 @@ int main(int, char**)
         }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        prog.bind();
+        prog->bind();
         quad.draw();
 
         SDL_GL_SwapWindow(window);
