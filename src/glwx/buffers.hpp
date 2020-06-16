@@ -50,21 +50,21 @@ struct DefaultBuffer : public glw::Buffer {
     }
 
     template <typename... Args>
-    void data(UsageHint usage, Args&&... args) const
+    void data(UsageHint usage, Args&&... args)
     {
         assert(target);
         Buffer::data(target, usage, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
-    void data(Target target, Args&&... args) const
+    void data(Target target, Args&&... args)
     {
         assert(usage);
         Buffer::data(target, usage, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
-    void data(Args&&... args) const
+    void data(Args&&... args)
     {
         assert(target);
         assert(usage);
@@ -99,10 +99,7 @@ public:
 
     void setData()
     {
-        bind();
         data(data_.data(), data_.size());
-        lastUploadedSize_ = data_.size();
-        unbind();
     }
 
     void setSubData(size_t index, size_t len) const
@@ -110,19 +107,17 @@ public:
         // If I understand the reference pages correctly, it should be fine to call glBufferSubData
         // with size = 0, if you have not allocated a data store with glBufferData for that buffer
         // object yet (it's super sketch though).
-        bind();
         subData(index, data_.data() + index, len);
-        unbind();
     }
 
-    void setSubData()
+    void setSubData() const
     {
-        setSubData(0, data_.size());
+        subData(data_.data(), data_.size());
     }
 
     void update()
     {
-        if (lastUploadedSize_ < data_.size())
+        if (getSize() < data_.size())
             setData();
         else
             setSubData();
@@ -140,7 +135,6 @@ public:
 
 private:
     std::vector<uint8_t> data_;
-    size_t lastUploadedSize_ = 0;
 };
 
 class VertexBuffer : public BufferData {
@@ -165,8 +159,8 @@ public:
 
     size_t getCount() const
     {
-        assert(getData().size() % vertexFormat_.getStride() == 0);
-        return getData().size() / vertexFormat_.getStride();
+        assert(getSize() % vertexFormat_.getStride() == 0);
+        return getSize() / vertexFormat_.getStride();
     }
 
 private:
@@ -213,8 +207,8 @@ public:
 
     size_t getCount() const
     {
-        assert(getData().size() % getElementSize() == 0);
-        return getData().size() / getElementSize();
+        assert(getSize() % getElementSize() == 0);
+        return getSize() / getElementSize();
     }
 
 private:

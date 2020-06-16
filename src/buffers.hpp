@@ -2,6 +2,7 @@
 
 #include "glad/glad.h"
 
+#include "state.hpp"
 #include "utility.hpp"
 
 namespace glw {
@@ -13,7 +14,18 @@ public:
     enum class Target : GLenum {
         Undefined = 0,
         Array = GL_ARRAY_BUFFER,
+        // AtomicCounter = GL_ATOMIC_COUNTER_BUFFER, // 4.2
+        CopyRead = GL_COPY_READ_BUFFER,
+        CopyWrite = GL_COPY_WRITE_BUFFER,
+        // DispatchIndirect = GL_DISPATCH_INDIRECT_BUFFER, // 4.3
+        // DrawIndirect = GL_DRAW_INDIRECT_BUFFER, // 4.0
         ElementArray = GL_ELEMENT_ARRAY_BUFFER,
+        PixelPack = GL_PIXEL_PACK_BUFFER,
+        PixelUnpack = GL_PIXEL_UNPACK_BUFFER,
+        // Query = GL_QUERY_BUFFER, // 4.4
+        // ShaderStorage = GL_SHADER_STORAGE_BUFFER, // 4.3
+        Texture = GL_TEXTURE_BUFFER,
+        TransformFeedback = GL_TRANSFORM_FEEDBACK_BUFFER,
         Uniform = GL_UNIFORM_BUFFER,
     };
 
@@ -32,11 +44,10 @@ public:
 
     static void unbind(Target target)
     {
-        glBindBuffer(static_cast<GLenum>(target), 0);
+        State::instance().unbindBuffer(static_cast<GLenum>(target));
     }
 
     Buffer()
-        : vbo_(0)
     {
         glGenBuffers(1, &vbo_);
     }
@@ -51,15 +62,19 @@ public:
 
     Buffer(Buffer&& other)
         : vbo_(other.vbo_)
+        , size_(other.size_)
     {
         other.vbo_ = 0;
+        other.size_ = 0;
     }
 
     Buffer& operator=(Buffer&& other)
     {
         free();
         vbo_ = other.vbo_;
+        size_ = other.size_;
         other.vbo_ = 0;
+        other.size_ = 0;
         return *this;
     }
 
@@ -75,15 +90,17 @@ public:
 
     void bind(Target target) const
     {
-        glBindBuffer(static_cast<GLenum>(target), vbo_);
+        State::instance().bindBuffer(static_cast<GLenum>(target), vbo_);
     }
 
     template <typename... Args>
-    void data(Target target, UsageHint usage, Args&&... args) const
+    void data(Target target, UsageHint usage, Args&&... args)
     {
         bind(target);
         const auto [data, size] = toPtrRange(std::forward<Args>(args)...);
         glBufferData(static_cast<GLenum>(target), size, data, static_cast<GLenum>(usage));
+        size_ = size;
+        unbind(target);
     }
 
     template <typename... Args>
@@ -92,14 +109,13 @@ public:
         bind(target);
         const auto [byteOffset, data, size] = toOffsetPtrRange(offset, std::forward<Args>(args)...);
         glBufferSubData(static_cast<GLenum>(target), byteOffset, size, data);
+        unbind(target);
     }
 
     template <typename... Args>
     void subData(Target target, Args&&... args) const
     {
-        bind(target);
-        const auto [data, size] = toPtrRange(std::forward<Args>(args)...);
-        glBufferSubData(static_cast<GLenum>(target), 0, size, data);
+        subData(target, 0, std::forward<Args>(args)...);
     }
 
     GLuint getVbo() const
@@ -107,8 +123,17 @@ public:
         return vbo_;
     }
 
+    size_t getSize() const
+    {
+        return size_;
+    }
+
 private:
-    GLuint vbo_;
+    GLuint vbo_ = 0;
+    // I know this is not really in the spirit of these "thin" OpenGL wrappers, but it is necessary
+    // to keep track of the data store size in a couple of places and it would be *way* dirtier
+    // to keep track of it in other (multiple!) places.
+    size_t size_ = 0;
 };
 
 }
