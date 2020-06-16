@@ -1,6 +1,5 @@
 #pragma once
 
-#include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -167,34 +166,4 @@ private:
     std::unordered_map<std::string, UniformInfo> uniformInfo_;
 };
 
-const char* getDefine(Shader::Type type);
-
-std::optional<Shader> makeShader(Shader::Type type, const std::string& source);
-std::optional<Shader> makeShader(Shader::Type type, const std::filesystem::path& path);
-
-std::optional<ShaderProgram> makeShaderProgram(const Shader& vert, const Shader& frag);
-
-template <typename V, typename F>
-std::optional<ShaderProgram> makeShaderProgram(const V& vertSource, const F& fragSource)
-{
-    const auto vert = makeShader(Shader::Type::Vertex, vertSource);
-    if (!vert) {
-        LOG_ERROR("Could not compile vertex shader");
-        return std::nullopt;
-    }
-
-    const auto frag = makeShader(Shader::Type::Fragment, fragSource);
-    if (!frag) {
-        LOG_ERROR("Could not compile fragment shader");
-        return std::nullopt;
-    }
-
-    return makeShaderProgram(*vert, *frag);
-}
-
-// I wanted to add an overload that takes a single const T&, which would use that T&
-// for both shaders, but include VERTEX_SHADER and FRAGMENT_SHADER defines.
-// Sadly those defines would have to be at the given as the first source string, which
-// would result in the version directive potentially being after that define, which would
-// yield an invalid shader.
 }

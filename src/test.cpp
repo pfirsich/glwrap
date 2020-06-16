@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "glw.hpp"
+#include "glwx.hpp"
 
 SDL_Window* window;
 SDL_GLContext glContext;
@@ -104,7 +105,7 @@ int main(int, char**)
         return 1;
     }
 
-    const auto prog = glw::makeShaderProgram(R"(
+    const auto prog = glwx::makeShaderProgram(R"(
         #version 330 core
         in vec2 position;
         void main() {

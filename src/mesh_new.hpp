@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "buffers.hpp"
-#include "utility.hpp"
 #include "vertexarray.hpp"
 #include "vertexformat.hpp"
 
@@ -89,6 +88,21 @@ private:
         VertexFormat format;
         std::unique_ptr<BufferDataBase> buffer;
     };
+
+    template <typename FieldType, typename Container, typename Func>
+    static FieldType getMinField(const Container& container, Func&& func)
+    {
+        assert(!container.empty());
+        auto it = container.begin();
+        FieldType min = func(*it);
+        ++it;
+        for (; it != container.end(); ++it) {
+            const auto field = func(*it);
+            if (field < min)
+                min = field;
+        }
+        return min;
+    }
 
     std::vector<VertexBuffer> vertexBuffers_;
     std::unique_ptr<BufferDataBase> indexBuffer_;

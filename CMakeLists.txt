@@ -27,7 +27,6 @@ set(GLW_SRC
   glad/glad.c
   log.cpp
   shader.cpp
-  utility.cpp
 )
 list(TRANSFORM GLW_SRC PREPEND src/)
 
@@ -42,7 +41,9 @@ set_warn(glw)
 
 set(GLWX_SRC
   mesh.cpp
+  shader.cpp
   texture.cpp
+  utility.cpp
 )
 list(TRANSFORM GLWX_SRC PREPEND src/glwx/)
 

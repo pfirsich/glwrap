@@ -34,19 +34,4 @@ std::string toHexStream(const uint8_t* data, size_t size);
 
 std::optional<std::string> readFile(const std::string& filename);
 
-template <typename FieldType, typename Container, typename Func>
-FieldType getMinField(const Container& container, Func&& func)
-{
-    assert(!container.empty());
-    auto it = container.begin();
-    FieldType min = func(*it);
-    ++it;
-    for (; it != container.end(); ++it) {
-        const auto field = func(*it);
-        if (field < min)
-            min = field;
-    }
-    return min;
-}
-
 }
