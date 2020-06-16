@@ -6,6 +6,7 @@
 #include "utility.hpp"
 
 namespace glw {
+
 // http://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html
 std::optional<std::string> readFile(const std::string& filename)
 {
@@ -30,5 +31,11 @@ std::string toHexStream(const uint8_t* buffer, size_t size)
             ss << " ";
     }
     return ss.str();
+}
+
+uint32_t colorToInt(const glm::vec4& col)
+{
+    return static_cast<int>(col.r * 255) << 0 | static_cast<int>(col.g * 255) << 8
+        | static_cast<int>(col.b * 255) << 16 | static_cast<int>(col.a * 255) << 24;
 }
 }

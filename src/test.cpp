@@ -107,16 +107,28 @@ int main(int, char**)
 
     const auto prog = glwx::makeShaderProgram(R"(
         #version 330 core
-        in vec2 position;
+
+        layout (location = 0) in vec2 attrPosition;
+        layout (location = 1) in vec2 attrTexCoords;
+
+        out vec2 texCoords;
+
         void main() {
-            gl_Position = vec4(position, 0.0, 1.0);
+            texCoords = attrTexCoords;
+            gl_Position = vec4(attrPosition, 0.0, 1.0);
         }
     )"s,
         R"(
         #version 330 core
+
+        uniform sampler2D tex;
+
+        in vec2 texCoords;
+
         out vec4 fragColor;
+
         void main() {
-            fragColor = vec4(1.0);
+            fragColor = texture2D(tex, texCoords);
         }
     )"s);
     if (!prog) {
@@ -124,11 +136,11 @@ int main(int, char**)
     }
 
     // clang-format off
-    const std::array<float, 8> vertices {
-        -0.5f, -0.5f,
-         0.5f, -0.5f,
-         0.5f,  0.5f,
-        -0.5f,  0.5f,
+    const std::array<float, 16> vertices {
+        -0.5f, -0.5f, 0.0f, 0.0f,
+         0.5f, -0.5f, 1.0f, 0.0f,
+         0.5f,  0.5f, 1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f, 1.0f,
     };
 
     const std::array<uint8_t, 6> indices {
@@ -139,11 +151,15 @@ int main(int, char**)
 
     glw::VertexFormat vertFmt;
     vertFmt.add(0, 2, glw::VertexFormat::Attribute::Type::F32);
+    vertFmt.add(1, 2, glw::VertexFormat::Attribute::Type::F32);
 
     glw::Mesh quad;
     quad.addVertexBuffer(vertFmt, glw::Buffer::UsageHint::StaticDraw).data(vertices);
     quad.addIndexBuffer(glwx::IndexBuffer::ElementType::U8, glw::Buffer::UsageHint::StaticDraw)
         .data(indices);
+
+    // const auto texture = glwx::makeTexture2D(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    const auto texture = glwx::makeTexture2D(512, 512, 32);
 
     SDL_Event event;
     bool running = true;
@@ -163,7 +179,10 @@ int main(int, char**)
         }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        texture.bind(0);
         prog->bind();
+        prog->setUniform("tex", 0);
         quad.draw();
 
         SDL_GL_SwapWindow(window);

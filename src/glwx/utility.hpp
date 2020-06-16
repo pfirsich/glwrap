@@ -34,4 +34,5 @@ std::string toHexStream(const uint8_t* data, size_t size);
 
 std::optional<std::string> readFile(const std::string& filename);
 
+uint32_t colorToInt(const glm::vec4& col);
 }
