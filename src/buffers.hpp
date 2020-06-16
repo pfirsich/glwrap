@@ -115,7 +115,10 @@ public:
     template <typename... Args>
     void subData(Target target, Args&&... args) const
     {
-        subData(target, 0, std::forward<Args>(args)...);
+        bind(target);
+        const auto [data, size] = toPtrRange(std::forward<Args>(args)...);
+        glBufferSubData(static_cast<GLenum>(target), 0, size, data);
+        unbind(target);
     }
 
     GLuint getVbo() const

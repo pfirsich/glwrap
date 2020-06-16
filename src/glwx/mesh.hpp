@@ -70,6 +70,20 @@ public:
             vertexBuffers_, [](const glwx::VertexBuffer& buf) { return buf.getCount(); });
     }
 
+    // I think this function is kinda sketchy, because if you clear a buffer, it will not update it.
+    // You have to do that manually. But I don't think that's a very common use case and it will
+    // probably help prevent more bugs than it creates.
+    // We don't call it automatically in draw() or something, because I'm not sure how to detect if
+    // the buffers are dirty.
+    void updateBuffers()
+    {
+        for (auto& buffer : vertexBuffers_)
+            if (!buffer.getData().empty())
+                buffer.update();
+        if (!indexBuffer_->getData().empty())
+            indexBuffer_->update();
+    }
+
     // For index meshes this range is a range in the index buffer, for non-indexed meshes
     // it's a range of vertex indices.
     void draw(size_t offset, size_t count) const
