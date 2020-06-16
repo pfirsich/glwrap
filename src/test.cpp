@@ -141,10 +141,9 @@ int main(int, char**)
     vertFmt.add(0, 2, glw::VertexFormat::Attribute::Type::F32);
 
     glw::Mesh quad;
-    quad.addVertexBuffer<float>(
-            vertFmt, glw::Buffer::UsageHint::StaticDraw, vertices.begin(), vertices.end())
-        .update();
-    quad.addIndexBuffer<uint8_t>(glw::Buffer::UsageHint::StaticDraw, indices.begin(), indices.end())
+    quad.addVertexBuffer(vertFmt, glw::Buffer::UsageHint::StaticDraw, vertices).update();
+    quad.addIndexBuffer(
+            glwx::IndexBuffer::ElementType::U8, glw::Buffer::UsageHint::StaticDraw, indices)
         .update();
 
     SDL_Event event;
