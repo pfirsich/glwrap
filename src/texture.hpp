@@ -212,6 +212,13 @@ public:
     Texture(Texture&& other)
         : target_(other.target_)
         , texture_(other.texture_)
+        , width_(other.width_)
+        , height_(other.height_)
+        , internalFormat_(other.internalFormat_)
+        , wrapS_(other.wrapS_)
+        , wrapT_(other.wrapT_)
+        , minFilter_(other.minFilter_)
+        , magFilter_(other.magFilter_)
     {
         other.reset();
     }
@@ -221,6 +228,13 @@ public:
         free();
         target_ = other.target_;
         texture_ = other.texture_;
+        width_ = other.width_;
+        height_ = other.height_;
+        internalFormat_ = other.internalFormat_;
+        wrapS_ = other.wrapS_;
+        wrapT_ = other.wrapT_;
+        minFilter_ = other.minFilter_;
+        magFilter_ = other.magFilter_;
         other.reset();
         return *this;
     }
