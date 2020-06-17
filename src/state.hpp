@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cassert>
 #include <optional>
 
@@ -11,90 +12,26 @@ public:
     // GL_MAX_TEXTURE_IMAGE_UNITS is 16 in GL 3.3
     static constexpr size_t maxTextureUnits = 16;
 
-    static State& instance()
-    {
-        static State inst;
-        return inst;
-    }
+    static State& instance();
 
     ~State() = default;
 
-    GLuint getCurrentVao() const
-    {
-        return currentVao_;
-    }
+    GLuint getCurrentVao() const;
+    void bindVao(GLuint vao);
+    void unbindVao();
 
-    void bindVao(GLuint vao)
-    {
-        glBindVertexArray(vao);
-        currentVao_ = vao;
-    }
+    GLuint getCurrentShader() const;
+    void bindShader(GLuint prog);
+    void unbindShader();
 
-    void unbindVao()
-    {
-        bindVao(0);
-    }
+    GLuint getCurrentBuffer(GLenum target) const;
+    void bindBuffer(GLenum target, GLuint buffer);
+    void unbindBuffer(GLenum target);
 
-    GLuint getCurrentShader() const
-    {
-        return currentShaderProgram_;
-    }
-
-    void bindShader(GLuint prog)
-    {
-        if (currentShaderProgram_ == prog)
-            return;
-        glUseProgram(prog);
-        currentShaderProgram_ = prog;
-    }
-
-    void unbindShader()
-    {
-        bindShader(0);
-    }
-
-    void bindBuffer(GLenum target, GLuint buffer)
-    {
-        auto& currentBuffer = currentBuffers_[getBufferIndex(target)];
-        if (currentBuffer == buffer)
-            return;
-        glBindBuffer(target, buffer);
-        currentBuffer = buffer;
-    }
-
-    void unbindBuffer(GLenum target)
-    {
-        bindBuffer(target, 0);
-    }
-
-    void bindTexture(unsigned int unit, GLenum target, GLuint texture)
-    {
-        auto& currentTexture = currentTextures_[unit][getTextureIndex(target)];
-        if (currentTexture == texture)
-            return;
-        glActiveTexture(GL_TEXTURE0 + unit);
-        glBindTexture(target, texture);
-        currentTexture = texture;
-    }
-
-    void unbindTexture(unsigned int unit, GLenum target)
-    {
-        bindTexture(unit, target, 0);
-    }
-
-    GLuint getCurrentTexture(unsigned int unit, GLenum target) const
-    {
-        return currentTextures_[unit][getTextureIndex(target)];
-    }
-
-    std::optional<unsigned int> getTextureUnit(GLenum target, GLuint texture) const
-    {
-        for (size_t unit = 0; unit < currentTextures_.size(); ++unit) {
-            if (getCurrentTexture(unit, target) == texture)
-                return unit;
-        }
-        return std::nullopt;
-    }
+    GLuint getCurrentTexture(unsigned int unit, GLenum target) const;
+    std::optional<unsigned int> getTextureUnit(GLenum target, GLuint texture) const;
+    void bindTexture(unsigned int unit, GLenum target, GLuint texture);
+    void unbindTexture(unsigned int unit, GLenum target);
 
 private:
     // I think specifying size explicitly is dangerous and I can't only specify type
@@ -134,26 +71,17 @@ private:
         static_cast<GLenum>(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z),
     };
 
-    static size_t getBufferIndex(GLenum target)
+    template <typename Container>
+    static size_t getTargetIndex(const Container& container, GLenum value)
     {
-        for (size_t i = 0; i < bufferBindings.size(); ++i)
-            if (bufferBindings[i] == target)
+        for (size_t i = 0; i < container.size(); ++i)
+            if (container[i] == value)
                 return i;
-        assert(false && "Unknown buffer target");
+        assert(false && "Unknown target");
     }
 
-    static size_t getTextureIndex(GLenum target)
-    {
-        for (size_t i = 0; i < textureBindings.size(); ++i)
-            if (textureBindings[i] == target)
-                return i;
-        assert(false && "Unknown texture target");
-    }
-
-    struct BoundTexture {
-        GLenum target = 0;
-        GLuint texture = 0;
-    };
+    static size_t getBufferIndex(GLenum target);
+    static size_t getTextureIndex(GLenum target);
 
     State() = default;
     State(const State&) = delete;

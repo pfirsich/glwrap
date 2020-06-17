@@ -42,56 +42,23 @@ public:
         DynamicCopy = GL_DYNAMIC_COPY,
     };
 
-    static void unbind(Target target)
-    {
-        State::instance().unbindBuffer(static_cast<GLenum>(target));
-    }
+    static void unbind(Target target);
 
-    Buffer()
-    {
-        glGenBuffers(1, &vbo_);
-    }
-
-    ~Buffer()
-    {
-        free();
-    }
+    Buffer();
+    ~Buffer();
 
     Buffer(const Buffer& other) = delete;
     Buffer& operator=(const Buffer& other) = delete;
 
-    Buffer(Buffer&& other)
-        : vbo_(other.vbo_)
-        , size_(other.size_)
-    {
-        other.vbo_ = 0;
-        other.size_ = 0;
-    }
+    Buffer(Buffer&& other);
+    Buffer& operator=(Buffer&& other);
 
-    Buffer& operator=(Buffer&& other)
-    {
-        free();
-        vbo_ = other.vbo_;
-        size_ = other.size_;
-        other.vbo_ = 0;
-        other.size_ = 0;
-        return *this;
-    }
-
-    void free()
-    {
-        if (vbo_)
-            glDeleteBuffers(1, &vbo_);
-        vbo_ = 0;
-    }
+    void free();
 
     // http://hacksoflife.blogspot.de/2015/06/glmapbuffer-no-longer-cool.html
     // => Don't implement map()?
 
-    void bind(Target target) const
-    {
-        State::instance().bindBuffer(static_cast<GLenum>(target), vbo_);
-    }
+    void bind(Target target) const;
 
     template <typename... Args>
     void data(Target target, UsageHint usage, Args&&... args)
@@ -121,15 +88,9 @@ public:
         unbind(target);
     }
 
-    GLuint getVbo() const
-    {
-        return vbo_;
-    }
+    GLuint getVbo() const;
 
-    size_t getSize() const
-    {
-        return size_;
-    }
+    size_t getSize() const;
 
 private:
     GLuint vbo_ = 0;

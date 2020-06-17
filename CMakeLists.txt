@@ -24,9 +24,15 @@ function(set_warn target)
 endfunction()
 
 set(GLW_SRC
+  buffer.cpp
   glad/glad.c
   log.cpp
   shader.cpp
+  state.cpp
+  texture.cpp
+  utility.cpp
+  vertexarray.cpp
+  vertexformat.cpp
 )
 list(TRANSFORM GLW_SRC PREPEND src/)
 
@@ -40,6 +46,7 @@ set_warn(glw)
 
 
 set(GLWX_SRC
+  buffers.cpp
   mesh.cpp
   shader.cpp
   texture.cpp

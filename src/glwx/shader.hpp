@@ -6,7 +6,6 @@
 #include "../shader.hpp"
 
 namespace glwx {
-
 std::optional<glw::Shader> makeShader(glw::Shader::Type type, const std::string& source);
 std::optional<glw::Shader> makeShader(glw::Shader::Type type, const std::filesystem::path& path);
 
@@ -36,5 +35,4 @@ std::optional<glw::ShaderProgram> makeShaderProgram(const V& vertSource, const F
 // Sadly those defines would have to be at the given as the first source string, which
 // would result in the version directive potentially being after that define, which would
 // yield an invalid shader.
-
 }

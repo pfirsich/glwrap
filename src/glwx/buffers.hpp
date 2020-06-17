@@ -3,7 +3,7 @@
 #include <cassert>
 #include <vector>
 
-#include "../buffers.hpp"
+#include "../buffer.hpp"
 #include "../utility.hpp"
 #include "../vertexformat.hpp"
 
@@ -21,33 +21,13 @@ struct DefaultBuffer : public glw::Buffer {
     DefaultBuffer(DefaultBuffer&& other) = default;
     DefaultBuffer& operator=(DefaultBuffer&& other) = default;
 
-    DefaultBuffer(Target target)
-        : target(target)
-    {
-    }
+    DefaultBuffer(Target target);
+    DefaultBuffer(UsageHint usage);
+    DefaultBuffer(Target target, UsageHint usage);
 
-    DefaultBuffer(UsageHint usage)
-        : usage(usage)
-    {
-    }
+    void bind() const;
 
-    DefaultBuffer(Target target, UsageHint usage)
-        : target(target)
-        , usage(usage)
-    {
-    }
-
-    void bind() const
-    {
-        assert(target);
-        Buffer::bind(target);
-    }
-
-    void unbind() const
-    {
-        assert(target);
-        Buffer::unbind(target);
-    }
+    void unbind() const;
 
     template <typename... Args>
     void data(UsageHint usage, Args&&... args)
@@ -97,41 +77,13 @@ public:
     BufferData(BufferData&&) = default;
     BufferData& operator=(BufferData&&) = default;
 
-    void setData()
-    {
-        data(data_.data(), data_.size());
-    }
+    void setData();
+    void setSubData(size_t index, size_t len) const;
+    void setSubData() const;
+    void update();
 
-    void setSubData(size_t index, size_t len) const
-    {
-        // If I understand the reference pages correctly, it should be fine to call glBufferSubData
-        // with size = 0, if you have not allocated a data store with glBufferData for that buffer
-        // object yet (it's super sketch though).
-        subData(index, data_.data() + index, len);
-    }
-
-    void setSubData() const
-    {
-        subData(data_.data(), data_.size());
-    }
-
-    void update()
-    {
-        if (getSize() < data_.size())
-            setData();
-        else
-            setSubData();
-    }
-
-    std::vector<uint8_t>& getData()
-    {
-        return data_;
-    }
-
-    const std::vector<uint8_t>& getData() const
-    {
-        return data_;
-    }
+    std::vector<uint8_t>& getData();
+    const std::vector<uint8_t>& getData() const;
 
 private:
     std::vector<uint8_t> data_;
@@ -152,16 +104,9 @@ public:
     VertexBuffer(VertexBuffer&&) = default;
     VertexBuffer& operator=(VertexBuffer&&) = default;
 
-    const glw::VertexFormat& getVertexFormat() const
-    {
-        return vertexFormat_;
-    }
+    const glw::VertexFormat& getVertexFormat() const;
 
-    size_t getCount() const
-    {
-        assert(getSize() % vertexFormat_.getStride() == 0);
-        return getSize() / vertexFormat_.getStride();
-    }
+    size_t getCount() const;
 
 private:
     glw::VertexFormat vertexFormat_;
@@ -188,28 +133,11 @@ public:
     IndexBuffer(IndexBuffer&&) = default;
     IndexBuffer& operator=(IndexBuffer&&) = default;
 
-    ElementType getElementType() const
-    {
-        return elementType_;
-    }
+    ElementType getElementType() const;
 
-    size_t getElementSize() const
-    {
-        switch (elementType_) {
-        case ElementType::U8:
-            return 1;
-        case ElementType::U16:
-            return 2;
-        case ElementType::U32:
-            return 4;
-        }
-    }
+    size_t getElementSize() const;
 
-    size_t getCount() const
-    {
-        assert(getSize() % getElementSize() == 0);
-        return getSize() / getElementSize();
-    }
+    size_t getCount() const;
 
 private:
     ElementType elementType_;

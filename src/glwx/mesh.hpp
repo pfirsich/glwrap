@@ -1,11 +1,12 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include "../vertexarray.hpp"
 #include "buffers.hpp"
 
-namespace glw {
+namespace glwx {
 class Mesh {
 public:
     enum class DrawMode : GLenum {
@@ -18,31 +19,14 @@ public:
         TriangleStrip = GL_TRIANGLE_STRIP,
     };
 
-    Mesh(DrawMode mode = DrawMode::Triangles)
-        : mode_(mode)
-    {
-    }
+    Mesh(DrawMode mode = DrawMode::Triangles);
 
     // Be careful with these functions, because if the Buffer is destroyed, the
     // binding in the VAO (this mesh) will be removed.
     // Prefer to use the functions below, that emplace buffers into the mesh instead.
-    void attachVertexBuffer(const VertexFormat& format, const Buffer& buffer) const
-    {
-        // TODO: Assert that all locations used in format are not already in use.
-        vao_.bind();
-        buffer.bind(Buffer::Target::Array);
-        format.set();
-        vao_.unbind();
-        buffer.unbind(Buffer::Target::Array);
-    }
+    void attachVertexBuffer(const glw::VertexFormat& format, const glw::Buffer& buffer) const;
 
-    void attachIndexBuffer(const Buffer& buffer) const
-    {
-        vao_.bind();
-        buffer.bind(Buffer::Target::ElementArray);
-        vao_.unbind();
-        buffer.unbind(Buffer::Target::ElementArray);
-    }
+    void attachIndexBuffer(const glw::Buffer& buffer) const;
 
     template <typename... Args>
     glwx::VertexBuffer& addVertexBuffer(Args&&... args)
@@ -63,74 +47,24 @@ public:
         return *indexBuffer_;
     }
 
-    size_t getVertexCount() const
-    {
-        assert(!vertexBuffers_.empty());
-        return getMinField<size_t>(
-            vertexBuffers_, [](const glwx::VertexBuffer& buf) { return buf.getCount(); });
-    }
+    size_t getVertexCount() const;
 
     // I think this function is kinda sketchy, because if you clear a buffer, it will not update it.
     // You have to do that manually. But I don't think that's a very common use case and it will
     // probably help prevent more bugs than it creates.
     // We don't call it automatically in draw() or something, because I'm not sure how to detect if
     // the buffers are dirty.
-    void updateBuffers()
-    {
-        for (auto& buffer : vertexBuffers_)
-            if (!buffer.getData().empty())
-                buffer.update();
-        if (!indexBuffer_->getData().empty())
-            indexBuffer_->update();
-    }
+    void updateBuffers();
 
     // For index meshes this range is a range in the index buffer, for non-indexed meshes
     // it's a range of vertex indices.
-    void draw(size_t offset, size_t count) const
-    {
-        vao_.bind();
-        const auto mode = static_cast<GLenum>(mode_);
-        if (indexBuffer_) {
-            glDrawElements(mode, count, static_cast<GLenum>(indexBuffer_->getElementType()),
-                reinterpret_cast<const void*>(indexBuffer_->getElementSize() * offset));
-        } else {
-            glDrawArrays(mode, offset, count);
-        }
-        vao_.unbind();
-    }
+    void draw(size_t offset, size_t count) const;
 
-    void draw() const
-    {
-        if (indexBuffer_) {
-            draw(0, indexBuffer_->getCount());
-        } else {
-            draw(0, getVertexCount());
-        }
-    }
+    void draw() const;
 
-    void draw(size_t offset, size_t count, size_t instanceCount) const
-    {
-        vao_.bind();
-        const auto mode = static_cast<GLenum>(mode_);
-        if (indexBuffer_) {
-            glDrawElementsInstanced(mode, count,
-                static_cast<GLenum>(indexBuffer_->getElementType()),
-                reinterpret_cast<const void*>(indexBuffer_->getElementSize() * offset),
-                instanceCount);
-        } else {
-            glDrawArraysInstanced(mode, offset, count, instanceCount);
-        }
-        vao_.unbind();
-    }
+    void draw(size_t offset, size_t count, size_t instanceCount) const;
 
-    void draw(size_t instanceCount) const
-    {
-        if (indexBuffer_) {
-            draw(0, indexBuffer_->getCount(), instanceCount);
-        } else {
-            draw(0, getVertexCount(), instanceCount);
-        }
-    }
+    void draw(size_t instanceCount) const;
 
 private:
     template <typename FieldType, typename Container, typename Func>
@@ -150,7 +84,7 @@ private:
 
     std::vector<glwx::VertexBuffer> vertexBuffers_;
     std::unique_ptr<glwx::IndexBuffer> indexBuffer_;
-    VertexArray vao_;
+    glw::VertexArray vao_;
     DrawMode mode_;
 };
 }

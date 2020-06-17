@@ -7,49 +7,20 @@
 namespace glw {
 class VertexArray {
 public:
-    VertexArray()
-    {
-        glGenVertexArrays(1, &vao_);
-    }
-
-    ~VertexArray()
-    {
-        free();
-    }
+    VertexArray();
+    ~VertexArray();
 
     VertexArray(const VertexArray& other) = delete;
     VertexArray& operator=(const VertexArray& other) = delete;
 
-    VertexArray(VertexArray&& other)
-        : vao_(other.vao_)
-    {
-        other.vao_ = 0;
-    }
+    VertexArray(VertexArray&& other);
+    VertexArray& operator=(VertexArray&& other);
 
-    VertexArray& operator=(VertexArray&& other)
-    {
-        free();
-        vao_ = other.vao_;
-        other.vao_ = 0;
-        return *this;
-    }
+    void free();
 
-    void free()
-    {
-        if (vao_)
-            glDeleteVertexArrays(1, &vao_);
-        vao_ = 0;
-    }
+    static void unbind();
 
-    static void unbind()
-    {
-        State::instance().unbindVao();
-    }
-
-    void bind() const
-    {
-        State::instance().bindVao(vao_);
-    }
+    void bind() const;
 
 private:
     GLuint vao_;

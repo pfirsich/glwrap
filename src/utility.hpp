@@ -5,7 +5,6 @@
 #include <vector>
 
 namespace glw {
-
 template <typename T>
 std::pair<const uint8_t*, size_t> toPtrRange(const T* ptr, size_t count)
 {
@@ -14,10 +13,7 @@ std::pair<const uint8_t*, size_t> toPtrRange(const T* ptr, size_t count)
 
 // sizeof will result in a substitution failure for T = void, so
 // I can overload instead of specializing the template.
-inline std::pair<const uint8_t*, size_t> toPtrRange(const void* data, size_t size)
-{
-    return std::make_pair(reinterpret_cast<const uint8_t*>(data), size);
-}
+std::pair<const uint8_t*, size_t> toPtrRange(const void* data, size_t size);
 
 template <typename Container>
 std::pair<const uint8_t*, size_t> toPtrRange(const Container& container)
@@ -38,10 +34,7 @@ std::vector<uint8_t> makeByteVector(Args&&... args)
     return std::vector<uint8_t>(data, data + size);
 }
 
-inline std::vector<uint8_t> makeByteVector()
-{
-    return std::vector<uint8_t>();
-}
+std::vector<uint8_t> makeByteVector();
 
 template <typename T>
 std::tuple<size_t, const uint8_t*, size_t> toOffsetPtrRange(
@@ -52,10 +45,7 @@ std::tuple<size_t, const uint8_t*, size_t> toOffsetPtrRange(
 }
 
 std::tuple<size_t, const uint8_t*, size_t> toOffsetPtrRange(
-    size_t offset, const void* data, size_t size)
-{
-    return std::make_tuple(offset, reinterpret_cast<const uint8_t*>(data), size);
-}
+    size_t offset, const void* data, size_t size);
 
 template <typename Container>
 std::tuple<size_t, const uint8_t*, size_t> toOffsetPtrRange(

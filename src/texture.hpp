@@ -192,242 +192,64 @@ public:
         A2B10G10R10 = GL_UNSIGNED_INT_2_10_10_10_REV,
     };
 
-    Texture(Target target)
-        : target_(target)
-    {
-        glGenTextures(1, &texture_);
-        // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBindTexture.xhtml
-        // "When a texture is first bound, it assumes the specified target"...
-        bind(0);
-    }
-
-    ~Texture()
-    {
-        free();
-    }
+    Texture(Target target);
+    ~Texture();
 
     Texture(const Texture& other) = delete;
     Texture& operator=(Texture& other) = delete;
 
-    Texture(Texture&& other)
-        : target_(other.target_)
-        , texture_(other.texture_)
-        , width_(other.width_)
-        , height_(other.height_)
-        , internalFormat_(other.internalFormat_)
-        , wrapS_(other.wrapS_)
-        , wrapT_(other.wrapT_)
-        , minFilter_(other.minFilter_)
-        , magFilter_(other.magFilter_)
-    {
-        other.reset();
-    }
+    Texture(Texture&& other);
+    Texture& operator=(Texture&& other);
 
-    Texture& operator=(Texture&& other)
-    {
-        free();
-        target_ = other.target_;
-        texture_ = other.texture_;
-        width_ = other.width_;
-        height_ = other.height_;
-        internalFormat_ = other.internalFormat_;
-        wrapS_ = other.wrapS_;
-        wrapT_ = other.wrapT_;
-        minFilter_ = other.minFilter_;
-        magFilter_ = other.magFilter_;
-        other.reset();
-        return *this;
-    }
+    void free() const;
 
-    void free() const
-    {
-        // silently ignores 0s
-        glDeleteTextures(1, &texture_);
-    }
+    void bind(unsigned int unit) const;
 
-    void bind(unsigned int unit) const
-    {
-        State::instance().bindTexture(unit, static_cast<GLenum>(target_), texture_);
-    }
-
-    void bind(unsigned unit, Target target) const
-    {
-        State::instance().bindTexture(unit, static_cast<GLenum>(target), texture_);
-    }
+    void bind(unsigned unit, Target target) const;
 
     void image(Target target, size_t level, InternalFormat internalFormat, size_t width,
-        size_t height, DataFormat dataFormat, DataType dataType, const void* data)
-    {
-        internalFormat_ = internalFormat;
-        width_ = width;
-        height_ = height;
-        bind(0);
-        glTexImage2D(static_cast<GLenum>(target), level, static_cast<GLenum>(internalFormat), width,
-            height, 0, static_cast<GLenum>(dataFormat), static_cast<GLenum>(dataType), data);
-    }
+        size_t height, DataFormat dataFormat, DataType dataType, const void* data);
 
     // common use-case variants
     void image(InternalFormat internalFormat, size_t width, size_t height, DataFormat dataFormat,
-        DataType dataType, const void* data)
-    {
-        image(target_, 0, internalFormat, width, height, dataFormat, dataType, data);
-    }
-
+        DataType dataType, const void* data);
     void image(size_t level, InternalFormat internalFormat, size_t width, size_t height,
-        DataFormat dataFormat, DataType dataType, const void* data)
-    {
-        image(target_, level, internalFormat, width, height, dataFormat, dataType, data);
-    }
+        DataFormat dataFormat, DataType dataType, const void* data);
 
     void subImage(Target target, size_t level, size_t x, size_t y, size_t width, size_t height,
-        DataFormat dataFormat, DataType dataType, const void* data) const
-    {
-        bind(0);
-        glTexSubImage2D(static_cast<GLenum>(target), level, x, y, width, height,
-            static_cast<GLenum>(dataFormat), static_cast<GLenum>(dataType), data);
-    }
-
+        DataFormat dataFormat, DataType dataType, const void* data) const;
     // common use-case variants
-    void subImage(DataFormat dataFormat, DataType dataType, const void* data) const
-    {
-        subImage(target_, 0, 0, 0, width_, height_, dataFormat, dataType, data);
-    }
-
-    void subImage(size_t level, DataFormat dataFormat, DataType dataType, const void* data)
-    {
-        subImage(target_, level, 0, 0, width_, height_, dataFormat, dataType, data);
-    }
+    void subImage(DataFormat dataFormat, DataType dataType, const void* data) const;
+    void subImage(size_t level, DataFormat dataFormat, DataType dataType, const void* data);
 
     void storage(
-        Target target, size_t levels, InternalFormat internalFormat, size_t width, size_t height)
-    {
-        internalFormat_ = internalFormat;
-        width_ = width;
-        height_ = height;
-        bind(0);
-        // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
-        assert(target == Target::Texture2D || target == Target::TextureRectangle);
-        for (size_t level = 0; level < levels; ++level) {
-            image(level, internalFormat, width, height, getStorageFormat(internalFormat),
-                DataType::F32, nullptr);
-            width = std::max(1ul, width / 2);
-            height = std::max(1ul, height / 2);
-        }
-        // glTexStorage would do this too
-        glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_MAX_LEVEL, levels - 1);
-    }
+        Target target, size_t levels, InternalFormat internalFormat, size_t width, size_t height);
 
-    void storage(InternalFormat internalFormat, size_t width, size_t height)
-    {
-        storage(target_, 1, internalFormat, width, height);
-    }
+    void storage(InternalFormat internalFormat, size_t width, size_t height);
 
-    void generateMipmaps() const
-    {
-        bind(0);
-        glGenerateMipmap(static_cast<GLenum>(target_));
-    }
+    void generateMipmaps() const;
 
-    void setWrap(WrapMode wrapS, WrapMode wrapT)
-    {
-        setParameter(GL_TEXTURE_WRAP_S, static_cast<GLenum>(wrapS_ = wrapS));
-        setParameter(GL_TEXTURE_WRAP_T, static_cast<GLenum>(wrapT_ = wrapT));
-    }
+    void setWrap(WrapMode wrapS, WrapMode wrapT);
+    void setWrap(WrapMode wrap);
+    std::pair<WrapMode, WrapMode> getWrap() const;
 
-    void setWrap(WrapMode wrap)
-    {
-        setWrap(wrap, wrap);
-    }
+    void setMinFilter(MinFilter filter);
+    MinFilter getMinFilter() const;
+    void setMagFilter(MagFilter filter);
+    MagFilter getMagFilter() const;
+    void setFilter(MinFilter minFilter, MagFilter magFilter);
 
-    std::pair<WrapMode, WrapMode> getWrap() const
-    {
-        return std::make_pair(wrapS_, wrapT_);
-    }
-
-    void setMinFilter(MinFilter filter)
-    {
-        setParameter(GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(minFilter_ = filter));
-    }
-
-    MinFilter getMinFilter() const
-    {
-        return minFilter_;
-    }
-
-    void setMagFilter(MagFilter filter)
-    {
-        setParameter(GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(magFilter_ = filter));
-    }
-
-    MagFilter getMagFilter() const
-    {
-        return magFilter_;
-    }
-
-    void setFilter(MinFilter minFilter, MagFilter magFilter)
-    {
-        setMinFilter(minFilter);
-        setMagFilter(magFilter);
-    }
-
-    Target getTarget() const
-    {
-        return target_;
-    }
-
-    GLuint getTexture() const
-    {
-        return texture_;
-    }
-
-    size_t getWidth() const
-    {
-        return width_;
-    }
-
-    size_t getHeight() const
-    {
-        return height_;
-    }
-
-    InternalFormat getInternalFormat() const
-    {
-        return internalFormat_;
-    }
+    Target getTarget() const;
+    GLuint getTexture() const;
+    size_t getWidth() const;
+    size_t getHeight() const;
+    InternalFormat getInternalFormat() const;
 
 private:
-    void setParameter(GLenum param, GLint val)
-    {
-        bind(0);
-        glTexParameteri(static_cast<GLenum>(target_), param, val);
-    }
+    static DataFormat getStorageFormat(InternalFormat format);
 
-    static DataFormat getStorageFormat(InternalFormat format)
-    {
-        switch (format) {
-        case InternalFormat::DepthComponent:
-        case InternalFormat::DepthComponent16:
-        case InternalFormat::DepthComponent24:
-        case InternalFormat::DepthComponent32:
-        case InternalFormat::DepthComponent32F:
-            return DataFormat::DepthComponent;
-        default:
-            return DataFormat::Rgba;
-        }
-    }
-
-    void reset()
-    {
-        target_ = Target::Invalid;
-        texture_ = 0;
-        width_ = 0;
-        height_ = 0;
-        internalFormat_ = InternalFormat::Invalid;
-        wrapS_ = WrapMode::Invalid;
-        wrapT_ = WrapMode::Invalid;
-        minFilter_ = MinFilter::Invalid;
-        magFilter_ = MagFilter::Invalid;
-    }
+    void setParameter(GLenum param, GLint val);
+    void reset();
 
     Target target_;
     GLuint texture_;

@@ -33,57 +33,10 @@ public:
         bool normalized = false;
         unsigned int divisor = 0;
 
-        static size_t getDataTypeSize(Type type)
-        {
-            switch (type) {
-            case Type::I8:
-            case Type::U8:
-                return 1;
-            case Type::I16:
-            case Type::U16:
-            case Type::F16:
-                return 2;
-            case Type::I32:
-            case Type::U32:
-            case Type::F32:
-            case Type::I2_10_10_10:
-            case Type::U2_10_10_10:
-            case Type::U10_11_11:
-                return 4;
-            case Type::F64:
-                return 8;
-            }
-        }
+        static size_t getDataTypeSize(Type type);
 
-        size_t getAlignedSize() const
-        {
-            // https://www.opengl.org/wiki/Vertex_Specification_Best_Practices#Attribute_sizes
-            // => align each attribute to at least 4 bytes
-            switch (dataType) {
-            case Type::I8:
-            case Type::U8:
-                // since size in [1, 4], we can just return 4
-                return 4;
-            case Type::I16:
-            case Type::U16:
-            case Type::F16:
-                if (size == 1)
-                    return 2;
-                else if (size == 3)
-                    return 4;
-                else
-                    // size = 2 and 4 are 4 byte aligned
-                    return size;
-            default:
-                // everything else is at least 4-byte aligned
-                return size;
-            }
-        }
-
-        size_t getTotalSize() const
-        {
-            return getDataTypeSize(dataType) * getAlignedSize();
-        }
+        size_t getAlignedSize() const;
+        size_t getTotalSize() const;
     };
 
     VertexFormat() = default;
@@ -92,41 +45,14 @@ public:
     VertexFormat& operator=(const VertexFormat& other) = default;
 
     // Returns an index into the attributes vector for a given attribute location if present
-    std::optional<size_t> get(int location) const
-    {
-        const auto it = std::find_if(attributes_.begin(), attributes_.end(),
-            [location](const auto& attr) { return attr.location == location; });
-        if (it == attributes_.end())
-            return std::nullopt;
-        return std::distance(attributes_.begin(), it);
-    }
+    std::optional<size_t> get(int location) const;
 
     VertexFormat& add(int location, int size, Attribute::Type dataType, bool normalized = false,
-        unsigned int divisor = 0)
-    {
-        assert(size >= 1 && size <= 4);
-        assert(!get(location));
-        attributes_.push_back(Attribute { stride_, location, size, dataType, normalized, divisor });
-        stride_ += attributes_.back().getTotalSize();
-        return *this;
-    }
+        unsigned int divisor = 0);
 
-    void set() const
-    {
-        for (const auto& attr : attributes_) {
-            glEnableVertexAttribArray(attr.location);
-            glVertexAttribPointer(attr.location, attr.size, static_cast<GLenum>(attr.dataType),
-                attr.normalized ? GL_TRUE : GL_FALSE, stride_,
-                reinterpret_cast<const GLvoid*>(attr.offset));
-            if (attr.divisor > 0)
-                glVertexAttribDivisor(attr.location, attr.divisor);
-        }
-    }
+    void set() const;
 
-    size_t getStride() const
-    {
-        return stride_;
-    }
+    size_t getStride() const;
 
 private:
     std::vector<Attribute> attributes_;
