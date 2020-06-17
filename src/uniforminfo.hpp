@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
 namespace glw {
 class UniformInfo {

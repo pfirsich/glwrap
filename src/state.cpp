@@ -98,4 +98,65 @@ size_t State::getTextureIndex(GLenum target)
 {
     return getTargetIndex(textureBindings, target);
 }
+
+GLuint State::getCurrentFramebuffer(GLenum target) const
+{
+    switch (target) {
+    case GL_FRAMEBUFFER:
+        assert(currentReadFramebuffer_ == currentDrawFramebuffer_);
+        return currentReadFramebuffer_;
+    case GL_READ_FRAMEBUFFER:
+        return currentReadFramebuffer_;
+    case GL_DRAW_FRAMEBUFFER:
+        return currentDrawFramebuffer_;
+    default:
+        assert(false && "Invalid Framebuffer target");
+    }
+}
+
+void State::bindFramebuffer(GLenum target, GLuint fbo)
+{
+    switch (target) {
+    case GL_FRAMEBUFFER:
+        if (currentReadFramebuffer_ == fbo && currentDrawFramebuffer_ == fbo)
+            return;
+        break;
+    case GL_READ_FRAMEBUFFER:
+        if (currentReadFramebuffer_ == fbo)
+            return;
+        break;
+    case GL_DRAW_FRAMEBUFFER:
+        if (currentDrawFramebuffer_ == fbo)
+            return;
+        break;
+    }
+
+    glBindFramebuffer(target, fbo);
+    if (target == GL_FRAMEBUFFER || target == GL_READ_FRAMEBUFFER)
+        currentReadFramebuffer_ = fbo;
+    if (target == GL_FRAMEBUFFER || target == GL_DRAW_FRAMEBUFFER)
+        currentDrawFramebuffer_ = fbo;
+}
+
+void State::unbindFramebuffer(GLenum target)
+{
+    bindFramebuffer(target, 0);
+}
+
+GLuint State::getCurrentRenderbuffer() const
+{
+    return currentRenderbuffer_;
+}
+
+void State::bindRenderbuffer(GLuint rbo)
+{
+    if (currentRenderbuffer_ == rbo)
+        return;
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+}
+
+void State::unbindRenderbuffer()
+{
+    bindRenderbuffer(0);
+}
 }

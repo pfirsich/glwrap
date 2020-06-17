@@ -20,7 +20,7 @@ Texture::Texture(Texture&& other)
     , texture_(other.texture_)
     , width_(other.width_)
     , height_(other.height_)
-    , internalFormat_(other.internalFormat_)
+    , imageFormat_(other.imageFormat_)
     , wrapS_(other.wrapS_)
     , wrapT_(other.wrapT_)
     , minFilter_(other.minFilter_)
@@ -36,7 +36,7 @@ Texture& Texture::operator=(Texture&& other)
     texture_ = other.texture_;
     width_ = other.width_;
     height_ = other.height_;
-    internalFormat_ = other.internalFormat_;
+    imageFormat_ = other.imageFormat_;
     wrapS_ = other.wrapS_;
     wrapT_ = other.wrapT_;
     minFilter_ = other.minFilter_;
@@ -61,27 +61,27 @@ void Texture::bind(unsigned unit, Target target) const
     State::instance().bindTexture(unit, static_cast<GLenum>(target), texture_);
 }
 
-void Texture::image(Target target, size_t level, InternalFormat internalFormat, size_t width,
+void Texture::image(Target target, size_t level, ImageFormat imageFormat, size_t width,
     size_t height, DataFormat dataFormat, DataType dataType, const void* data)
 {
-    internalFormat_ = internalFormat;
+    imageFormat_ = imageFormat;
     width_ = width;
     height_ = height;
     bind(0);
-    glTexImage2D(static_cast<GLenum>(target), level, static_cast<GLenum>(internalFormat), width,
+    glTexImage2D(static_cast<GLenum>(target), level, static_cast<GLenum>(imageFormat), width,
         height, 0, static_cast<GLenum>(dataFormat), static_cast<GLenum>(dataType), data);
 }
 
-void Texture::image(InternalFormat internalFormat, size_t width, size_t height,
-    DataFormat dataFormat, DataType dataType, const void* data)
+void Texture::image(ImageFormat imageFormat, size_t width, size_t height, DataFormat dataFormat,
+    DataType dataType, const void* data)
 {
-    image(target_, 0, internalFormat, width, height, dataFormat, dataType, data);
+    image(target_, 0, imageFormat, width, height, dataFormat, dataType, data);
 }
 
-void Texture::image(size_t level, InternalFormat internalFormat, size_t width, size_t height,
+void Texture::image(size_t level, ImageFormat imageFormat, size_t width, size_t height,
     DataFormat dataFormat, DataType dataType, const void* data)
 {
-    image(target_, level, internalFormat, width, height, dataFormat, dataType, data);
+    image(target_, level, imageFormat, width, height, dataFormat, dataType, data);
 }
 
 void Texture::subImage(Target target, size_t level, size_t x, size_t y, size_t width, size_t height,
@@ -103,16 +103,16 @@ void Texture::subImage(size_t level, DataFormat dataFormat, DataType dataType, c
 }
 
 void Texture::storage(
-    Target target, size_t levels, InternalFormat internalFormat, size_t width, size_t height)
+    Target target, size_t levels, ImageFormat imageFormat, size_t width, size_t height)
 {
-    internalFormat_ = internalFormat;
+    imageFormat_ = imageFormat;
     width_ = width;
     height_ = height;
     bind(0);
     // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
     assert(target == Target::Texture2D || target == Target::TextureRectangle);
     for (size_t level = 0; level < levels; ++level) {
-        image(level, internalFormat, width, height, getStorageFormat(internalFormat), DataType::F32,
+        image(level, imageFormat, width, height, getStorageFormat(imageFormat), DataType::F32,
             nullptr);
         width = std::max(1ul, width / 2);
         height = std::max(1ul, height / 2);
@@ -121,9 +121,9 @@ void Texture::storage(
     glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_MAX_LEVEL, levels - 1);
 }
 
-void Texture::storage(InternalFormat internalFormat, size_t width, size_t height)
+void Texture::storage(ImageFormat imageFormat, size_t width, size_t height)
 {
-    storage(target_, 1, internalFormat, width, height);
+    storage(target_, 1, imageFormat, width, height);
 }
 
 void Texture::generateMipmaps() const
@@ -194,19 +194,19 @@ size_t Texture::getHeight() const
     return height_;
 }
 
-Texture::InternalFormat Texture::getInternalFormat() const
+ImageFormat Texture::getImageFormat() const
 {
-    return internalFormat_;
+    return imageFormat_;
 }
 
-Texture::DataFormat Texture::getStorageFormat(InternalFormat format)
+Texture::DataFormat Texture::getStorageFormat(ImageFormat format)
 {
     switch (format) {
-    case InternalFormat::DepthComponent:
-    case InternalFormat::DepthComponent16:
-    case InternalFormat::DepthComponent24:
-    case InternalFormat::DepthComponent32:
-    case InternalFormat::DepthComponent32F:
+    case ImageFormat::DepthComponent:
+    case ImageFormat::DepthComponent16:
+    case ImageFormat::DepthComponent24:
+    case ImageFormat::DepthComponent32:
+    case ImageFormat::DepthComponent32F:
         return DataFormat::DepthComponent;
     default:
         return DataFormat::Rgba;
@@ -225,7 +225,7 @@ void Texture::reset()
     texture_ = 0;
     width_ = 0;
     height_ = 0;
-    internalFormat_ = InternalFormat::Invalid;
+    imageFormat_ = ImageFormat::Invalid;
     wrapS_ = WrapMode::Invalid;
     wrapT_ = WrapMode::Invalid;
     minFilter_ = MinFilter::Invalid;

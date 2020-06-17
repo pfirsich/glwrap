@@ -5,18 +5,18 @@
 using namespace glw;
 
 namespace glwx {
-Texture::InternalFormat getFormat(size_t channels)
+glw::ImageFormat getFormat(size_t channels)
 {
     assert(channels >= 1 && channels <= 4);
     switch (channels) {
     case 1:
-        return Texture::InternalFormat::Red;
+        return glw::ImageFormat::Red;
     case 2:
-        return Texture::InternalFormat::Rg;
+        return glw::ImageFormat::Rg;
     case 3:
-        return Texture::InternalFormat::Rgb;
+        return glw::ImageFormat::Rgb;
     case 4:
-        return Texture::InternalFormat::Rgba;
+        return glw::ImageFormat::Rgba;
     default:
         assert(false && "Invalid number of channels");
     }

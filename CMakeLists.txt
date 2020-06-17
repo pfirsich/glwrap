@@ -25,8 +25,10 @@ endfunction()
 
 set(GLW_SRC
   buffer.cpp
+  framebuffer.cpp
   glad/glad.c
   log.cpp
+  renderbuffer.cpp
   shader.cpp
   state.cpp
   texture.cpp

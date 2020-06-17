@@ -33,6 +33,14 @@ public:
     void bindTexture(unsigned int unit, GLenum target, GLuint texture);
     void unbindTexture(unsigned int unit, GLenum target);
 
+    GLuint getCurrentFramebuffer(GLenum target) const;
+    void bindFramebuffer(GLenum target, GLuint fbo);
+    void unbindFramebuffer(GLenum target);
+
+    GLuint getCurrentRenderbuffer() const;
+    void bindRenderbuffer(GLuint rbo);
+    void unbindRenderbuffer();
+
 private:
     // I think specifying size explicitly is dangerous and I can't only specify type
     static constexpr std::array bufferBindings = {
@@ -91,5 +99,8 @@ private:
     GLuint currentShaderProgram_ = 0;
     std::array<GLuint, bufferBindings.size()> currentBuffers_;
     std::array<std::array<GLuint, textureBindings.size()>, maxTextureUnits> currentTextures_ {};
+    GLuint currentReadFramebuffer_ = 0;
+    GLuint currentDrawFramebuffer_ = 0;
+    GLuint currentRenderbuffer_ = 0;
 };
 }
