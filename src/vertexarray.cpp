@@ -41,4 +41,9 @@ void VertexArray::bind() const
 {
     State::instance().bindVao(vao_);
 }
+
+GLuint VertexArray::getVertexArray() const
+{
+    return vao_;
+}
 }

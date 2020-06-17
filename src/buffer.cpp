@@ -8,7 +8,7 @@ void Buffer::unbind(Target target)
 
 Buffer::Buffer()
 {
-    glGenBuffers(1, &vbo_);
+    glGenBuffers(1, &buffer_);
 }
 
 Buffer::~Buffer()
@@ -17,28 +17,28 @@ Buffer::~Buffer()
 }
 
 Buffer::Buffer(Buffer&& other)
-    : vbo_(other.vbo_)
+    : buffer_(other.buffer_)
     , size_(other.size_)
 {
-    other.vbo_ = 0;
+    other.buffer_ = 0;
     other.size_ = 0;
 }
 
 Buffer& Buffer::operator=(Buffer&& other)
 {
     free();
-    vbo_ = other.vbo_;
+    buffer_ = other.buffer_;
     size_ = other.size_;
-    other.vbo_ = 0;
+    other.buffer_ = 0;
     other.size_ = 0;
     return *this;
 }
 
 void Buffer::free()
 {
-    if (vbo_)
-        glDeleteBuffers(1, &vbo_);
-    vbo_ = 0;
+    if (buffer_)
+        glDeleteBuffers(1, &buffer_);
+    buffer_ = 0;
 }
 
 // http://hacksoflife.blogspot.de/2015/06/glmapbuffer-no-longer-cool.html
@@ -46,12 +46,12 @@ void Buffer::free()
 
 void Buffer::bind(Target target) const
 {
-    State::instance().bindBuffer(static_cast<GLenum>(target), vbo_);
+    State::instance().bindBuffer(static_cast<GLenum>(target), buffer_);
 }
 
-GLuint Buffer::getVbo() const
+GLuint Buffer::getBuffer() const
 {
-    return vbo_;
+    return buffer_;
 }
 
 size_t Buffer::getSize() const

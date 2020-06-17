@@ -49,6 +49,7 @@ set_warn(glw)
 
 
 set(GLWX_SRC
+  debug.cpp
   buffers.cpp
   mesh.cpp
   rendertarget.cpp

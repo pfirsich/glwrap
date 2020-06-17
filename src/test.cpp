@@ -107,6 +107,15 @@ int main(int, char**)
         return 1;
     }
 
+#ifndef NDEBUG
+    glwx::debug::init([](glwx::debug::Source source, glwx::debug::Type type, GLuint id,
+                          glwx::debug::Severity severity, std::string_view message) {
+        std::cout << "OpengL Debug "
+                  << "[Source: " << source << "] [Type: " << type << "] [Id: " << id
+                  << "] [Severity: " << severity << "]: " << message << std::endl;
+    });
+#endif
+
     const auto vert = R"(
         #version 330 core
 

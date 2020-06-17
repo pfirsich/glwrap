@@ -22,6 +22,8 @@ public:
 
     void bind() const;
 
+    GLuint getVertexArray() const;
+
 private:
     GLuint vao_;
 };

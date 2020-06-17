@@ -83,7 +83,7 @@ ShaderResult Shader::compile() const
     return ShaderResult(compileStatus == GL_TRUE, log);
 }
 
-GLuint Shader::getShaderObject() const
+GLuint Shader::getShader() const
 {
     return shader_;
 }
@@ -130,15 +130,15 @@ void ShaderProgram::free()
 
 void ShaderProgram::attach(const Shader& shader)
 {
-    glAttachShader(program_, shader.getShaderObject());
-    attachedShaders_.push_back(shader.getShaderObject());
+    glAttachShader(program_, shader.getShader());
+    attachedShaders_.push_back(shader.getShader());
 }
 
 void ShaderProgram::detach(const Shader& shader)
 {
-    glDetachShader(program_, shader.getShaderObject());
+    glDetachShader(program_, shader.getShader());
     attachedShaders_.erase(
-        std::remove(attachedShaders_.begin(), attachedShaders_.end(), shader.getShaderObject()),
+        std::remove(attachedShaders_.begin(), attachedShaders_.end(), shader.getShader()),
         attachedShaders_.end());
 }
 
@@ -205,6 +205,11 @@ void ShaderProgram::bind() const
 void ShaderProgram::unbind()
 {
     glw::State::instance().unbindShader();
+}
+
+GLuint ShaderProgram::getProgram() const
+{
+    return program_;
 }
 
 void ShaderProgram::setUniform(UniformLocation loc, int value) const

@@ -78,7 +78,7 @@ public:
 
     ShaderResult compile() const;
 
-    GLuint getShaderObject() const;
+    GLuint getShader() const;
 
 private:
     GLuint shader_ = 0;
@@ -115,6 +115,8 @@ public:
 
     void bind() const;
     static void unbind();
+
+    GLuint getProgram() const;
 
     template <typename... Args>
     void setUniform(const std::string& name, Args&&... args) const

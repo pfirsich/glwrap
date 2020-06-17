@@ -88,12 +88,12 @@ public:
         unbind(target);
     }
 
-    GLuint getVbo() const;
+    GLuint getBuffer() const;
 
     size_t getSize() const;
 
 private:
-    GLuint vbo_ = 0;
+    GLuint buffer_ = 0;
     // I know this is not really in the spirit of these "thin" OpenGL wrappers, but it is necessary
     // to keep track of the data store size in a couple of places and it would be *way* dirtier
     // to keep track of it in other (multiple!) places.
