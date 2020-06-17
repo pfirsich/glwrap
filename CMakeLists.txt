@@ -27,6 +27,7 @@ set(GLW_SRC
   buffer.cpp
   framebuffer.cpp
   glad/glad.c
+  imageformat.cpp
   log.cpp
   renderbuffer.cpp
   shader.cpp
@@ -50,6 +51,7 @@ set_warn(glw)
 set(GLWX_SRC
   buffers.cpp
   mesh.cpp
+  rendertarget.cpp
   shader.cpp
   texture.cpp
   utility.cpp

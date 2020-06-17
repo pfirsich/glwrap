@@ -73,8 +73,8 @@ public:
         BgrInteger = GL_BGR_INTEGER,
         RgbaInteger = GL_RGBA_INTEGER,
         BgraInteger = GL_BGRA_INTEGER,
-        StencilIndex = GL_STENCIL_INDEX,
-        DepthComponent = GL_DEPTH_COMPONENT,
+        Stencil = GL_STENCIL_INDEX,
+        Depth = GL_DEPTH_COMPONENT,
         DepthStencil = GL_DEPTH_STENCIL,
     };
 
@@ -105,7 +105,7 @@ public:
     ~Texture();
 
     Texture(const Texture& other) = delete;
-    Texture& operator=(Texture& other) = delete;
+    Texture& operator=(const Texture& other) = delete;
 
     Texture(Texture&& other);
     Texture& operator=(Texture&& other);

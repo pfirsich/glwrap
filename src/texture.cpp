@@ -201,16 +201,9 @@ ImageFormat Texture::getImageFormat() const
 
 Texture::DataFormat Texture::getStorageFormat(ImageFormat format)
 {
-    switch (format) {
-    case ImageFormat::DepthComponent:
-    case ImageFormat::DepthComponent16:
-    case ImageFormat::DepthComponent24:
-    case ImageFormat::DepthComponent32:
-    case ImageFormat::DepthComponent32F:
-        return DataFormat::DepthComponent;
-    default:
-        return DataFormat::Rgba;
-    }
+    if (hasDepth(format))
+        return DataFormat::Depth;
+    return DataFormat::Rgba;
 }
 
 void Texture::setParameter(GLenum param, GLint val)

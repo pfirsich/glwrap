@@ -36,7 +36,7 @@ public:
         Color4 = GL_COLOR_ATTACHMENT4,
         Color5 = GL_COLOR_ATTACHMENT5,
         Color6 = GL_COLOR_ATTACHMENT6,
-        Color7 = GL_COLOR_ATTACHMENT7,
+        Color7 = GL_COLOR_ATTACHMENT7, // Minimum value for GL_MAX_COLOR_ATTACHMENTS is 8
         Depth = GL_DEPTH_ATTACHMENT,
         Stencil = GL_STENCIL_ATTACHMENT,
         DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT,

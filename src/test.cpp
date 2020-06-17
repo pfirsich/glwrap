@@ -94,6 +94,8 @@ bool initSdl(const char* title, size_t width, size_t height, bool fullscreen)
         return false;
     }
 
+    glw::State::instance().setViewport(width, height);
+
     return true;
 }
 
@@ -105,7 +107,7 @@ int main(int, char**)
         return 1;
     }
 
-    const auto prog = glwx::makeShaderProgram(R"(
+    const auto vert = R"(
         #version 330 core
 
         layout (location = 0) in vec2 attrPosition;
@@ -117,8 +119,9 @@ int main(int, char**)
             texCoords = attrTexCoords;
             gl_Position = vec4(attrPosition, 0.0, 1.0);
         }
-    )"s,
-        R"(
+    )"s;
+
+    const auto frag = R"(
         #version 330 core
 
         uniform sampler2D tex;
@@ -130,7 +133,12 @@ int main(int, char**)
         void main() {
             fragColor = texture2D(tex, texCoords);
         }
-    )"s);
+    )"s;
+
+    auto renderTarget = glwx::makeRenderTarget(
+        512, 512, { glw::ImageFormat::Rgba }, { glw::ImageFormat::Depth24 });
+
+    const auto prog = glwx::makeShaderProgram(vert, frag);
     if (!prog) {
         return 1;
     }
@@ -178,11 +186,25 @@ int main(int, char**)
             }
         }
 
+        const auto winViewport = glw::State::instance().getViewport();
+
+        renderTarget.bind();
+
+        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         texture.bind(0);
         prog->bind();
         prog->setUniform("tex", 0);
+        quad.draw();
+
+        glw::Framebuffer::unbind();
+        glw::State::instance().setViewport(winViewport);
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        renderTarget.getTexture(glw::Framebuffer::Attachment::Color0).bind(0);
         quad.draw();
 
         SDL_GL_SwapWindow(window);

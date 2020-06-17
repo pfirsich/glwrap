@@ -3,6 +3,7 @@
 #include <array>
 #include <cassert>
 #include <optional>
+#include <tuple>
 
 #include "glad/glad.h"
 
@@ -15,6 +16,11 @@ public:
     static State& instance();
 
     ~State() = default;
+
+    std::tuple<int, int, size_t, size_t> getViewport() const;
+    void setViewport(int x, int y, size_t width, size_t height);
+    void setViewport(const std::tuple<int, int, size_t, size_t>& viewport);
+    void setViewport(size_t width, size_t height);
 
     GLuint getCurrentVao() const;
     void bindVao(GLuint vao);
@@ -95,6 +101,7 @@ private:
     State(const State&) = delete;
     State& operator=(const State&) = delete;
 
+    std::tuple<int, int, size_t, size_t> currentViewport_;
     GLuint currentVao_ = 0;
     GLuint currentShaderProgram_ = 0;
     std::array<GLuint, bufferBindings.size()> currentBuffers_;

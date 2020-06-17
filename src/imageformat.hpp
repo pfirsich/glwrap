@@ -7,12 +7,20 @@ namespace glw {
 enum class ImageFormat : GLenum {
     Invalid = 0,
 
-    DepthComponent = GL_DEPTH_COMPONENT,
-    DepthComponent16 = GL_DEPTH_COMPONENT16,
-    DepthComponent24 = GL_DEPTH_COMPONENT24,
-    DepthComponent32 = GL_DEPTH_COMPONENT32,
-    DepthComponent32F = GL_DEPTH_COMPONENT32F,
+    Depth = GL_DEPTH_COMPONENT,
+    Depth16 = GL_DEPTH_COMPONENT16,
+    Depth24 = GL_DEPTH_COMPONENT24,
+    Depth32 = GL_DEPTH_COMPONENT32,
+    Depth32F = GL_DEPTH_COMPONENT32F,
+    Stencil = GL_STENCIL_INDEX,
+    Stencil1 = GL_STENCIL_INDEX1,
+    Stencil4 = GL_STENCIL_INDEX4,
+    Stencil8 = GL_STENCIL_INDEX8,
+    Stencil16 = GL_STENCIL_INDEX16,
     DepthStencil = GL_DEPTH_STENCIL,
+    Depth24Stencil8 = GL_DEPTH24_STENCIL8,
+    Depth32FStencil8 = GL_DEPTH32F_STENCIL8,
+
     Red = GL_RED,
     Rg = GL_RG,
     Rgb = GL_RGB,
@@ -95,4 +103,7 @@ enum class ImageFormat : GLenum {
     // CompressedRgbBptcSignedFloat = GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, // 4.2
     // CompressedRgbBptcUnsignedFloat = GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT, // 4.2
 };
+
+extern bool hasDepth(ImageFormat format);
+extern bool hasStencil(ImageFormat format);
 }

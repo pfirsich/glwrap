@@ -7,6 +7,28 @@ State& State::instance()
     return inst;
 }
 
+std::tuple<int, int, size_t, size_t> State::getViewport() const
+{
+    return currentViewport_;
+}
+
+void State::setViewport(int x, int y, size_t width, size_t height)
+{
+    glViewport(x, y, width, height);
+    currentViewport_ = std::tuple(x, y, width, height);
+}
+
+void State::setViewport(const std::tuple<int, int, size_t, size_t>& viewport)
+{
+    const auto [x, y, width, height] = viewport;
+    setViewport(x, y, width, height);
+}
+
+void State::setViewport(size_t width, size_t height)
+{
+    setViewport(0, 0, width, height);
+}
+
 GLuint State::getCurrentVao() const
 {
     return currentVao_;
