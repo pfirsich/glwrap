@@ -1,30 +1,25 @@
 #include "texture.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#include "../log.hpp"
 #include "utility.hpp"
 
 using namespace glw;
 
 namespace glwx {
-glw::ImageFormat getFormat(size_t channels)
-{
-    assert(channels >= 1 && channels <= 4);
-    switch (channels) {
-    case 1:
-        return glw::ImageFormat::Red;
-    case 2:
-        return glw::ImageFormat::Rg;
-    case 3:
-        return glw::ImageFormat::Rgb;
-    case 4:
-        return glw::ImageFormat::Rgba;
-    default:
-        assert(false && "Invalid number of channels");
-    }
-}
+constexpr std::array<glw::ImageFormat, 4> channelsToFormat {
+    glw::ImageFormat::Red,
+    glw::ImageFormat::Rg,
+    glw::ImageFormat::Rgb,
+    glw::ImageFormat::Rgba,
+};
 
 Texture makeTexture2D(const uint8_t* buffer, size_t width, size_t height, size_t channels)
 {
-    const auto format = getFormat(channels);
+    assert(channels >= 1 && channels <= 4);
+    const auto format = channelsToFormat[channels - 1];
     // This works because the underlying values are the same
     const auto dataFormat = static_cast<Texture::DataFormat>(format);
     Texture texture(Texture::Target::Texture2D);
@@ -51,5 +46,34 @@ glw::Texture makeTexture2D(
             buffer[i] = c;
     }
     return makeTexture2D(reinterpret_cast<const uint8_t*>(buffer.data()), width, height, 4);
+}
+
+auto stbiImagePtr(uint8_t* buffer)
+{
+    static auto deleter = [](uint8_t* buffer) { stbi_image_free(buffer); };
+    return std::unique_ptr<uint8_t, decltype(deleter)>(buffer, deleter);
+}
+
+std::optional<glw::Texture> makeTexture2D(const uint8_t* encodedBuffer, size_t size)
+{
+    int width = 0, height = 0, channels = 0;
+    const auto image
+        = stbiImagePtr(stbi_load_from_memory(encodedBuffer, size, &width, &height, &channels, 0));
+    if (!image) {
+        LOG_ERROR("Could not load encoded image from memory: {}", stbi_failure_reason());
+        return std::nullopt;
+    }
+    return makeTexture2D(image.get(), width, height, channels);
+}
+
+std::optional<glw::Texture> makeTexture2D(const std::filesystem::path& path)
+{
+    int width = 0, height = 0, channels = 0;
+    const auto image = stbiImagePtr(stbi_load(path.c_str(), &width, &height, &channels, 0));
+    if (!image) {
+        LOG_ERROR("Could not load image from file: {}", stbi_failure_reason());
+        return std::nullopt;
+    }
+    return makeTexture2D(image.get(), width, height, channels);
 }
 }

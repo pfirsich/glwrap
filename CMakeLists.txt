@@ -39,11 +39,11 @@ set(GLW_SRC
 )
 list(TRANSFORM GLW_SRC PREPEND src/)
 
-find_package(fmt)
-include_directories(deps/glm)
-include_directories(src/glad/include)
+find_package(fmt REQUIRED)
 
 add_library(glw STATIC ${GLW_SRC})
+target_include_directories(glw PUBLIC deps/glm)
+target_include_directories(glw PUBLIC src/glad/include)
 target_link_libraries(glw fmt::fmt)
 set_warn(glw)
 
@@ -60,15 +60,15 @@ set(GLWX_SRC
 )
 list(TRANSFORM GLWX_SRC PREPEND src/glwx/)
 
+find_package(SDL2 REQUIRED)
+
 add_library(glwx STATIC ${GLWX_SRC})
-target_link_libraries(glwx glw)
+target_include_directories(glwx PUBLIC ${SDL2_INCLUDE_DIRS})
+target_include_directories(glwx PUBLIC deps/stb)
+target_link_libraries(glwx glw ${SDL2_LIBRARIES})
 set_warn(glwx)
 
 
-find_package(SDL2 REQUIRED)
-
-#include_directories(/usr/include/SDL2)
 add_executable(glwtest src/test.cpp)
-include_directories(glwtest ${SDL2_INCLUDE_DIRS})
-target_link_libraries(glwtest glwx ${SDL2_LIBRARIES})
+target_link_libraries(glwtest glwx)
 set_warn(glwtest)

@@ -84,7 +84,8 @@ int main(int, char**)
         .data(indices);
 
     // const auto texture = glwx::makeTexture2D(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-    const auto texture = glwx::makeTexture2D(512, 512, 32);
+    // const auto texture = glwx::makeTexture2D(512, 512, 32);
+    const auto texture = *glwx::makeTexture2D("assets/wood.jpg");
 
     SDL_Event event;
     bool running = true;
