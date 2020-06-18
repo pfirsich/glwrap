@@ -21,7 +21,7 @@ void defaultLogger(LogLevel level, const char* filename, int line, const std::st
     // Should this be Error?
     const auto t = std::time(nullptr);
     const auto toStderr = static_cast<int>(level) >= static_cast<int>(LogLevel::Warning);
-    fmt::print(toStderr ? stderr : stdout, "[{:%Y-%m-%d %H:%M:%S}] [{}] [{}:{}] {}",
+    fmt::print(toStderr ? stderr : stdout, "[{:%Y-%m-%d %H:%M:%S}] [{}] [{}:{}] {}\n",
         *std::localtime(&t), level, filename, line, message);
 }
 }
