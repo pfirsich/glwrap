@@ -21,13 +21,13 @@ public:
             F32 = GL_FLOAT,
             F64 = GL_DOUBLE,
             // Fixed = GL_FIXED,
-            I2_10_10_10 = GL_INT_2_10_10_10_REV,
-            U2_10_10_10 = GL_UNSIGNED_INT_2_10_10_10_REV,
-            U10_11_11 = GL_UNSIGNED_INT_10F_11F_11F_REV,
+            IW2Z10Y10X10 = GL_INT_2_10_10_10_REV,
+            UiW2Z10Y10X10 = GL_UNSIGNED_INT_2_10_10_10_REV,
+            UiZ10FY11FX11F = GL_UNSIGNED_INT_10F_11F_11F_REV,
         };
 
         size_t offset;
-        int location;
+        size_t location;
         int size;
         Type dataType;
         bool normalized = false;
@@ -44,10 +44,10 @@ public:
     VertexFormat(const VertexFormat& other) = default;
     VertexFormat& operator=(const VertexFormat& other) = default;
 
-    // Returns an index into the attributes vector for a given attribute location if present
-    std::optional<size_t> get(int location) const;
+    // add might obviously invalidate the pointers!
+    const Attribute* get(size_t location) const;
 
-    VertexFormat& add(int location, int size, Attribute::Type dataType, bool normalized = false,
+    VertexFormat& add(size_t location, int size, Attribute::Type dataType, bool normalized = false,
         unsigned int divisor = 0);
 
     void set() const;

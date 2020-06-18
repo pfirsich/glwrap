@@ -16,9 +16,9 @@ size_t VertexFormat::Attribute::getDataTypeSize(Type type)
     case Type::I32:
     case Type::U32:
     case Type::F32:
-    case Type::I2_10_10_10:
-    case Type::U2_10_10_10:
-    case Type::U10_11_11:
+    case Type::IW2Z10Y10X10:
+    case Type::UiW2Z10Y10X10:
+    case Type::UiZ10FY11FX11F:
         return 4;
     case Type::F64:
         return 8;
@@ -55,17 +55,17 @@ size_t VertexFormat::Attribute::getTotalSize() const
     return getDataTypeSize(dataType) * getAlignedSize();
 }
 
-std::optional<size_t> VertexFormat::get(int location) const
+const VertexFormat::Attribute* VertexFormat::get(size_t location) const
 {
     const auto it = std::find_if(attributes_.begin(), attributes_.end(),
         [location](const auto& attr) { return attr.location == location; });
     if (it == attributes_.end())
-        return std::nullopt;
-    return std::distance(attributes_.begin(), it);
+        return nullptr;
+    return &(*it);
 }
 
 VertexFormat& VertexFormat::add(
-    int location, int size, Attribute::Type dataType, bool normalized, unsigned int divisor)
+    size_t location, int size, Attribute::Type dataType, bool normalized, unsigned int divisor)
 {
     assert(size >= 1 && size <= 4);
     assert(!get(location));
