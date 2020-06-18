@@ -26,7 +26,6 @@ endfunction()
 set(GLW_SRC
   buffer.cpp
   framebuffer.cpp
-  glad/glad.c
   imageformat.cpp
   log.cpp
   renderbuffer.cpp
@@ -39,11 +38,13 @@ set(GLW_SRC
 )
 list(TRANSFORM GLW_SRC PREPEND src/)
 
+list(APPEND GLW_SRC deps/glad/glad.c)
+
 find_package(fmt REQUIRED)
 
 add_library(glw STATIC ${GLW_SRC})
 target_include_directories(glw PUBLIC deps/glm)
-target_include_directories(glw PUBLIC src/glad/include)
+target_include_directories(glw PUBLIC deps/glad/include)
 target_link_libraries(glw fmt::fmt)
 set_warn(glw)
 
@@ -65,7 +66,7 @@ find_package(SDL2 REQUIRED)
 add_library(glwx STATIC ${GLWX_SRC})
 target_include_directories(glwx PUBLIC ${SDL2_INCLUDE_DIRS})
 target_include_directories(glwx PUBLIC deps/stb)
-target_link_libraries(glwx glw ${SDL2_LIBRARIES})
+target_link_libraries(glwx glw ${SDL2_LIBRARIES} ${CMAKE_DL_LIBS})
 set_warn(glwx)
 
 
