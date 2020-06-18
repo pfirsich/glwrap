@@ -10,10 +10,8 @@ int main(int, char**)
 {
     using namespace std::string_literals;
 
-    const auto window = glwx::makeWindow("GLW Test", 1024, 768);
-    if (!window)
-        return EXIT_FAILURE;
-    glw::State::instance().setViewport(window->getSize().x, window->getSize().y);
+    const auto window = glwx::makeWindow("GLW Test", 1024, 768).value();
+    glw::State::instance().setViewport(window.getSize().x, window.getSize().y);
 
 #ifndef NDEBUG
     glwx::debug::init([](glwx::debug::Source source, glwx::debug::Type type, GLuint id,
@@ -55,10 +53,7 @@ int main(int, char**)
     auto renderTarget = glwx::makeRenderTarget(
         512, 512, { glw::ImageFormat::Rgba }, { glw::ImageFormat::Depth24 });
 
-    const auto prog = glwx::makeShaderProgram(vert, frag);
-    if (!prog) {
-        return 1;
-    }
+    const auto prog = glwx::makeShaderProgram(vert, frag).value();
 
     // clang-format off
     const std::array<float, 16> vertices {
@@ -85,7 +80,7 @@ int main(int, char**)
 
     // const auto texture = glwx::makeTexture2D(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
     // const auto texture = glwx::makeTexture2D(512, 512, 32);
-    const auto texture = *glwx::makeTexture2D("assets/wood.jpg");
+    const auto texture = glwx::makeTexture2D("assets/wood.jpg").value();
 
     SDL_Event event;
     bool running = true;
@@ -112,8 +107,8 @@ int main(int, char**)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         texture.bind(0);
-        prog->bind();
-        prog->setUniform("tex", 0);
+        prog.bind();
+        prog.setUniform("tex", 0);
         quad.draw();
 
         glw::Framebuffer::unbind();
@@ -125,7 +120,7 @@ int main(int, char**)
         renderTarget.getTexture(glw::Framebuffer::Attachment::Color0).bind(0);
         quad.draw();
 
-        window->swap();
+        window.swap();
     }
 
     return 0;
