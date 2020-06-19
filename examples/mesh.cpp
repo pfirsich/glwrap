@@ -63,7 +63,7 @@ int main(int, char**)
 
     glw::VertexFormat vertFmt;
     vertFmt.add(0, 2, glw::VertexFormat::Attribute::Type::F32);
-    vertFmt.add(1, 2, glw::VertexFormat::Attribute::Type::U16, true);
+    vertFmt.add(1, 2, glw::VertexFormat::Attribute::Type::F32);
 
     glwx::Mesh quad;
     quad.addVertexBuffer(vertFmt, glw::Buffer::UsageHint::StaticDraw).data(vertices);
