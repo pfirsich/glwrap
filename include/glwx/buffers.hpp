@@ -104,6 +104,8 @@ public:
     VertexBuffer(VertexBuffer&&) = default;
     VertexBuffer& operator=(VertexBuffer&&) = default;
 
+    void resize(size_t vertexCount);
+
     const glw::VertexFormat& getVertexFormat() const;
 
     size_t getCount() const;
@@ -132,6 +134,8 @@ public:
 
     IndexBuffer(IndexBuffer&&) = default;
     IndexBuffer& operator=(IndexBuffer&&) = default;
+
+    void resize(size_t indexCount);
 
     ElementType getElementType() const;
 

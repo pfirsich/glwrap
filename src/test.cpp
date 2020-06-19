@@ -6,44 +6,6 @@
 
 #include "glwx/vertexaccessor.hpp"
 
-struct Region {
-    glm::vec2 min { 0.0f, 0.0f };
-    glm::vec2 max { 1.0f, 1.0f };
-};
-
-glwx::Mesh makeQuad(const glw::VertexFormat& vfmt, size_t positionLocation, const Region& position,
-    std::optional<size_t> texCoordLocation = std::nullopt, const Region& texCoords = Region {})
-{
-    static constexpr std::array<uint8_t, 6> indices { 0, 1, 2, 2, 3, 0 };
-
-    glwx::Mesh quad;
-    quad.addIndexBuffer(glwx::IndexBuffer::ElementType::U8, glw::Buffer::UsageHint::StaticDraw)
-        .data(indices);
-
-    auto& vbuf = quad.addVertexBuffer(vfmt, glw::Buffer::UsageHint::StaticDraw);
-
-    assert(vfmt.get(positionLocation));
-    vbuf.getData().resize(vfmt.getStride() * 4);
-    auto posAcc = glwx::VertexAccessor<glm::vec2>(vbuf, positionLocation);
-    posAcc[0] = position.min;
-    posAcc[1] = glm::vec2(position.max.x, position.min.x);
-    posAcc[2] = position.max;
-    posAcc[3] = glm::vec2(position.min.x, position.max.x);
-
-    if (texCoordLocation) {
-        assert(vfmt.get(*texCoordLocation));
-        auto tcAcc = glwx::VertexAccessor<glm::vec2>(vbuf, *texCoordLocation);
-        tcAcc[0] = texCoords.min;
-        tcAcc[1] = glm::vec2(texCoords.max.x, texCoords.min.x);
-        tcAcc[2] = texCoords.max;
-        tcAcc[3] = glm::vec2(texCoords.min.x, texCoords.max.x);
-    }
-
-    vbuf.update();
-
-    return quad;
-}
-
 int main(int, char**)
 {
     using namespace std::string_literals;
@@ -115,7 +77,14 @@ int main(int, char**)
     quad.addVertexBuffer(vertFmt, glw::Buffer::UsageHint::StaticDraw).data(vertices);
     quad.addIndexBuffer(glwx::IndexBuffer::ElementType::U8, glw::Buffer::UsageHint::StaticDraw)
         .data(indices);*/
-    auto quad = makeQuad(vertFmt, 0, Region { { -0.8f, -0.8f }, { 0.8f, 0.8f } }, 1);
+    auto quad = glwx::makeQuadMesh(vertFmt, { 0, 1 }, { { -0.8f, -0.8f }, { 0.8f, 0.8f } });
+
+    glw::VertexFormat cubeFmt;
+    cubeFmt.add(0, 3, glw::VertexFormat::Attribute::Type::F32);
+    cubeFmt.add(1, 2, glw::VertexFormat::Attribute::Type::U16, true);
+    cubeFmt.add(2, 3, glw::VertexFormat::Attribute::Type::IW2Z10Y10X10, true);
+
+    auto box = glwx::makeBoxMesh(cubeFmt, { 0, 1, 2 }, 1.0f, 1.0f, 1.0f);
 
     // const auto texture = glwx::makeTexture2D(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
     // const auto texture = glwx::makeTexture2D(512, 512, 32);

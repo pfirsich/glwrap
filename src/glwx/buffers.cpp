@@ -66,6 +66,11 @@ const std::vector<uint8_t>& BufferData::getData() const
     return data_;
 }
 
+void VertexBuffer::resize(size_t vertexCount)
+{
+    getData().resize(vertexFormat_.getStride() * vertexCount);
+}
+
 const glw::VertexFormat& VertexBuffer::getVertexFormat() const
 {
     return vertexFormat_;
@@ -75,6 +80,11 @@ size_t VertexBuffer::getCount() const
 {
     assert(getSize() % vertexFormat_.getStride() == 0);
     return getSize() / vertexFormat_.getStride();
+}
+
+void IndexBuffer::resize(size_t indexCount)
+{
+    getData().resize(getElementSize() * indexCount);
 }
 
 IndexBuffer::ElementType IndexBuffer::getElementType() const

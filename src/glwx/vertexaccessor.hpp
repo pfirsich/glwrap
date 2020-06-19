@@ -5,6 +5,26 @@
 #include "buffers.hpp"
 
 namespace glwx {
+
+namespace detail {
+    struct UiRgb10A2 {
+        unsigned int w : 2;
+        unsigned int z : 10;
+        unsigned int y : 10;
+        unsigned int x : 10;
+    };
+
+    struct IRgba10A2 {
+        int w : 2;
+        int z : 10;
+        int y : 10;
+        int x : 10;
+    };
+}
+
+glm::vec4 i2101010ToVec(uint32_t val);
+uint32_t vecToI2101010(const glm::vec4& val);
+
 glm::vec4 ui2101010ToVec(uint32_t val);
 uint32_t vecToUi2101010(const glm::vec4& val);
 
@@ -31,6 +51,7 @@ namespace detail {
             return static_cast<float>(intVal);
     }
 
+    float convertI2101010(const uint8_t* data, size_t component);
     float convertUi2101010(const uint8_t* data, size_t component);
 
     float convert(glw::VertexFormat::Attribute::Type dataType, bool normalized, const uint8_t* data,
@@ -59,6 +80,7 @@ namespace detail {
             intVal = v;
     }
 
+    void assignI2101010(uint8_t* data, size_t component, float v);
     void assignUi2101010(uint8_t* data, size_t component, float v);
 
     void assign(glw::VertexFormat::Attribute::Type dataType, bool normalized, uint8_t* data,

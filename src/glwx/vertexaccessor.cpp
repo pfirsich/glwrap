@@ -25,17 +25,33 @@ uint32_t vecToUi2101010(const glm::vec4& val)
 
 namespace detail {
 
+    float convertI2101010(const uint8_t* data, size_t component)
+    {
+        auto& s = *reinterpret_cast<const IRgba10A2*>(data);
+        switch (component) {
+        case 0:
+            return convertNormalizedInt<int>(s.x, 0, 1023);
+        case 1:
+            return convertNormalizedInt<int>(s.y, 0, 1023);
+        case 2:
+            return convertNormalizedInt<int>(s.z, 0, 1023);
+        case 3:
+            return convertNormalizedInt<int>(s.w, 0, 3);
+        }
+        return 0.0f;
+    }
+
     float convertUi2101010(const uint8_t* data, size_t component)
     {
         const uint32_t val = *reinterpret_cast<const uint32_t*>(data);
         switch (component) {
-        case 0: // red
+        case 0: // x
             return convertNormalizedInt((val >> 0) & 1023, 0, 1023);
-        case 1:
+        case 1: // y
             return convertNormalizedInt((val >> 10) & 1023, 0, 1023);
-        case 2:
+        case 2: // z
             return convertNormalizedInt((val >> 20) & 1023, 0, 1023);
-        case 3:
+        case 3: // w
             return convertNormalizedInt((val >> 30) & 0b11, 0, 0b11);
         }
         return 0.0f; // Will never happen
@@ -64,13 +80,33 @@ namespace detail {
         case glw::VertexFormat::Attribute::Type::F64:
             return *reinterpret_cast<const double*>(data + sizeof(double) * component);
         case glw::VertexFormat::Attribute::Type::IW2Z10Y10X10:
-            assert(false && "IW2Z10Y10X10 unimplemented");
-        case glw::VertexFormat::Attribute::Type::UiW2Z10Y10X10:
             // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
+            assert(normalized);
+            return convertI2101010(data, component);
+        case glw::VertexFormat::Attribute::Type::UiW2Z10Y10X10:
             assert(normalized);
             return convertUi2101010(data, component);
         case glw::VertexFormat::Attribute::Type::UiZ10FY11FX11F:
             assert(false && "UiZ10Y11X11 unimplemented");
+        }
+    }
+
+    void assignI2101010(uint8_t* data, size_t component, float v)
+    {
+        auto& val = *reinterpret_cast<IRgba10A2*>(data);
+        switch (component) {
+        case 0: // x
+            val.x = convertToNormalizedInt<int>(v, 0, 1023);
+            break;
+        case 1: // y
+            val.y = convertToNormalizedInt<int>(v, 0, 1023);
+            break;
+        case 2: // z
+            val.z = convertToNormalizedInt<int>(v, 0, 1023);
+            break;
+        case 3: // w
+            val.w = convertToNormalizedInt<int>(v, 0, 3);
+            break;
         }
     }
 
@@ -130,10 +166,10 @@ namespace detail {
             break;
         case glw::VertexFormat::Attribute::Type::IW2Z10Y10X10:
             assert(normalized); // see above
-            assignUi2101010(data, component, v);
+            assignI2101010(data, component, v);
             break;
         case glw::VertexFormat::Attribute::Type::UiW2Z10Y10X10:
-            assert(false && "UiW2Z10Y10X10 unimplemented");
+            assignUi2101010(data, component, v);
             break;
         case glw::VertexFormat::Attribute::Type::UiZ10FY11FX11F:
             assert(false && "UiZ10Y11X11 unimplemented");
