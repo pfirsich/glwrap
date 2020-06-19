@@ -30,13 +30,13 @@ namespace detail {
         auto& s = *reinterpret_cast<const IRgba10A2*>(data);
         switch (component) {
         case 0:
-            return convertNormalizedInt<int>(s.x, 0, 1023);
+            return convertNormalizedInt<int>(s.x, -512, 511);
         case 1:
-            return convertNormalizedInt<int>(s.y, 0, 1023);
+            return convertNormalizedInt<int>(s.y, -512, 511);
         case 2:
-            return convertNormalizedInt<int>(s.z, 0, 1023);
+            return convertNormalizedInt<int>(s.z, -512, 511);
         case 3:
-            return convertNormalizedInt<int>(s.w, 0, 3);
+            return convertNormalizedInt<int>(s.w, -2, 1);
         }
         return 0.0f;
     }
@@ -96,16 +96,16 @@ namespace detail {
         auto& val = *reinterpret_cast<IRgba10A2*>(data);
         switch (component) {
         case 0: // x
-            val.x = convertToNormalizedInt<int>(v, 0, 1023);
+            val.x = convertToNormalizedInt<int>(v, -512, 511);
             break;
         case 1: // y
-            val.y = convertToNormalizedInt<int>(v, 0, 1023);
+            val.y = convertToNormalizedInt<int>(v, -512, 511);
             break;
         case 2: // z
-            val.z = convertToNormalizedInt<int>(v, 0, 1023);
+            val.z = convertToNormalizedInt<int>(v, -512, 511);
             break;
         case 3: // w
-            val.w = convertToNormalizedInt<int>(v, 0, 3);
+            val.w = convertToNormalizedInt<int>(v, -2, 1);
             break;
         }
     }
