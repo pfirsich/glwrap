@@ -3,28 +3,6 @@
 #include <cassert>
 
 namespace glw {
-size_t VertexFormat::Attribute::getDataTypeSize(Type type)
-{
-    switch (type) {
-    case Type::I8:
-    case Type::U8:
-        return 1;
-    case Type::I16:
-    case Type::U16:
-    case Type::F16:
-        return 2;
-    case Type::I32:
-    case Type::U32:
-    case Type::F32:
-    case Type::IW2Z10Y10X10:
-    case Type::UiW2Z10Y10X10:
-    case Type::UiZ10FY11FX11F:
-        return 4;
-    case Type::F64:
-        return 8;
-    }
-}
-
 size_t VertexFormat::Attribute::getAlignedSize() const
 {
     // https://www.opengl.org/wiki/Vertex_Specification_Best_Practices#Attribute_sizes
@@ -32,27 +10,30 @@ size_t VertexFormat::Attribute::getAlignedSize() const
     switch (dataType) {
     case Type::I8:
     case Type::U8:
-        // since size in [1, 4], we can just return 4
+        // since components is in [1, 4], we can just return 4
         return 4;
     case Type::I16:
     case Type::U16:
     case Type::F16:
-        if (size == 1)
-            return 2;
-        else if (size == 3)
+        // No clever formulas, we just handle every case explicitly
+        if (components == 1 || components == 2)
             return 4;
-        else
-            // size = 2 and 4 are 4 byte aligned
-            return size;
-    default:
-        // everything else is at least 4-byte aligned
-        return size;
+        else if (components == 3 || components == 4)
+            return 8;
+        assert(false && "Invalid component size");
+        return 2 * components;
+    // Everything below is already sufficiently aligned
+    case Type::I32:
+    case Type::U32:
+    case Type::F32:
+        return 4 * components;
+    case Type::IW2Z10Y10X10:
+    case Type::UiW2Z10Y10X10:
+    case Type::UiZ10FY11FX11F:
+        return 4;
+    case Type::F64:
+        return 8 * components;
     }
-}
-
-size_t VertexFormat::Attribute::getTotalSize() const
-{
-    return getDataTypeSize(dataType) * getAlignedSize();
 }
 
 const VertexFormat::Attribute* VertexFormat::get(size_t location) const
@@ -64,13 +45,14 @@ const VertexFormat::Attribute* VertexFormat::get(size_t location) const
     return &(*it);
 }
 
-VertexFormat& VertexFormat::add(
-    size_t location, int size, Attribute::Type dataType, bool normalized, unsigned int divisor)
+VertexFormat& VertexFormat::add(size_t location, int components, Attribute::Type dataType,
+    bool normalized, unsigned int divisor)
 {
-    assert(size >= 1 && size <= 4);
+    assert(components >= 1 && components <= 4);
     assert(!get(location));
-    attributes_.push_back(Attribute { stride_, location, size, dataType, normalized, divisor });
-    stride_ += attributes_.back().getTotalSize();
+    attributes_.push_back(
+        Attribute { stride_, location, components, dataType, normalized, divisor });
+    stride_ += attributes_.back().getAlignedSize();
     return *this;
 }
 
@@ -78,7 +60,7 @@ void VertexFormat::set() const
 {
     for (const auto& attr : attributes_) {
         glEnableVertexAttribArray(attr.location);
-        glVertexAttribPointer(attr.location, attr.size, static_cast<GLenum>(attr.dataType),
+        glVertexAttribPointer(attr.location, attr.components, static_cast<GLenum>(attr.dataType),
             attr.normalized ? GL_TRUE : GL_FALSE, stride_,
             reinterpret_cast<const GLvoid*>(attr.offset));
         if (attr.divisor > 0)

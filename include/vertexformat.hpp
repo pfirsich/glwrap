@@ -28,15 +28,12 @@ public:
 
         size_t offset;
         size_t location;
-        int size;
+        int components;
         Type dataType;
         bool normalized = false;
         unsigned int divisor = 0;
 
-        static size_t getDataTypeSize(Type type);
-
         size_t getAlignedSize() const;
-        size_t getTotalSize() const;
     };
 
     VertexFormat() = default;
@@ -47,8 +44,8 @@ public:
     // add might obviously invalidate the pointers!
     const Attribute* get(size_t location) const;
 
-    VertexFormat& add(size_t location, int size, Attribute::Type dataType, bool normalized = false,
-        unsigned int divisor = 0);
+    VertexFormat& add(size_t location, int components, Attribute::Type dataType,
+        bool normalized = false, unsigned int divisor = 0);
 
     void set() const;
 

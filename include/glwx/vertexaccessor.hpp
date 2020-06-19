@@ -3,22 +3,23 @@
 #include <glm/glm.hpp>
 
 #include "buffers.hpp"
+#include "log.hpp"
 
 namespace glwx {
 
 namespace detail {
     struct UiRgb10A2 {
-        unsigned int w : 2;
-        unsigned int z : 10;
-        unsigned int y : 10;
         unsigned int x : 10;
+        unsigned int y : 10;
+        unsigned int z : 10;
+        unsigned int w : 2;
     };
 
     struct IRgba10A2 {
-        int w : 2;
-        int z : 10;
-        int y : 10;
         int x : 10;
+        int y : 10;
+        int z : 10;
+        int w : 2;
     };
 }
 
@@ -123,7 +124,7 @@ public:
         : buffer_(buffer)
         , attribute_(*buffer.getVertexFormat().get(location))
     {
-        assert(numComponents == attribute_.size);
+        assert(numComponents <= attribute_.components);
     }
 
     Proxy operator[](size_t index)

@@ -1,5 +1,7 @@
 #include "vertexaccessor.hpp"
 
+#include <cassert>
+
 namespace glwx {
 glm::vec4 ui2101010ToVec(uint32_t val)
 {
@@ -52,7 +54,7 @@ namespace detail {
         case 2: // z
             return convertNormalizedInt((val >> 20) & 1023, 0, 1023);
         case 3: // w
-            return convertNormalizedInt((val >> 30) & 0b11, 0, 0b11);
+            return convertNormalizedInt((val >> 30) & 3, 0, 3);
         }
         return 0.0f; // Will never happen
     }
