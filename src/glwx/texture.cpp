@@ -24,7 +24,7 @@ Texture makeTexture2D(
     // This works because the underlying values are the same
     const auto dataFormat = static_cast<Texture::DataFormat>(format);
     Texture texture(Texture::Target::Texture2D);
-    texture.storage(format, width, height);
+    texture.storage(mipmaps ? 0 : 1, format, width, height);
     texture.subImage(dataFormat, Texture::DataType::U8, buffer);
     if (mipmaps) {
         texture.generateMipmaps();

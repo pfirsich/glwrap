@@ -58,7 +58,7 @@ void RenderTarget::attach(Attachment attachment, Renderbuffer&& rbuf)
 Texture& RenderTarget::emplaceTexture(Attachment attachment, ImageFormat format)
 {
     auto& tex = textures_.emplace(attachment, Texture::Target::Texture2D).first->second;
-    tex.storage(format, width_, height_);
+    tex.storage(1, format, width_, height_);
     tex.setFilter(Texture::MinFilter::Linear, Texture::MagFilter::Linear);
     framebuffer_.texture(attachment, tex);
     attachments_.insert(attachment);

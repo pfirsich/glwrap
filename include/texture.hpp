@@ -134,7 +134,7 @@ public:
     void storage(
         Target target, size_t levels, ImageFormat imageFormat, size_t width, size_t height);
 
-    void storage(ImageFormat imageFormat, size_t width, size_t height);
+    void storage(size_t levels, ImageFormat imageFormat, size_t width, size_t height);
 
     void generateMipmaps() const;
 

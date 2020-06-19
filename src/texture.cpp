@@ -105,15 +105,21 @@ void Texture::subImage(size_t level, DataFormat dataFormat, DataType dataType, c
 void Texture::storage(
     Target target, size_t levels, ImageFormat imageFormat, size_t width, size_t height)
 {
+    assert(width > 0 && height > 0);
+    if (levels == 0)
+        levels = 1 + static_cast<size_t>(std::floor(std::log2(std::max(width, height))));
+
     imageFormat_ = imageFormat;
     width_ = width;
     height_ = height;
     bind(0);
     // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
     assert(target == Target::Texture2D || target == Target::TextureRectangle);
+    const auto format = static_cast<GLenum>(imageFormat);
+    const auto dataFormat = static_cast<GLenum>(getStorageFormat(imageFormat));
     for (size_t level = 0; level < levels; ++level) {
-        image(level, imageFormat, width, height, getStorageFormat(imageFormat), DataType::F32,
-            nullptr);
+        glTexImage2D(static_cast<GLenum>(target), level, format, width, height, 0, dataFormat,
+            GL_FLOAT, nullptr);
         width = std::max(1ul, width / 2);
         height = std::max(1ul, height / 2);
     }
@@ -121,9 +127,9 @@ void Texture::storage(
     glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_MAX_LEVEL, levels - 1);
 }
 
-void Texture::storage(ImageFormat imageFormat, size_t width, size_t height)
+void Texture::storage(size_t levels, ImageFormat imageFormat, size_t width, size_t height)
 {
-    storage(target_, 1, imageFormat, width, height);
+    storage(target_, levels, imageFormat, width, height);
 }
 
 void Texture::generateMipmaps() const
