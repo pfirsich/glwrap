@@ -16,7 +16,8 @@ constexpr std::array<glw::ImageFormat, 4> channelsToFormat {
     glw::ImageFormat::Rgba,
 };
 
-Texture makeTexture2D(const uint8_t* buffer, size_t width, size_t height, size_t channels)
+Texture makeTexture2D(
+    const uint8_t* buffer, size_t width, size_t height, size_t channels, bool mipmaps)
 {
     assert(channels >= 1 && channels <= 4);
     const auto format = channelsToFormat[channels - 1];
@@ -24,20 +25,26 @@ Texture makeTexture2D(const uint8_t* buffer, size_t width, size_t height, size_t
     const auto dataFormat = static_cast<Texture::DataFormat>(format);
     Texture texture(Texture::Target::Texture2D);
     texture.storage(format, width, height);
-    texture.setFilter(Texture::MinFilter::Linear, Texture::MagFilter::Linear);
     texture.subImage(dataFormat, Texture::DataType::U8, buffer);
+    if (mipmaps) {
+        texture.generateMipmaps();
+        texture.setFilter(Texture::MinFilter::LinearMipmapNearest, Texture::MagFilter::Linear);
+    } else {
+        texture.setFilter(Texture::MinFilter::Linear, Texture::MagFilter::Linear);
+    }
     return texture;
 }
 
-Texture makeTexture2D(const glm::vec4& color, size_t width, size_t height)
+Texture makeTexture2D(const glm::vec4& color, size_t width, size_t height, bool mipmaps)
 {
     const auto c = colorToInt(color);
     std::vector<uint32_t> buffer(width * height, c);
-    return makeTexture2D(reinterpret_cast<const uint8_t*>(buffer.data()), width, height, 4);
+    return makeTexture2D(
+        reinterpret_cast<const uint8_t*>(buffer.data()), width, height, 4, mipmaps);
 }
 
-glw::Texture makeTexture2D(
-    size_t width, size_t height, size_t checkerSize, const glm::vec4& col1, const glm::vec4& col2)
+glw::Texture makeTexture2D(size_t width, size_t height, size_t checkerSize, const glm::vec4& col1,
+    const glm::vec4& col2, bool mipmaps)
 {
     const auto c = colorToInt(col2);
     std::vector<uint32_t> buffer(width * height, colorToInt(col1));
@@ -45,7 +52,8 @@ glw::Texture makeTexture2D(
         if ((i / checkerSize + i / width / checkerSize) % 2 == 0)
             buffer[i] = c;
     }
-    return makeTexture2D(reinterpret_cast<const uint8_t*>(buffer.data()), width, height, 4);
+    return makeTexture2D(
+        reinterpret_cast<const uint8_t*>(buffer.data()), width, height, 4, mipmaps);
 }
 
 auto stbiImagePtr(uint8_t* buffer)
@@ -54,7 +62,7 @@ auto stbiImagePtr(uint8_t* buffer)
     return std::unique_ptr<uint8_t, decltype(deleter)>(buffer, deleter);
 }
 
-std::optional<glw::Texture> makeTexture2D(const uint8_t* encodedBuffer, size_t size)
+std::optional<glw::Texture> makeTexture2D(const uint8_t* encodedBuffer, size_t size, bool mipmaps)
 {
     int width = 0, height = 0, channels = 0;
     const auto image
@@ -63,10 +71,10 @@ std::optional<glw::Texture> makeTexture2D(const uint8_t* encodedBuffer, size_t s
         LOG_ERROR("Could not load encoded image from memory: {}", stbi_failure_reason());
         return std::nullopt;
     }
-    return makeTexture2D(image.get(), width, height, channels);
+    return makeTexture2D(image.get(), width, height, channels, mipmaps);
 }
 
-std::optional<glw::Texture> makeTexture2D(const std::filesystem::path& path)
+std::optional<glw::Texture> makeTexture2D(const std::filesystem::path& path, bool mipmaps)
 {
     int width = 0, height = 0, channels = 0;
     const auto image = stbiImagePtr(stbi_load(path.c_str(), &width, &height, &channels, 0));
@@ -74,6 +82,6 @@ std::optional<glw::Texture> makeTexture2D(const std::filesystem::path& path)
         LOG_ERROR("Could not load image from file: {}", stbi_failure_reason());
         return std::nullopt;
     }
-    return makeTexture2D(image.get(), width, height, channels);
+    return makeTexture2D(image.get(), width, height, channels, mipmaps);
 }
 }
