@@ -58,6 +58,7 @@ set(GLWX_SRC
   shader.cpp
   texture.cpp
   utility.cpp
+  vertexaccessor.cpp
   window.cpp
 )
 list(TRANSFORM GLWX_SRC PREPEND src/glwx/)
