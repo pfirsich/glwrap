@@ -8,6 +8,17 @@
 #include "glad/glad.h"
 
 namespace glw {
+enum class DepthFunc : GLenum {
+    Never = GL_NEVER,
+    Less = GL_LESS,
+    Equal = GL_EQUAL,
+    Lequal = GL_LEQUAL,
+    Greater = GL_GREATER,
+    Notequal = GL_NOTEQUAL,
+    Gequal = GL_GEQUAL,
+    Always = GL_ALWAYS,
+};
+
 class State {
 public:
     // GL_MAX_TEXTURE_IMAGE_UNITS is 16 in GL 3.3
@@ -21,6 +32,9 @@ public:
     void setViewport(int x, int y, size_t width, size_t height);
     void setViewport(const std::tuple<int, int, size_t, size_t>& viewport);
     void setViewport(size_t width, size_t height);
+
+    DepthFunc getDepthFunc() const;
+    void setDepthFunc(DepthFunc func);
 
     GLuint getCurrentVao() const;
     void bindVao(GLuint vao);
@@ -101,13 +115,14 @@ private:
     State(const State&) = delete;
     State& operator=(const State&) = delete;
 
-    std::tuple<int, int, size_t, size_t> currentViewport_;
-    GLuint currentVao_ = 0;
-    GLuint currentShaderProgram_ = 0;
-    std::array<GLuint, bufferBindings.size()> currentBuffers_;
-    std::array<std::array<GLuint, textureBindings.size()>, maxTextureUnits> currentTextures_ {};
-    GLuint currentReadFramebuffer_ = 0;
-    GLuint currentDrawFramebuffer_ = 0;
-    GLuint currentRenderbuffer_ = 0;
+    std::tuple<int, int, size_t, size_t> viewport_ = { 0, 0, 0, 0 };
+    DepthFunc depthFunc_ = DepthFunc::Less;
+    GLuint vao_ = 0;
+    GLuint shaderProgram_ = 0;
+    std::array<GLuint, bufferBindings.size()> buffers_;
+    std::array<std::array<GLuint, textureBindings.size()>, maxTextureUnits> textures_ {};
+    GLuint readFramebuffer_ = 0;
+    GLuint drawFramebuffer_ = 0;
+    GLuint renderbuffer_ = 0;
 };
 }

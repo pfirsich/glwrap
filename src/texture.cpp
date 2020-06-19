@@ -1,5 +1,7 @@
 #include "texture.hpp"
 
+#include "log.hpp"
+
 namespace glw {
 Texture::Texture(Target target)
     : target_(target)
@@ -21,10 +23,6 @@ Texture::Texture(Texture&& other)
     , width_(other.width_)
     , height_(other.height_)
     , imageFormat_(other.imageFormat_)
-    , wrapS_(other.wrapS_)
-    , wrapT_(other.wrapT_)
-    , minFilter_(other.minFilter_)
-    , magFilter_(other.magFilter_)
 {
     other.reset();
 }
@@ -37,10 +35,6 @@ Texture& Texture::operator=(Texture&& other)
     width_ = other.width_;
     height_ = other.height_;
     imageFormat_ = other.imageFormat_;
-    wrapS_ = other.wrapS_;
-    wrapT_ = other.wrapT_;
-    minFilter_ = other.minFilter_;
-    magFilter_ = other.magFilter_;
     other.reset();
     return *this;
 }
@@ -138,46 +132,122 @@ void Texture::generateMipmaps() const
     glGenerateMipmap(static_cast<GLenum>(target_));
 }
 
+void Texture::setWrapS(WrapMode wrap)
+{
+    setParameter(GL_TEXTURE_WRAP_S, static_cast<GLenum>(wrap));
+}
+
+void Texture::setWrapT(WrapMode wrap)
+{
+    setParameter(GL_TEXTURE_WRAP_T, static_cast<GLenum>(wrap));
+}
+
+void Texture::setWrapR(WrapMode wrap)
+{
+    setParameter(GL_TEXTURE_WRAP_R, static_cast<GLenum>(wrap));
+}
+
 void Texture::setWrap(WrapMode wrapS, WrapMode wrapT)
 {
-    setParameter(GL_TEXTURE_WRAP_S, static_cast<GLenum>(wrapS_ = wrapS));
-    setParameter(GL_TEXTURE_WRAP_T, static_cast<GLenum>(wrapT_ = wrapT));
+    setWrapS(wrapS);
+    setWrapT(wrapT);
 }
 
 void Texture::setWrap(WrapMode wrap)
 {
     setWrap(wrap, wrap);
-}
-
-std::pair<Texture::WrapMode, Texture::WrapMode> Texture::getWrap() const
-{
-    return std::make_pair(wrapS_, wrapT_);
+    setWrapR(wrap);
 }
 
 void Texture::setMinFilter(MinFilter filter)
 {
-    setParameter(GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(minFilter_ = filter));
-}
-
-Texture::MinFilter Texture::getMinFilter() const
-{
-    return minFilter_;
+    setParameter(GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(filter));
 }
 
 void Texture::setMagFilter(MagFilter filter)
 {
-    setParameter(GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(magFilter_ = filter));
-}
-
-Texture::MagFilter Texture::getMagFilter() const
-{
-    return magFilter_;
+    setParameter(GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(filter));
 }
 
 void Texture::setFilter(MinFilter minFilter, MagFilter magFilter)
 {
     setMinFilter(minFilter);
     setMagFilter(magFilter);
+}
+
+void Texture::setBaseLevel(size_t level)
+{
+    setParameter(GL_TEXTURE_BASE_LEVEL, static_cast<unsigned int>(level));
+}
+
+void Texture::setBorderColor(const glm::vec4& color)
+{
+    bind(0);
+    glTexParameterfv(static_cast<GLenum>(target_), GL_TEXTURE_BORDER_COLOR, &color.x);
+}
+
+void Texture::setBorderColor(const glm::ivec4& color)
+{
+    bind(0);
+    glTexParameteriv(static_cast<GLenum>(target_), GL_TEXTURE_BORDER_COLOR, &color.x);
+}
+
+void Texture::setCompareFunc(DepthFunc func)
+{
+    setParameter(GL_TEXTURE_COMPARE_FUNC, static_cast<GLenum>(func));
+}
+
+void Texture::setCompareMode(CompareMode mode)
+{
+    setParameter(GL_TEXTURE_COMPARE_MODE, static_cast<GLenum>(mode));
+}
+
+void Texture::setLodBias(float bias)
+{
+    setParameter(GL_TEXTURE_LOD_BIAS, bias);
+}
+
+void Texture::setMinLod(int min)
+{
+    setParameter(GL_TEXTURE_MIN_LOD, min);
+}
+
+void Texture::setMaxLod(int max)
+{
+    setParameter(GL_TEXTURE_MAX_LOD, max);
+}
+
+void Texture::setMaxLevel(size_t level)
+{
+    setParameter(GL_TEXTURE_MAX_LEVEL, static_cast<unsigned int>(level));
+}
+
+void Texture::setSwizzleR(Swizzle swizzle)
+{
+    setParameter(GL_TEXTURE_SWIZZLE_R, static_cast<GLenum>(swizzle));
+}
+
+void Texture::setSwizzleG(Swizzle swizzle)
+{
+    setParameter(GL_TEXTURE_SWIZZLE_G, static_cast<GLenum>(swizzle));
+}
+
+void Texture::setSwizzleB(Swizzle swizzle)
+{
+    setParameter(GL_TEXTURE_SWIZZLE_B, static_cast<GLenum>(swizzle));
+}
+
+void Texture::setSwizzleA(Swizzle swizzle)
+{
+    setParameter(GL_TEXTURE_SWIZZLE_A, static_cast<GLenum>(swizzle));
+}
+
+void Texture::setSwizzle(Swizzle r, Swizzle g, Swizzle b, Swizzle a)
+{
+    bind(0);
+    const std::array<GLint, 4> swizzle = { static_cast<GLint>(r), static_cast<GLint>(g),
+        static_cast<GLint>(b), static_cast<GLint>(a) };
+    glTexParameteriv(static_cast<GLenum>(target_), GL_TEXTURE_SWIZZLE_RGBA, swizzle.data());
 }
 
 Texture::Target Texture::getTarget() const
@@ -218,6 +288,18 @@ void Texture::setParameter(GLenum param, GLint val)
     glTexParameteri(static_cast<GLenum>(target_), param, val);
 }
 
+void Texture::setParameter(GLenum param, GLenum val)
+{
+    bind(0);
+    glTexParameteri(static_cast<GLenum>(target_), param, val);
+}
+
+void Texture::setParameter(GLenum param, float val)
+{
+    bind(0);
+    glTexParameterf(static_cast<GLenum>(target_), param, val);
+}
+
 void Texture::reset()
 {
     target_ = Target::Invalid;
@@ -225,9 +307,5 @@ void Texture::reset()
     width_ = 0;
     height_ = 0;
     imageFormat_ = ImageFormat::Invalid;
-    wrapS_ = WrapMode::Invalid;
-    wrapT_ = WrapMode::Invalid;
-    minFilter_ = MinFilter::Invalid;
-    magFilter_ = MagFilter::Invalid;
 }
 }

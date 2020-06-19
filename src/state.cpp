@@ -9,13 +9,13 @@ State& State::instance()
 
 std::tuple<int, int, size_t, size_t> State::getViewport() const
 {
-    return currentViewport_;
+    return viewport_;
 }
 
 void State::setViewport(int x, int y, size_t width, size_t height)
 {
     glViewport(x, y, width, height);
-    currentViewport_ = std::tuple(x, y, width, height);
+    viewport_ = std::tuple(x, y, width, height);
 }
 
 void State::setViewport(const std::tuple<int, int, size_t, size_t>& viewport)
@@ -29,15 +29,26 @@ void State::setViewport(size_t width, size_t height)
     setViewport(0, 0, width, height);
 }
 
+DepthFunc State::getDepthFunc() const
+{
+    return depthFunc_;
+}
+
+void State::setDepthFunc(DepthFunc func)
+{
+    glDepthFunc(static_cast<GLenum>(func));
+    depthFunc_ = func;
+}
+
 GLuint State::getCurrentVao() const
 {
-    return currentVao_;
+    return vao_;
 }
 
 void State::bindVao(GLuint vao)
 {
     glBindVertexArray(vao);
-    currentVao_ = vao;
+    vao_ = vao;
 }
 
 void State::unbindVao()
@@ -47,15 +58,15 @@ void State::unbindVao()
 
 GLuint State::getCurrentShader() const
 {
-    return currentShaderProgram_;
+    return shaderProgram_;
 }
 
 void State::bindShader(GLuint prog)
 {
-    if (currentShaderProgram_ == prog)
+    if (shaderProgram_ == prog)
         return;
     glUseProgram(prog);
-    currentShaderProgram_ = prog;
+    shaderProgram_ = prog;
 }
 
 void State::unbindShader()
@@ -65,12 +76,12 @@ void State::unbindShader()
 
 GLuint State::getCurrentBuffer(GLenum target) const
 {
-    return currentBuffers_[getBufferIndex(target)];
+    return buffers_[getBufferIndex(target)];
 }
 
 void State::bindBuffer(GLenum target, GLuint buffer)
 {
-    auto& currentBuffer = currentBuffers_[getBufferIndex(target)];
+    auto& currentBuffer = buffers_[getBufferIndex(target)];
     if (currentBuffer == buffer)
         return;
     glBindBuffer(target, buffer);
@@ -84,12 +95,12 @@ void State::unbindBuffer(GLenum target)
 
 GLuint State::getCurrentTexture(unsigned int unit, GLenum target) const
 {
-    return currentTextures_[unit][getTextureIndex(target)];
+    return textures_[unit][getTextureIndex(target)];
 }
 
 std::optional<unsigned int> State::getTextureUnit(GLenum target, GLuint texture) const
 {
-    for (size_t unit = 0; unit < currentTextures_.size(); ++unit) {
+    for (size_t unit = 0; unit < textures_.size(); ++unit) {
         if (getCurrentTexture(unit, target) == texture)
             return unit;
     }
@@ -98,7 +109,7 @@ std::optional<unsigned int> State::getTextureUnit(GLenum target, GLuint texture)
 
 void State::bindTexture(unsigned int unit, GLenum target, GLuint texture)
 {
-    auto& currentTexture = currentTextures_[unit][getTextureIndex(target)];
+    auto& currentTexture = textures_[unit][getTextureIndex(target)];
     if (currentTexture == texture)
         return;
     glActiveTexture(GL_TEXTURE0 + unit);
@@ -125,12 +136,12 @@ GLuint State::getCurrentFramebuffer(GLenum target) const
 {
     switch (target) {
     case GL_FRAMEBUFFER:
-        assert(currentReadFramebuffer_ == currentDrawFramebuffer_);
-        return currentReadFramebuffer_;
+        assert(readFramebuffer_ == drawFramebuffer_);
+        return readFramebuffer_;
     case GL_READ_FRAMEBUFFER:
-        return currentReadFramebuffer_;
+        return readFramebuffer_;
     case GL_DRAW_FRAMEBUFFER:
-        return currentDrawFramebuffer_;
+        return drawFramebuffer_;
     default:
         assert(false && "Invalid Framebuffer target");
     }
@@ -140,24 +151,24 @@ void State::bindFramebuffer(GLenum target, GLuint fbo)
 {
     switch (target) {
     case GL_FRAMEBUFFER:
-        if (currentReadFramebuffer_ == fbo && currentDrawFramebuffer_ == fbo)
+        if (readFramebuffer_ == fbo && drawFramebuffer_ == fbo)
             return;
         break;
     case GL_READ_FRAMEBUFFER:
-        if (currentReadFramebuffer_ == fbo)
+        if (readFramebuffer_ == fbo)
             return;
         break;
     case GL_DRAW_FRAMEBUFFER:
-        if (currentDrawFramebuffer_ == fbo)
+        if (drawFramebuffer_ == fbo)
             return;
         break;
     }
 
     glBindFramebuffer(target, fbo);
     if (target == GL_FRAMEBUFFER || target == GL_READ_FRAMEBUFFER)
-        currentReadFramebuffer_ = fbo;
+        readFramebuffer_ = fbo;
     if (target == GL_FRAMEBUFFER || target == GL_DRAW_FRAMEBUFFER)
-        currentDrawFramebuffer_ = fbo;
+        drawFramebuffer_ = fbo;
 }
 
 void State::unbindFramebuffer(GLenum target)
@@ -167,12 +178,12 @@ void State::unbindFramebuffer(GLenum target)
 
 GLuint State::getCurrentRenderbuffer() const
 {
-    return currentRenderbuffer_;
+    return renderbuffer_;
 }
 
 void State::bindRenderbuffer(GLuint rbo)
 {
-    if (currentRenderbuffer_ == rbo)
+    if (renderbuffer_ == rbo)
         return;
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 }

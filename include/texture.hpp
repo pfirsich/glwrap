@@ -3,7 +3,8 @@
 #include <algorithm>
 #include <cassert>
 
-#include "glad/glad.h"
+#include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include "imageformat.hpp"
 #include "state.hpp"
@@ -101,6 +102,20 @@ public:
         A2B10G10R10 = GL_UNSIGNED_INT_2_10_10_10_REV,
     };
 
+    enum class CompareMode : GLenum {
+        CompareRefToTexture = GL_COMPARE_REF_TO_TEXTURE,
+        None = GL_NONE,
+    };
+
+    enum class Swizzle : GLenum {
+        R = GL_RED,
+        G = GL_GREEN,
+        B = GL_BLUE,
+        A = GL_ALPHA,
+        Zero = GL_ZERO,
+        One = GL_ONE,
+    };
+
     Texture(Target target);
     ~Texture();
 
@@ -138,15 +153,30 @@ public:
 
     void generateMipmaps() const;
 
+    void setWrapS(WrapMode wrap);
+    void setWrapT(WrapMode wrap);
+    void setWrapR(WrapMode wrap);
     void setWrap(WrapMode wrapS, WrapMode wrapT);
     void setWrap(WrapMode wrap);
-    std::pair<WrapMode, WrapMode> getWrap() const;
 
     void setMinFilter(MinFilter filter);
-    MinFilter getMinFilter() const;
     void setMagFilter(MagFilter filter);
-    MagFilter getMagFilter() const;
     void setFilter(MinFilter minFilter, MagFilter magFilter);
+
+    void setBaseLevel(size_t level);
+    void setBorderColor(const glm::vec4& color);
+    void setBorderColor(const glm::ivec4& color);
+    void setCompareFunc(DepthFunc func);
+    void setCompareMode(CompareMode mode);
+    void setLodBias(float bias);
+    void setMinLod(int min);
+    void setMaxLod(int max);
+    void setMaxLevel(size_t level);
+    void setSwizzleR(Swizzle swizzle);
+    void setSwizzleG(Swizzle swizzle);
+    void setSwizzleB(Swizzle swizzle);
+    void setSwizzleA(Swizzle swizzle);
+    void setSwizzle(Swizzle r, Swizzle g, Swizzle b, Swizzle a);
 
     Target getTarget() const;
     GLuint getTexture() const;
@@ -158,6 +188,8 @@ private:
     static DataFormat getStorageFormat(ImageFormat format);
 
     void setParameter(GLenum param, GLint val);
+    void setParameter(GLenum param, GLenum val);
+    void setParameter(GLenum param, float val);
     void reset();
 
     Target target_;
@@ -165,10 +197,6 @@ private:
     size_t width_ = 0;
     size_t height_ = 0;
     ImageFormat imageFormat_ = ImageFormat::Invalid;
-    WrapMode wrapS_ = WrapMode::Repeat;
-    WrapMode wrapT_ = WrapMode::Repeat;
-    MinFilter minFilter_ = MinFilter::NearestMipmapLinear;
-    MagFilter magFilter_ = MagFilter::Linear;
 };
 
 }
