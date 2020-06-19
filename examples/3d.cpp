@@ -51,6 +51,7 @@ int main(int, char**)
             vec4 base = texture2D(albedo, texCoords);
             float nDotL = max(dot(lightDir, normal), 0.0);
             fragColor = vec4(base.rgb * nDotL, 1.0);
+            // fragColor = vec4(normal, 1.0);
         }
     )"s;
 
