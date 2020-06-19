@@ -16,12 +16,12 @@ struct Region {
     glm::vec2 max { 1.0f, 1.0f };
 };
 
-glwx::Mesh makeQuadMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc,
+Mesh makeQuadMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc,
     const Region& position, const Region& texCoords = Region {});
 
-glwx::Mesh makeBoxMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc, float width,
+Mesh makeBoxMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc, float width,
     float height, float depth);
 
-glwx::Mesh makeSphereMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc,
-    float radius, int slices, int stacks, bool cubeProjectionTexCoords);
+Mesh makeSphereMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc, float radius,
+    size_t slices, size_t stacks, bool cubeProjectionTexCoords = false);
 }

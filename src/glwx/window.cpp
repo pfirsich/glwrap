@@ -92,6 +92,17 @@ bool initGladOnce()
     return result;
 }
 
+bool initSubSystem(uint32_t flags)
+{
+    if (SDL_WasInit(flags) == 0) {
+        if (SDL_InitSubSystem(flags) < 0) {
+            LOG_CRITICAL("Could not initialize SDL Subsystem {}: {}", flags, SDL_GetError());
+            return false;
+        }
+    }
+    return true;
+}
+
 Window::~Window()
 {
     if (glContext_)
@@ -119,12 +130,8 @@ bool Window::init(
         return false;
     }
 
-    if (SDL_WasInit(SDL_INIT_VIDEO) == 0) {
-        if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {
-            LOG_CRITICAL("Could not initialize SDL Video: {}", SDL_GetError());
-            return false;
-        }
-    }
+    if (!initSubSystem(SDL_INIT_VIDEO))
+        return false;
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, properties.contextMajor);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, properties.contextMinor);
@@ -200,6 +207,15 @@ bool Window::setSwapInterval(int interval) const
         return false;
     }
     return true;
+}
+
+float getTime()
+{
+    if (!initSubSystem(SDL_INIT_TIMER))
+        return 0.0f;
+    static const auto start = SDL_GetPerformanceCounter();
+    const auto now = SDL_GetPerformanceCounter();
+    return (now - start) * 1000 / SDL_GetPerformanceFrequency();
 }
 
 std::optional<Window> makeWindow(

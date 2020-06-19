@@ -1,16 +1,13 @@
-#include <array>
 #include <iostream>
 
-#include "glw.hpp"
-#include "glwx.hpp"
-
-#include "glwx/vertexaccessor.hpp"
+#include <glw.hpp>
+#include <glwx.hpp>
 
 int main(int, char**)
 {
     using namespace std::string_literals;
 
-    const auto window = glwx::makeWindow("GLW Test", 1024, 768).value();
+    const auto window = glwx::makeWindow("RendeTarget Example", 1024, 768).value();
     glw::State::instance().setViewport(window.getSize().x, window.getSize().y);
 
 #ifndef NDEBUG
@@ -50,44 +47,17 @@ int main(int, char**)
         }
     )"s;
 
-    auto renderTarget = glwx::makeRenderTarget(
-        512, 512, { glw::ImageFormat::Rgba }, { glw::ImageFormat::Depth24 });
-
     const auto prog = glwx::makeShaderProgram(vert, frag).value();
 
-    // clang-format off
-    /*const std::array<float, 16> vertices {
-        -0.5f, -0.5f, 0.0f, 0.0f,
-         0.5f, -0.5f, 1.0f, 0.0f,
-         0.5f,  0.5f, 1.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f, 1.0f,
-    };
-
-    const std::array<uint8_t, 6> indices {
-        0, 1, 2,
-        2, 3, 0,
-    };*/
-    // clang-format on
+    auto renderTarget = glwx::makeRenderTarget(
+        512, 512, { glw::ImageFormat::Rgba }, { glw::ImageFormat::Depth24 });
 
     glw::VertexFormat vertFmt;
     vertFmt.add(0, 2, glw::VertexFormat::Attribute::Type::F32);
     vertFmt.add(1, 2, glw::VertexFormat::Attribute::Type::U16, true);
 
-    /*glwx::Mesh quad;
-    quad.addVertexBuffer(vertFmt, glw::Buffer::UsageHint::StaticDraw).data(vertices);
-    quad.addIndexBuffer(glwx::IndexBuffer::ElementType::U8, glw::Buffer::UsageHint::StaticDraw)
-        .data(indices);*/
     auto quad = glwx::makeQuadMesh(vertFmt, { 0, 1 }, { { -0.8f, -0.8f }, { 0.8f, 0.8f } });
 
-    glw::VertexFormat cubeFmt;
-    cubeFmt.add(0, 3, glw::VertexFormat::Attribute::Type::F32);
-    cubeFmt.add(1, 2, glw::VertexFormat::Attribute::Type::U16, true);
-    cubeFmt.add(2, 3, glw::VertexFormat::Attribute::Type::IW2Z10Y10X10, true);
-
-    auto box = glwx::makeBoxMesh(cubeFmt, { 0, 1, 2 }, 1.0f, 1.0f, 1.0f);
-
-    // const auto texture = glwx::makeTexture2D(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-    // const auto texture = glwx::makeTexture2D(512, 512, 32);
     const auto texture = glwx::makeTexture2D("assets/wood.jpg").value();
 
     SDL_Event event;
@@ -101,6 +71,7 @@ int main(int, char**)
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE:
+
                     running = false;
                     break;
                 }

@@ -103,6 +103,11 @@ public:
 
         operator T() const
         {
+            return get();
+        }
+
+        T get() const
+        {
             T v {};
             for (size_t i = 0; i < numComponents; ++i)
                 v[i] = detail::convert(dataType, normalized, data, i);

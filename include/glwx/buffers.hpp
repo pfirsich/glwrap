@@ -122,6 +122,8 @@ public:
         U32 = GL_UNSIGNED_INT,
     };
 
+    static ElementType getElementType(size_t vertexCount);
+
     template <typename... Args>
     IndexBuffer(ElementType type, Buffer::UsageHint usage, Args&&... args)
         : BufferData(Buffer::Target::ElementArray, usage, std::forward<Args>(args)...)

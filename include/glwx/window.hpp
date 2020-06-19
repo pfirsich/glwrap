@@ -8,8 +8,6 @@
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
 
-// using size_t = std::size_t;
-
 namespace glwx {
 class Sdl {
 public:
@@ -65,6 +63,8 @@ private:
     SDL_Window* window_ = nullptr;
     SDL_GLContext glContext_ = nullptr;
 };
+
+float getTime();
 
 std::optional<Window> makeWindow(const std::string& title, size_t width, size_t height,
     const Window::Properties& properties = Window::Properties());

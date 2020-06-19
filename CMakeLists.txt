@@ -53,6 +53,7 @@ set_warn(glw)
 set(GLWX_SRC
   buffers.cpp
   debug.cpp
+  indexaccessor.cpp
   mesh.cpp
   meshgen.cpp
   rendertarget.cpp
@@ -73,7 +74,13 @@ target_include_directories(glwx PUBLIC deps/stb)
 target_link_libraries(glwx glw ${SDL2_LIBRARIES} ${CMAKE_DL_LIBS})
 set_warn(glwx)
 
+macro(example sourcename)
+  add_executable(example-${sourcename} examples/${sourcename}.cpp)
+  target_include_directories(example-${sourcename} PUBLIC include)
+  target_link_libraries(example-${sourcename} glwx)
+  set_warn(example-${sourcename})
+endmacro()
 
-add_executable(glwtest src/test.cpp)
-target_link_libraries(glwtest glwx)
-set_warn(glwtest)
+example(rendertarget)
+example(mesh)
+example(3d)
