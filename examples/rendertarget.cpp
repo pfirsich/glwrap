@@ -11,12 +11,7 @@ int main(int, char**)
     glw::State::instance().setViewport(window.getSize().x, window.getSize().y);
 
 #ifndef NDEBUG
-    glwx::debug::init([](glwx::debug::Source source, glwx::debug::Type type, GLuint id,
-                          glwx::debug::Severity severity, std::string_view message) {
-        std::cout << "OpengL Debug "
-                  << "[Source: " << source << "] [Type: " << type << "] [Id: " << id
-                  << "] [Severity: " << severity << "]: " << message << std::endl;
-    });
+    glwx::debug::init();
 #endif
 
     const auto vert = R"(

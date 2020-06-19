@@ -39,6 +39,15 @@ namespace debug {
         glPopDebugGroup();
     }
 
+    bool init()
+    {
+        detail::callback = [](glwx::debug::Source source, glwx::debug::Type type, GLuint id,
+                               glwx::debug::Severity severity, std::string_view message) {
+            LOG_DEBUG("OpenGL [{}] [{}] [{}] [{}]: {}", source, type, id, severity, message);
+        };
+        return detail::init();
+    }
+
     void control(std::optional<Source> source, std::optional<Type> type,
         std::optional<Severity> severity, bool enabled)
     {

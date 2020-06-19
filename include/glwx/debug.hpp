@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "glad/glad.h"
+#include <fmt/format.h>
 
 #include "../glw.hpp"
 
@@ -48,6 +49,10 @@ namespace debug {
         ~Group();
     };
 
+    // This will set a callback that calls a glw log macro, which provides a way to
+    // specify custom handlers anyway.
+    bool init();
+
     template <typename Func>
     bool init(Func&& func)
     {
@@ -78,3 +83,45 @@ namespace debug {
     std::ostream& operator<<(std::ostream& os, Severity severity);
 }
 }
+
+template <>
+struct fmt::formatter<glwx::debug::Source> {
+    constexpr auto parse(format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    template <typename FormatContext>
+    auto format(glwx::debug::Source source, FormatContext& ctx)
+    {
+        return format_to(ctx.out(), "{}", glwx::debug::toString(source));
+    }
+};
+
+template <>
+struct fmt::formatter<glwx::debug::Type> {
+    constexpr auto parse(format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    template <typename FormatContext>
+    auto format(glwx::debug::Type type, FormatContext& ctx)
+    {
+        return format_to(ctx.out(), "{}", glwx::debug::toString(type));
+    }
+};
+
+template <>
+struct fmt::formatter<glwx::debug::Severity> {
+    constexpr auto parse(format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    template <typename FormatContext>
+    auto format(glwx::debug::Severity severity, FormatContext& ctx)
+    {
+        return format_to(ctx.out(), "{}", glwx::debug::toString(severity));
+    }
+};
