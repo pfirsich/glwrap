@@ -1,12 +1,13 @@
 #pragma once
 
-#include <filesystem>
 #include <functional>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include <fmt/format.h>
+
+#include "fmt.hpp"
 
 namespace glw {
 enum class LogLevel {
@@ -55,19 +56,5 @@ struct fmt::formatter<glw::LogLevel> {
     auto format(glw::LogLevel level, FormatContext& ctx)
     {
         return format_to(ctx.out(), "{}", glw::logLevelNames.at(level));
-    }
-};
-
-template <>
-struct fmt::formatter<std::filesystem::path> {
-    constexpr auto parse(format_parse_context& ctx)
-    {
-        return ctx.begin();
-    }
-
-    template <typename FormatContext>
-    auto format(const std::filesystem::path& path, FormatContext& ctx)
-    {
-        return format_to(ctx.out(), "{}", path.u8string());
     }
 };
