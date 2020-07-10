@@ -116,18 +116,10 @@ private:
 
 class IndexBuffer : public BufferData {
 public:
-    enum class ElementType : GLenum {
-        U8 = GL_UNSIGNED_BYTE,
-        U16 = GL_UNSIGNED_SHORT,
-        U32 = GL_UNSIGNED_INT,
-    };
-
-    static ElementType getElementType(size_t vertexCount);
-
     template <typename... Args>
-    IndexBuffer(ElementType type, Buffer::UsageHint usage, Args&&... args)
+    IndexBuffer(glw::IndexType type, Buffer::UsageHint usage, Args&&... args)
         : BufferData(Buffer::Target::ElementArray, usage, std::forward<Args>(args)...)
-        , elementType_(type)
+        , indexType_(type)
     {
     }
 
@@ -139,14 +131,13 @@ public:
 
     void resize(size_t indexCount);
 
-    ElementType getElementType() const;
-
+    glw::IndexType getIndexType() const;
     size_t getElementSize() const;
 
     size_t getCount() const;
 
 private:
-    ElementType elementType_;
+    glw::IndexType indexType_;
 };
 
 }

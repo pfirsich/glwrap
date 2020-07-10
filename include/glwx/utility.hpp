@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-namespace glw {
+namespace glwx {
 // http://tuttlem.github.io/2014/08/18/getting-istream-to-work-off-a-byte-array.html
 class membuf : public std::basic_streambuf<char> {
 public:

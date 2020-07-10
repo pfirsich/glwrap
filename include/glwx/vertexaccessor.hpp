@@ -7,11 +7,11 @@
 
 namespace glwx {
 namespace detail {
-    float convert(glw::VertexFormat::Attribute::Type dataType, bool normalized, const uint8_t* data,
-        size_t component);
+    float convert(
+        glw::AttributeType dataType, bool normalized, const uint8_t* data, size_t component);
 
-    void assign(glw::VertexFormat::Attribute::Type dataType, bool normalized, uint8_t* data,
-        size_t component, float v);
+    void assign(
+        glw::AttributeType dataType, bool normalized, uint8_t* data, size_t component, float v);
 }
 
 template <typename T>
@@ -42,7 +42,7 @@ public:
         }
 
         uint8_t* data;
-        glw::VertexFormat::Attribute::Type dataType;
+        glw::AttributeType dataType;
         bool normalized;
     };
 

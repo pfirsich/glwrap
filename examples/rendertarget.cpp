@@ -48,8 +48,8 @@ int main(int, char**)
         512, 512, { glw::ImageFormat::Rgba }, { glw::ImageFormat::Depth24 });
 
     glw::VertexFormat vertFmt;
-    vertFmt.add(0, 2, glw::VertexFormat::Attribute::Type::F32);
-    vertFmt.add(1, 2, glw::VertexFormat::Attribute::Type::U16, true);
+    vertFmt.add(0, 2, glw::AttributeType::F32);
+    vertFmt.add(1, 2, glw::AttributeType::U16, true);
 
     auto quad = glwx::makeQuadMesh(vertFmt, { 0, 1 }, { { -0.8f, -0.8f }, { 0.8f, 0.8f } });
 

@@ -47,7 +47,7 @@ void Mesh::draw(size_t offset, size_t count) const
     vao_.bind();
     const auto mode = static_cast<GLenum>(mode_);
     if (indexBuffer_) {
-        glDrawElements(mode, count, static_cast<GLenum>(indexBuffer_->getElementType()),
+        glDrawElements(mode, count, static_cast<GLenum>(indexBuffer_->getIndexType()),
             reinterpret_cast<const void*>(indexBuffer_->getElementSize() * offset));
     } else {
         glDrawArrays(mode, offset, count);
@@ -69,7 +69,7 @@ void Mesh::draw(size_t offset, size_t count, size_t instanceCount) const
     vao_.bind();
     const auto mode = static_cast<GLenum>(mode_);
     if (indexBuffer_) {
-        glDrawElementsInstanced(mode, count, static_cast<GLenum>(indexBuffer_->getElementType()),
+        glDrawElementsInstanced(mode, count, static_cast<GLenum>(indexBuffer_->getIndexType()),
             reinterpret_cast<const void*>(indexBuffer_->getElementSize() * offset), instanceCount);
     } else {
         glDrawArraysInstanced(mode, offset, count, instanceCount);

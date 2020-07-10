@@ -82,37 +82,19 @@ size_t VertexBuffer::getCount() const
     return getSize() / vertexFormat_.getStride();
 }
 
-IndexBuffer::ElementType IndexBuffer::getElementType(size_t vertexCount)
-{
-    assert(vertexCount <= std::numeric_limits<uint32_t>::max());
-    if (vertexCount <= std::numeric_limits<uint8_t>::max())
-        return ElementType::U8;
-    else if (vertexCount <= std::numeric_limits<uint16_t>::max())
-        return ElementType::U16;
-    else
-        return ElementType::U32;
-}
-
 void IndexBuffer::resize(size_t indexCount)
 {
     getData().resize(getElementSize() * indexCount);
 }
 
-IndexBuffer::ElementType IndexBuffer::getElementType() const
+glw::IndexType IndexBuffer::getIndexType() const
 {
-    return elementType_;
+    return indexType_;
 }
 
 size_t IndexBuffer::getElementSize() const
 {
-    switch (elementType_) {
-    case ElementType::U8:
-        return 1;
-    case ElementType::U16:
-        return 2;
-    case ElementType::U32:
-        return 4;
-    }
+    return glw::getIndexTypeSize(indexType_);
 }
 
 size_t IndexBuffer::getCount() const

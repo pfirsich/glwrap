@@ -91,36 +91,36 @@ namespace detail {
         return 0.0f; // Will never happen
     }
 
-    float convert(glw::VertexFormat::Attribute::Type dataType, bool normalized, const uint8_t* data,
-        size_t component)
+    float convert(
+        glw::AttributeType dataType, bool normalized, const uint8_t* data, size_t component)
     {
         switch (dataType) {
-        case glw::VertexFormat::Attribute::Type::I8:
+        case glw::AttributeType::I8:
             return convertInt<int8_t>(normalized, data, component);
-        case glw::VertexFormat::Attribute::Type::U8:
+        case glw::AttributeType::U8:
             return convertInt<uint8_t>(normalized, data, component);
-        case glw::VertexFormat::Attribute::Type::I16:
+        case glw::AttributeType::I16:
             return convertInt<int16_t>(normalized, data, component);
-        case glw::VertexFormat::Attribute::Type::U16:
+        case glw::AttributeType::U16:
             return convertInt<uint16_t>(normalized, data, component);
-        case glw::VertexFormat::Attribute::Type::I32:
+        case glw::AttributeType::I32:
             return convertInt<int32_t>(normalized, data, component);
-        case glw::VertexFormat::Attribute::Type::U32:
+        case glw::AttributeType::U32:
             return convertInt<uint32_t>(normalized, data, component);
-        case glw::VertexFormat::Attribute::Type::F16:
+        case glw::AttributeType::F16:
             assert(false && "F16 unimplemented");
-        case glw::VertexFormat::Attribute::Type::F32:
+        case glw::AttributeType::F32:
             return *reinterpret_cast<const float*>(data + sizeof(float) * component);
-        case glw::VertexFormat::Attribute::Type::F64:
+        case glw::AttributeType::F64:
             return *reinterpret_cast<const double*>(data + sizeof(double) * component);
-        case glw::VertexFormat::Attribute::Type::IW2Z10Y10X10:
+        case glw::AttributeType::IW2Z10Y10X10:
             // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
             assert(normalized);
             return convertI2101010(data, component);
-        case glw::VertexFormat::Attribute::Type::UiW2Z10Y10X10:
+        case glw::AttributeType::UiW2Z10Y10X10:
             assert(normalized);
             return convertUi2101010(data, component);
-        case glw::VertexFormat::Attribute::Type::UiZ10FY11FX11F:
+        case glw::AttributeType::UiZ10FY11FX11F:
             assert(false && "UiZ10Y11X11 unimplemented");
         }
     }
@@ -206,45 +206,45 @@ namespace detail {
         }
     }
 
-    void assign(glw::VertexFormat::Attribute::Type dataType, bool normalized, uint8_t* data,
-        size_t component, float v)
+    void assign(
+        glw::AttributeType dataType, bool normalized, uint8_t* data, size_t component, float v)
     {
         switch (dataType) {
-        case glw::VertexFormat::Attribute::Type::I8:
+        case glw::AttributeType::I8:
             assignInt<int8_t>(normalized, data, component, v);
             break;
-        case glw::VertexFormat::Attribute::Type::U8:
+        case glw::AttributeType::U8:
             assignInt<uint8_t>(normalized, data, component, v);
             break;
-        case glw::VertexFormat::Attribute::Type::I16:
+        case glw::AttributeType::I16:
             assignInt<int16_t>(normalized, data, component, v);
             break;
-        case glw::VertexFormat::Attribute::Type::U16:
+        case glw::AttributeType::U16:
             assignInt<uint16_t>(normalized, data, component, v);
             break;
-        case glw::VertexFormat::Attribute::Type::I32:
+        case glw::AttributeType::I32:
             assignInt<int32_t>(normalized, data, component, v);
             break;
-        case glw::VertexFormat::Attribute::Type::U32:
+        case glw::AttributeType::U32:
             assignInt<uint32_t>(normalized, data, component, v);
             break;
-        case glw::VertexFormat::Attribute::Type::F16:
+        case glw::AttributeType::F16:
             assert(false && "F16 unimplemented");
             break;
-        case glw::VertexFormat::Attribute::Type::F32:
+        case glw::AttributeType::F32:
             *reinterpret_cast<float*>(data + sizeof(float) * component) = v;
             break;
-        case glw::VertexFormat::Attribute::Type::F64:
+        case glw::AttributeType::F64:
             *reinterpret_cast<double*>(data + sizeof(double) * component) = v;
             break;
-        case glw::VertexFormat::Attribute::Type::IW2Z10Y10X10:
+        case glw::AttributeType::IW2Z10Y10X10:
             assert(normalized); // see above
             assignI2101010(data, component, v);
             break;
-        case glw::VertexFormat::Attribute::Type::UiW2Z10Y10X10:
+        case glw::AttributeType::UiW2Z10Y10X10:
             assignUi2101010(data, component, v);
             break;
-        case glw::VertexFormat::Attribute::Type::UiZ10FY11FX11F:
+        case glw::AttributeType::UiZ10FY11FX11F:
             assert(false && "UiZ10Y11X11 unimplemented");
             break;
         }

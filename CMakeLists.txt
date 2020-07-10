@@ -56,6 +56,7 @@ set(GLWX_SRC
   indexaccessor.cpp
   mesh.cpp
   meshgen.cpp
+  primitive.cpp
   rendertarget.cpp
   shader.cpp
   texture.cpp

@@ -58,9 +58,9 @@ int main(int, char**)
     const auto prog = glwx::makeShaderProgram(vert, frag).value();
 
     glw::VertexFormat vertFmt;
-    vertFmt.add(0, 3, glw::VertexFormat::Attribute::Type::F32);
-    vertFmt.add(1, 2, glw::VertexFormat::Attribute::Type::U16, true);
-    vertFmt.add(2, 4, glw::VertexFormat::Attribute::Type::IW2Z10Y10X10, true);
+    vertFmt.add(0, 3, glw::AttributeType::F32);
+    vertFmt.add(1, 2, glw::AttributeType::U16, true);
+    vertFmt.add(2, 4, glw::AttributeType::IW2Z10Y10X10, true);
 
     // auto mesh = glwx::makeBoxMesh(vertFmt, { 0, 1, 2 }, 1.0f, 1.0f, 1.0f);
     auto mesh = glwx::makeSphereMesh(vertFmt, { 0, 1, 2 }, 0.5f, 32, 32);

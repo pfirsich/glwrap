@@ -62,13 +62,12 @@ int main(int, char**)
     // clang-format on
 
     glw::VertexFormat vertFmt;
-    vertFmt.add(0, 2, glw::VertexFormat::Attribute::Type::F32);
-    vertFmt.add(1, 2, glw::VertexFormat::Attribute::Type::F32);
+    vertFmt.add(0, 2, glw::AttributeType::F32);
+    vertFmt.add(1, 2, glw::AttributeType::F32);
 
     glwx::Mesh quad;
     quad.addVertexBuffer(vertFmt, glw::Buffer::UsageHint::StaticDraw).data(vertices);
-    quad.addIndexBuffer(glwx::IndexBuffer::ElementType::U8, glw::Buffer::UsageHint::StaticDraw)
-        .data(indices);
+    quad.addIndexBuffer(glw::IndexType::U8, glw::Buffer::UsageHint::StaticDraw).data(indices);
 
     const auto texture = glwx::makeTexture2D("assets/wood.jpg").value();
 
