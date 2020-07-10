@@ -20,14 +20,14 @@ public:
 
     explicit Primitive(glw::DrawMode mode = glw::DrawMode::Triangles);
 
-    void addVertexBuffer(
-        const glw::Buffer& buffer, const glw::VertexFormat& vfmt, size_t offset, size_t count);
-    void addVertexBuffer(const glw::Buffer& buffer, const glw::VertexFormat& vfmt, size_t count);
+    // Make sure to set vertexRange before drawing!
+    // These don't have an extra count parameter, because you might have multiple vertex buffers for
+    // a single primitive
+    void addVertexBuffer(const glw::Buffer& buffer, const glw::VertexFormat& vfmt);
     void addVertexBuffer(const VertexBuffer& buffer); // sets count too
 
-    void setIndexBuffer(
-        const glw::Buffer& buffer, glw::IndexType indexType, size_t offset, size_t count);
-    void setIndexBuffer(const glw::Buffer& buffer, glw::IndexType indexType, size_t count);
+    // Make sure to set indexRange before drawing!
+    void setIndexBuffer(const glw::Buffer& buffer, glw::IndexType indexType);
     void setIndexBuffer(const IndexBuffer& buffer); // sets count too
 
     // For index meshes this range is a range in the index buffer, for non-indexed meshes
@@ -41,9 +41,6 @@ public:
     void draw(size_t instanceCount) const;
 
 private:
-    void addVertexBuffer(const glw::Buffer& buffer, const glw::VertexFormat& vfmt);
-    void setIndexBuffer(const glw::Buffer& buffer);
-
     std::optional<glw::IndexType> indexType_;
 };
 }

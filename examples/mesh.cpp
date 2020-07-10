@@ -68,6 +68,7 @@ int main(int, char**)
     glwx::Mesh quad;
     quad.addVertexBuffer(vertFmt, glw::Buffer::UsageHint::StaticDraw).data(vertices);
     quad.addIndexBuffer(glw::IndexType::U8, glw::Buffer::UsageHint::StaticDraw).data(indices);
+    quad.primitive.indexRange = glwx::Primitive::Range { 0, indices.size() };
 
     const auto texture = glwx::makeTexture2D("assets/wood.jpg").value();
 

@@ -38,6 +38,8 @@ Mesh makeQuadMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc,
 
     quad.addIndexBuffer(glw::IndexType::U8, glw::Buffer::UsageHint::StaticDraw).data(indices);
 
+    quad.primitive.indexRange = glwx::Primitive::Range { 0, indices.size() };
+
     return quad;
 }
 
@@ -105,14 +107,17 @@ Mesh makeBoxMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc, f
     vbuf.update();
 
     auto& ibuf = box.addIndexBuffer(glw::IndexType::U8, glw::Buffer::UsageHint::StaticDraw);
-    const auto triangleCount = 6 * 2;
-    ibuf.resize(triangleCount * 3); // 6 sides, 2 triangles per side, 3 indices per triangle
+    // 6 sides, 2 triangles per side, 3 indices per triangle
+    const auto indexCount = 6 * 2 * 3;
+    ibuf.resize(indexCount);
     auto indexAcc = IndexAccessor(ibuf);
     for (size_t side = 0; side < 6; ++side)
         for (size_t vertex = 0; vertex < 6; ++vertex)
             indexAcc[side * 6 + vertex] = 4 * side + indices[vertex];
 
     ibuf.update();
+
+    box.primitive.indexRange = glwx::Primitive::Range { 0, indexCount };
 
     return box;
 }
@@ -206,7 +211,8 @@ Mesh makeSphereMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc
     auto& ibuf
         = sphere.addIndexBuffer(glw::getIndexType(vertexCount), glw::Buffer::UsageHint::StaticDraw);
     const size_t triangleCount = 2 * (slices - 1) * (stacks - 1);
-    ibuf.resize(triangleCount * 3);
+    const size_t indexCount = triangleCount * 3;
+    ibuf.resize(indexCount);
 
     index = 0;
     auto ibufAcc = IndexAccessor(ibuf);
@@ -227,6 +233,8 @@ Mesh makeSphereMesh(const glw::VertexFormat& vfmt, const AttributeLocations& loc
     }
 
     ibuf.update();
+
+    sphere.primitive.indexRange = glwx::Primitive::Range { 0, indexCount };
 
     return sphere;
 }
