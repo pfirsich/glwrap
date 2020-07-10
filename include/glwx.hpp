@@ -7,5 +7,6 @@
 #include "glwx/rendertarget.hpp"
 #include "glwx/shader.hpp"
 #include "glwx/texture.hpp"
+#include "glwx/utility.hpp"
 #include "glwx/vertexaccessor.hpp"
 #include "glwx/window.hpp"

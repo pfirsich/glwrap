@@ -1,6 +1,7 @@
 #pragma once
 
 #include "buffer.hpp"
+#include "enums.hpp"
 #include "framebuffer.hpp"
 #include "log.hpp"
 #include "shader.hpp"
