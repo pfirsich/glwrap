@@ -215,7 +215,7 @@ float getTime()
         return 0.0f;
     static const auto start = SDL_GetPerformanceCounter();
     const auto now = SDL_GetPerformanceCounter();
-    return (now - start) * 1000 / SDL_GetPerformanceFrequency();
+    return static_cast<float>(now - start) / SDL_GetPerformanceFrequency();
 }
 
 std::optional<Window> makeWindow(
