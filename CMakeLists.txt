@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.0.0)
 
 project(glwrap)
 
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${myl_SOURCE_DIR}/cmake")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
@@ -44,8 +43,8 @@ find_package(fmt REQUIRED)
 
 add_library(glw STATIC ${GLW_SRC})
 target_include_directories(glw PUBLIC include)
-target_include_directories(glw PUBLIC deps/glm/include)
-target_include_directories(glw PUBLIC deps/glad/include)
+target_include_directories(glw SYSTEM PUBLIC deps/glm/include)
+target_include_directories(glw SYSTEM PUBLIC deps/glad/include)
 target_link_libraries(glw fmt::fmt)
 set_warn(glw)
 
@@ -70,8 +69,8 @@ find_package(SDL2 REQUIRED)
 
 add_library(glwx STATIC ${GLWX_SRC})
 target_include_directories(glwx PUBLIC include/glwx)
-target_include_directories(glwx PUBLIC ${SDL2_INCLUDE_DIRS})
-target_include_directories(glwx PUBLIC deps/stb)
+target_include_directories(glwx SYSTEM PUBLIC ${SDL2_INCLUDE_DIRS})
+target_include_directories(glwx SYSTEM PUBLIC deps/stb)
 target_link_libraries(glwx glw ${SDL2_LIBRARIES} ${CMAKE_DL_LIBS})
 set_warn(glwx)
 
