@@ -1,0 +1,10 @@
+macro(example sourcename)
+  add_executable(${sourcename} ${sourcename}.cpp)
+  target_include_directories(${sourcename} PUBLIC ../include)
+  target_link_libraries(${sourcename} glwx)
+  set_wall(${sourcename})
+endmacro()
+
+example(rendertarget)
+example(mesh)
+example(3d)
