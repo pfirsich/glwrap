@@ -97,8 +97,7 @@ int main(int, char**)
         const auto dt = time - now;
         time = now;
 
-        modelMatrix
-            = glm::rotate(modelMatrix, glm::radians(dt * 0.03f), glm::vec3(0.0f, 1.0f, 0.0f));
+        modelMatrix = glm::rotate(modelMatrix, dt, glm::vec3(0.0f, 1.0f, 0.0f));
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
