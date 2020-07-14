@@ -15,7 +15,7 @@ std::optional<Shader> makeShader(Shader::Type type, const std::string& source)
         LOG_WARNING("Shader log: {}", res.log);
     if (!res)
         return std::nullopt;
-    return std::move(shader);
+    return shader;
 }
 
 std::optional<Shader> makeShader(Shader::Type type, const std::filesystem::path& path)
@@ -39,7 +39,7 @@ std::optional<ShaderProgram> makeShaderProgram(const Shader& vert, const Shader&
     if (!linkRes)
         return std::nullopt;
     prog.detach(); // Unsure if I want this, but I think I do, so the Shaders can be deleted
-    return std::move(prog);
+    return prog;
 }
 
 }
