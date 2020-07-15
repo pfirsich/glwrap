@@ -39,15 +39,18 @@ set_wall(glw)
 
 
 set(GLWX_SRC
+  aabb.cpp
   buffers.cpp
   debug.cpp
   indexaccessor.cpp
+  math.cpp
   mesh.cpp
   meshgen.cpp
   primitive.cpp
   rendertarget.cpp
   shader.cpp
   texture.cpp
+  transform.cpp
   utility.cpp
   vertexaccessor.cpp
   window.cpp

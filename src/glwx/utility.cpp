@@ -31,10 +31,4 @@ std::string toHexStream(const uint8_t* buffer, size_t size)
     }
     return ss.str();
 }
-
-uint32_t colorToInt(const glm::vec4& col)
-{
-    return static_cast<int>(col.r * 255) << 0 | static_cast<int>(col.g * 255) << 8
-        | static_cast<int>(col.b * 255) << 16 | static_cast<int>(col.a * 255) << 24;
-}
 }
