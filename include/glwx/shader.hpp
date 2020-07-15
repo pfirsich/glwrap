@@ -6,7 +6,7 @@
 #include "../shader.hpp"
 
 namespace glwx {
-std::optional<glw::Shader> makeShader(glw::Shader::Type type, const std::string& source);
+std::optional<glw::Shader> makeShader(glw::Shader::Type type, std::string_view source);
 std::optional<glw::Shader> makeShader(glw::Shader::Type type, const std::filesystem::path& path);
 
 std::optional<glw::ShaderProgram> makeShaderProgram(

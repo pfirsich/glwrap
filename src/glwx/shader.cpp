@@ -6,7 +6,7 @@ using namespace glw;
 
 namespace glwx {
 
-std::optional<Shader> makeShader(Shader::Type type, const std::string& source)
+std::optional<Shader> makeShader(Shader::Type type, std::string_view source)
 {
     Shader shader(type);
     shader.setSource(source);
@@ -25,7 +25,7 @@ std::optional<Shader> makeShader(Shader::Type type, const std::filesystem::path&
         LOG_ERROR("Could not read file '{}'", path);
         return std::nullopt;
     }
-    return makeShader(type, *fileData);
+    return makeShader(type, std::string_view(*fileData));
 }
 
 std::optional<ShaderProgram> makeShaderProgram(const Shader& vert, const Shader& frag)
