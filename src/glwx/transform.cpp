@@ -143,7 +143,7 @@ glm::vec3 Transform::getUp() const
 void Transform::lookAtPos(const glm::vec3& pos, const glm::vec3& at, const glm::vec3& up)
 {
     position_ = pos;
-    orientation_ = glm::normalize(glm::quat_cast(glm::lookAt(pos, at, up)));
+    orientation_ = glm::normalize(glm::conjugate(glm::quat_cast(glm::lookAt(pos, at, up))));
     dirty_ = true;
 }
 
