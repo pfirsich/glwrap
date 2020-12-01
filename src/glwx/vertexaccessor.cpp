@@ -123,6 +123,7 @@ namespace detail {
         case glw::AttributeType::UiZ10FY11FX11F:
             assert(false && "UiZ10Y11X11 unimplemented");
         }
+        assert(false);
     }
 
     template <typename IntType>

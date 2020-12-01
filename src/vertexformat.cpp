@@ -59,6 +59,7 @@ size_t VertexFormat::Attribute::getAlignedSize() const
     case AttributeType::F64:
         return 8 * components;
     }
+    assert(false);
 }
 
 const VertexFormat::Attribute* VertexFormat::get(size_t location) const

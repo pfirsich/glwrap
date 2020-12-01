@@ -120,6 +120,7 @@ namespace debug {
         case Source::Other:
             return "Other";
         }
+        assert(false);
     }
 
     std::string_view toString(Type type)
@@ -144,6 +145,7 @@ namespace debug {
         case Type::Other:
             return "Other";
         }
+        assert(false);
     }
 
     std::string_view toString(Severity severity)
@@ -158,6 +160,7 @@ namespace debug {
         case Severity::Notification:
             return "Notification";
         }
+        assert(false);
     }
 
     std::ostream& operator<<(std::ostream& os, Source source)
