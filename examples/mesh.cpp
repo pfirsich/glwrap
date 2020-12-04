@@ -45,7 +45,7 @@ int main(int, char**)
         }
     )"s;
 
-    const auto prog = glwx::makeShaderProgram(vert, frag).value();
+    const auto prog = glwx::makeShaderProgram(std::string_view(vert), std::string_view(frag)).value();
 
     // clang-format off
     const std::array<float, 16> vertices {

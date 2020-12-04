@@ -1,5 +1,6 @@
 #include "texture.hpp"
 
+#define STBI_WINDOWS_UTF8 // Windows, I hate you
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -77,7 +78,7 @@ std::optional<glw::Texture> makeTexture2D(const uint8_t* encodedBuffer, size_t s
 std::optional<glw::Texture> makeTexture2D(const std::filesystem::path& path, bool mipmaps)
 {
     int width = 0, height = 0, channels = 0;
-    const auto image = stbiImagePtr(stbi_load(path.c_str(), &width, &height, &channels, 0));
+    const auto image = stbiImagePtr(stbi_load(path.u8string().c_str(), &width, &height, &channels, 0));
     if (!image) {
         LOG_ERROR("Could not load image from file: {}", stbi_failure_reason());
         return std::nullopt;

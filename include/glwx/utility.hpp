@@ -3,6 +3,7 @@
 #include <istream>
 #include <optional>
 #include <streambuf>
+#include <filesystem>
 
 #include <glm/glm.hpp>
 
@@ -32,7 +33,7 @@ public:
 
 std::string toHexStream(const uint8_t* data, size_t size);
 
-std::optional<std::string> readFile(const std::string& filename);
+std::optional<std::string> readFile(const std::filesystem::path& filename);
 
 uint32_t colorToInt(const glm::vec4& col);
 }

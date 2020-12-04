@@ -42,7 +42,7 @@ int main(int, char**)
         }
     )"s;
 
-    const auto prog = glwx::makeShaderProgram(vert, frag).value();
+    const auto prog = glwx::makeShaderProgram(std::string_view(vert), std::string_view(frag)).value();
 
     auto renderTarget = glwx::makeRenderTarget(
         512, 512, { glw::ImageFormat::Rgba }, { glw::ImageFormat::Depth24 });

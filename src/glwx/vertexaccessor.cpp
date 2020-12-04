@@ -112,7 +112,7 @@ namespace detail {
         case glw::AttributeType::F32:
             return *reinterpret_cast<const float*>(data + sizeof(float) * component);
         case glw::AttributeType::F64:
-            return *reinterpret_cast<const double*>(data + sizeof(double) * component);
+            return static_cast<float>(*reinterpret_cast<const double*>(data + sizeof(double) * component));
         case glw::AttributeType::IW2Z10Y10X10:
             // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
             assert(normalized);
@@ -146,7 +146,7 @@ namespace detail {
         if (normalized)
             intVal = convertToNormalizedInt<IntType>(v);
         else
-            intVal = v;
+            intVal = static_cast<IntType>(v);
     }
 
     template <uint32_t Bits>

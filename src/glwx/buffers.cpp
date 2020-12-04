@@ -20,13 +20,13 @@ DefaultBuffer::DefaultBuffer(Target target, UsageHint usage)
 
 void DefaultBuffer::bind() const
 {
-    assert(target);
+    assert(target != Target::Undefined);
     Buffer::bind(target);
 }
 
 void DefaultBuffer::unbind() const
 {
-    assert(target);
+    assert(target != Target::Undefined);
     Buffer::unbind(target);
 }
 
