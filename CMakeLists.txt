@@ -41,7 +41,11 @@ add_library(glw STATIC ${GLW_SRC})
 target_include_directories(glw PUBLIC include)
 target_include_directories(glw SYSTEM PUBLIC deps/glad/include)
 target_link_libraries(glw PUBLIC fmt::fmt)
-target_link_libraries(glw PUBLIC glm::glm)
+if (TARGET glm::glm) # new target name (Ubuntu 20.04)
+  target_link_libraries(glw PUBLIC glm::glm)
+else() # old target name (vcpkg)
+  target_link_libraries(glw PUBLIC glm)
+endif()
 set_wall(glw)
 
 
