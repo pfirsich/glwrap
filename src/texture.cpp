@@ -114,8 +114,8 @@ void Texture::storage(
     for (size_t level = 0; level < levels; ++level) {
         glTexImage2D(static_cast<GLenum>(target), level, format, width, height, 0, dataFormat,
             GL_FLOAT, nullptr);
-        width = std::max(1ull, width / 2);
-        height = std::max(1ull, height / 2);
+        width = std::max(static_cast<size_t>(1), width / 2);
+        height = std::max(static_cast<size_t>(1), height / 2);
     }
     // glTexStorage would do this too
     glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_MAX_LEVEL, levels - 1);

@@ -1,4 +1,6 @@
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
+  set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
+endif()
 
 cmake_minimum_required(VERSION 3.0.0)
 
@@ -39,7 +41,7 @@ add_library(glw STATIC ${GLW_SRC})
 target_include_directories(glw PUBLIC include)
 target_include_directories(glw SYSTEM PUBLIC deps/glad/include)
 target_link_libraries(glw PUBLIC fmt::fmt)
-target_link_libraries(glw PUBLIC glm)
+target_link_libraries(glw PUBLIC glm::glm)
 set_wall(glw)
 
 
@@ -71,7 +73,11 @@ target_include_directories(glwx SYSTEM PUBLIC deps/stb)
 # CMAKE_DL_LIBS is for glad
 target_link_libraries(glwx PUBLIC glw)
 target_link_libraries(glwx PUBLIC ${CMAKE_DL_LIBS})
-target_link_libraries(glwx PUBLIC SDL2::SDL2 SDL2::SDL2main)
+if(SDL2_LIBRARIES) # for older CMake files (Ubuntu 20.04 package)
+  target_link_libraries(glwx PUBLIC ${SDL2_LIBRARIES})
+else() # for newer CMake files (incl. vcpkg)
+  target_link_libraries(glwx PUBLIC SDL2::SDL2 SDL2::SDL2main)
+endif()
 set_wall(glwx)
 
 if (GLWRAP_BUILD_EXAMPLES)
