@@ -142,9 +142,8 @@ GLuint State::getCurrentFramebuffer(GLenum target) const
         return readFramebuffer_;
     case GL_DRAW_FRAMEBUFFER:
         return drawFramebuffer_;
-    default:
-        assert(false && "Invalid Framebuffer target");
     }
+    std::abort();
 }
 
 void State::bindFramebuffer(GLenum target, GLuint fbo)

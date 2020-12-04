@@ -23,9 +23,8 @@ size_t getIndexTypeSize(IndexType type)
         return 2;
     case IndexType::U32:
         return 4;
-    default:
-        assert(false && "Invalid index type");
     }
+    std::abort();
 }
 
 size_t VertexFormat::Attribute::getAlignedSize() const
@@ -59,7 +58,7 @@ size_t VertexFormat::Attribute::getAlignedSize() const
     case AttributeType::F64:
         return 8 * components;
     }
-    assert(false);
+    std::abort();
 }
 
 const VertexFormat::Attribute* VertexFormat::get(size_t location) const

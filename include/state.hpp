@@ -105,7 +105,7 @@ private:
         for (size_t i = 0; i < container.size(); ++i)
             if (container[i] == value)
                 return i;
-        assert(false && "Unknown target");
+        std::abort();
     }
 
     static size_t getBufferIndex(GLenum target);

@@ -32,7 +32,7 @@ struct DefaultBuffer : public glw::Buffer {
     template <typename... Args>
     void data(UsageHint usage, Args&&... args)
     {
-        assert(target);
+        assert(target != Target::Undefined);
         Buffer::data(target, usage, std::forward<Args>(args)...);
     }
 
@@ -46,15 +46,15 @@ struct DefaultBuffer : public glw::Buffer {
     template <typename... Args>
     void data(Args&&... args)
     {
-        assert(target);
-        assert(usage);
+        assert(target != Target::Undefined);
+        assert(usage != UsageHint::Undefined);
         Buffer::data(target, usage, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void subData(Args&&... args) const
     {
-        assert(target);
+        assert(target != Target::Undefined);
         Buffer::subData(target, std::forward<Args>(args)...);
     }
 };

@@ -1,9 +1,13 @@
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
+
 cmake_minimum_required(VERSION 3.0.0)
 
 project(glwrap)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
+
+add_compile_definitions(NOMINMAX) # Windows is trash
 
 include(cmake/wall.cmake)
 
@@ -28,13 +32,14 @@ list(TRANSFORM GLW_SRC PREPEND src/)
 
 list(APPEND GLW_SRC deps/glad/glad.c)
 
-find_package(fmt REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 
 add_library(glw STATIC ${GLW_SRC})
 target_include_directories(glw PUBLIC include)
-target_include_directories(glw SYSTEM PUBLIC deps/glm/include)
 target_include_directories(glw SYSTEM PUBLIC deps/glad/include)
-target_link_libraries(glw fmt::fmt)
+target_link_libraries(glw PUBLIC fmt::fmt)
+target_link_libraries(glw PUBLIC glm)
 set_wall(glw)
 
 
@@ -57,14 +62,16 @@ set(GLWX_SRC
 )
 list(TRANSFORM GLWX_SRC PREPEND src/glwx/)
 
-find_package(SDL2 REQUIRED)
+find_package(SDL2 CONFIG REQUIRED)
 
 add_library(glwx STATIC ${GLWX_SRC})
 target_include_directories(glwx PUBLIC include/glwx)
 target_include_directories(glwx SYSTEM PUBLIC ${SDL2_INCLUDE_DIRS})
 target_include_directories(glwx SYSTEM PUBLIC deps/stb)
 # CMAKE_DL_LIBS is for glad
-target_link_libraries(glwx glw ${SDL2_LIBRARIES} ${CMAKE_DL_LIBS})
+target_link_libraries(glwx PUBLIC glw)
+target_link_libraries(glwx PUBLIC ${CMAKE_DL_LIBS})
+target_link_libraries(glwx PUBLIC SDL2::SDL2 SDL2::SDL2main)
 set_wall(glwx)
 
 if (GLWRAP_BUILD_EXAMPLES)

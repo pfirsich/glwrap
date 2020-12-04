@@ -2,12 +2,13 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <filesystem>
 
 #include "utility.hpp"
 
 namespace glwx {
 // http://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html
-std::optional<std::string> readFile(const std::string& filename)
+std::optional<std::string> readFile(const std::filesystem::path& filename)
 {
     std::ifstream file(filename, std::ios::in);
     if (!file)

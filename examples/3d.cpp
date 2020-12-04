@@ -55,7 +55,7 @@ int main(int, char**)
         }
     )"s;
 
-    const auto prog = glwx::makeShaderProgram(vert, frag).value();
+    const auto prog = glwx::makeShaderProgram(std::string_view(vert), std::string_view(frag)).value();
 
     glw::VertexFormat vertFmt;
     vertFmt.add(0, 3, glw::AttributeType::F32);
