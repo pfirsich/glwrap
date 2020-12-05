@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cassert>
+#include <cstdlib>
 #include <optional>
 #include <tuple>
 
