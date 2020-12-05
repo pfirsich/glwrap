@@ -69,11 +69,12 @@ set(GLWX_SRC
 list(TRANSFORM GLWX_SRC PREPEND src/glwx/)
 
 find_package(SDL2 CONFIG REQUIRED)
+find_path(STB_INCLUDE_DIRS "stb.h" HINTS deps/stb)
 
 add_library(glwx STATIC ${GLWX_SRC})
 target_include_directories(glwx PUBLIC include/glwx)
 target_include_directories(glwx SYSTEM PUBLIC ${SDL2_INCLUDE_DIRS})
-target_include_directories(glwx SYSTEM PUBLIC deps/stb)
+target_include_directories(glwx SYSTEM PUBLIC ${STB_INCLUDE_DIRS})
 # CMAKE_DL_LIBS is for glad
 target_link_libraries(glwx PUBLIC glw)
 target_link_libraries(glwx PUBLIC ${CMAKE_DL_LIBS})
