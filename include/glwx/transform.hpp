@@ -4,11 +4,16 @@
 namespace glwx {
 class Transform {
 public:
-    Transform();
+    Transform() = default;
+    Transform(const Transform&) = default;
+    Transform(Transform&&) = default;
     Transform(const glm::vec3& pos);
     Transform(const glm::vec3& pos, const glm::quat& ori);
     Transform(const glm::vec3& pos, const glm::quat& ori, const glm::vec3& scale);
     Transform(const glm::mat4& matrix);
+
+    Transform& operator=(const Transform&) = default;
+    Transform& operator=(Transform&&) = default;
 
     const glm::vec3& getPosition() const;
     void setPosition(const glm::vec3& position);

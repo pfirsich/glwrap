@@ -4,10 +4,6 @@
 #include <glm/gtx/transform.hpp>
 
 namespace glwx {
-Transform::Transform()
-{
-}
-
 Transform::Transform(const glm::vec3& pos)
     : position_(pos)
 {
