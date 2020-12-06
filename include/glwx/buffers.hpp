@@ -39,7 +39,7 @@ struct DefaultBuffer : public glw::Buffer {
     template <typename... Args>
     void data(Target target, Args&&... args)
     {
-        assert(usage);
+        assert(usage != UsageHint::Undefined);
         Buffer::data(target, usage, std::forward<Args>(args)...);
     }
 
