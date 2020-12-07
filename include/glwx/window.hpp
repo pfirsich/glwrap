@@ -52,6 +52,7 @@ public:
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
     Window(Window&& other);
+    Window& operator=(Window&& other); // can only move-assign to default-constructed window
 
     bool init(const std::string& title, size_t width, size_t height, const Properties& properties);
 

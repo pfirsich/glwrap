@@ -119,6 +119,15 @@ Window::Window(Window&& other)
     other.glContext_ = nullptr;
 }
 
+Window& Window::operator=(Window&& other)
+{
+    window_ = other.window_;
+    glContext_ = other.glContext_;
+    other.window_ = nullptr;
+    other.glContext_ = nullptr;
+    return *this;
+}
+
 bool Window::init(
     const std::string& title, size_t width, size_t height, const Properties& properties)
 {
