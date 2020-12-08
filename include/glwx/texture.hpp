@@ -18,4 +18,8 @@ glw::Texture makeTexture2D(size_t width, size_t height, size_t checkerSize,
 std::optional<glw::Texture> makeTexture2D(
     const uint8_t* encodedBuffer, size_t size, bool mipmaps = true);
 std::optional<glw::Texture> makeTexture2D(const std::filesystem::path& path, bool mipmaps = true);
+std::optional<glw::Texture> makeCubeTexture(const std::filesystem::path& posX,
+    const std::filesystem::path& negX, const std::filesystem::path& posY,
+    const std::filesystem::path& negY, const std::filesystem::path& posZ,
+    const std::filesystem::path& negZ);
 }

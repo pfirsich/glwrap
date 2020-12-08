@@ -49,16 +49,16 @@ public:
         Texture1DArray = GL_TEXTURE_1D_ARRAY,
         Texture2DArray = GL_TEXTURE_2D_ARRAY,
         TextureRectangle = GL_TEXTURE_RECTANGLE,
-        TextureCupeMap = GL_TEXTURE_CUBE_MAP,
+        TextureCubeMap = GL_TEXTURE_CUBE_MAP,
         TextureBuffer = GL_TEXTURE_BUFFER,
         Texture2DMultisample = GL_TEXTURE_2D_MULTISAMPLE,
         Texture2DMultisampleArray = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
-        TextureCuteMapPosX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-        TextureCuteMapNegX = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-        TextureCuteMapPosY = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-        TextureCuteMapNegY = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-        TextureCuteMapPosZ = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-        TextureCuteMapNegZ = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
+        TextureCubeMapPosX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+        TextureCubeMapNegX = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+        TextureCubeMapPosY = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+        TextureCubeMapNegY = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        TextureCubeMapPosZ = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+        TextureCubeMapNegZ = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
     };
 
     enum class DataFormat : GLenum {
@@ -116,6 +116,7 @@ public:
         One = GL_ONE,
     };
 
+    Texture() = default;
     Texture(Target target);
     ~Texture();
 
@@ -192,8 +193,8 @@ private:
     void setParameter(GLenum param, float val);
     void reset();
 
-    Target target_;
-    GLuint texture_;
+    Target target_ = Target::Invalid;
+    GLuint texture_ = 0;
     size_t width_ = 0;
     size_t height_ = 0;
     ImageFormat imageFormat_ = ImageFormat::Invalid;

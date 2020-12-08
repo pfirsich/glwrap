@@ -78,11 +78,39 @@ std::optional<glw::Texture> makeTexture2D(const uint8_t* encodedBuffer, size_t s
 std::optional<glw::Texture> makeTexture2D(const std::filesystem::path& path, bool mipmaps)
 {
     int width = 0, height = 0, channels = 0;
-    const auto image = stbiImagePtr(stbi_load(path.u8string().c_str(), &width, &height, &channels, 0));
+    const auto image
+        = stbiImagePtr(stbi_load(path.u8string().c_str(), &width, &height, &channels, 0));
     if (!image) {
         LOG_ERROR("Could not load image from file: {}", stbi_failure_reason());
         return std::nullopt;
     }
     return makeTexture2D(image.get(), width, height, channels, mipmaps);
+}
+
+std::optional<glw::Texture> makeCubeTexture(const std::filesystem::path& posX,
+    const std::filesystem::path& negX, const std::filesystem::path& posY,
+    const std::filesystem::path& negY, const std::filesystem::path& posZ,
+    const std::filesystem::path& negZ)
+{
+    Texture texture(Texture::Target::TextureCubeMap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texture.getTexture());
+    std::array<std::filesystem::path, 6> files { posX, negX, posY, negY, posZ, negZ };
+    for (size_t i = 0; i < 6; ++i) {
+        int w = 0, h = 0, c = 0;
+        const auto image = stbiImagePtr(stbi_load(files[i].u8string().c_str(), &w, &h, &c, 0));
+        if (!image) {
+            LOG_ERROR("Could not load image from file: {}", stbi_failure_reason());
+            return std::nullopt;
+        }
+        const auto target = static_cast<Texture::Target>(
+            static_cast<GLenum>(Texture::Target::TextureCubeMapPosX) + i);
+        const auto format = channelsToFormat[c - 1];
+        const auto dataFormat = static_cast<Texture::DataFormat>(format);
+        assert(c >= 1 && c <= 4);
+        texture.image(target, 0, format, w, h, dataFormat, Texture::DataType::U8, image.get());
+    }
+    texture.setFilter(glw::Texture::MinFilter::Linear, glw::Texture::MagFilter::Linear);
+    texture.setWrap(glw::Texture::WrapMode::ClampToEdge);
+    return texture;
 }
 }
