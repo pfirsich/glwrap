@@ -118,7 +118,7 @@ const glm::mat4& Transform::getMatrix() const
 
 glm::vec3 Transform::localToWorld(const glm::vec3& vec) const
 {
-    return glm::conjugate(orientation_) * vec;
+    return orientation_ * vec;
 }
 
 glm::vec3 Transform::getForward() const
