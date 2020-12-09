@@ -218,6 +218,11 @@ bool Window::setSwapInterval(int interval) const
     return true;
 }
 
+void Window::maximize() const
+{
+    SDL_MaximizeWindow(window_);
+}
+
 float getTime()
 {
     if (!initSubSystem(SDL_INIT_TIMER))

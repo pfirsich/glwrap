@@ -59,6 +59,7 @@ public:
     glm::ivec2 getSize() const;
     void swap() const;
     bool setSwapInterval(int interval) const;
+    void maximize() const;
 
 private:
     SDL_Window* window_ = nullptr;
