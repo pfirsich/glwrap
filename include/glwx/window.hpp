@@ -60,6 +60,7 @@ public:
     void swap() const;
     bool setSwapInterval(int interval) const;
     void maximize() const;
+    void setTitle(const std::string& title) const;
 
 private:
     SDL_Window* window_ = nullptr;

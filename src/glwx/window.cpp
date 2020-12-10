@@ -223,6 +223,11 @@ void Window::maximize() const
     SDL_MaximizeWindow(window_);
 }
 
+void Window::setTitle(const std::string& title) const
+{
+    SDL_SetWindowTitle(window_, title.c_str());
+}
+
 float getTime()
 {
     if (!initSubSystem(SDL_INIT_TIMER))
