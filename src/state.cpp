@@ -7,6 +7,15 @@ State& State::instance()
     return inst;
 }
 
+void State::resetStatistics()
+{
+    statistics_ = Statistics {};
+}
+State::Statistics State::getStatistics() const
+{
+    return statistics_;
+}
+
 std::tuple<int, int, size_t, size_t> State::getViewport() const
 {
     return viewport_;
@@ -49,6 +58,7 @@ void State::bindVao(GLuint vao)
 {
     glBindVertexArray(vao);
     vao_ = vao;
+    statistics_.vertexArrayBinds++;
 }
 
 void State::unbindVao()
@@ -67,6 +77,7 @@ void State::bindShader(GLuint prog)
         return;
     glUseProgram(prog);
     shaderProgram_ = prog;
+    statistics_.shaderBinds++;
 }
 
 void State::unbindShader()
@@ -115,6 +126,7 @@ void State::bindTexture(unsigned int unit, GLenum target, GLuint texture)
     glActiveTexture(GL_TEXTURE0 + unit);
     glBindTexture(target, texture);
     currentTexture = texture;
+    statistics_.textureBinds++;
 }
 
 void State::unbindTexture(unsigned int unit, GLenum target)
@@ -168,6 +180,7 @@ void State::bindFramebuffer(GLenum target, GLuint fbo)
         readFramebuffer_ = fbo;
     if (target == GL_FRAMEBUFFER || target == GL_DRAW_FRAMEBUFFER)
         drawFramebuffer_ = fbo;
+    statistics_.frameBufferBinds++;
 }
 
 void State::unbindFramebuffer(GLenum target)

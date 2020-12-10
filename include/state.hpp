@@ -22,12 +22,22 @@ enum class DepthFunc : GLenum {
 
 class State {
 public:
+    struct Statistics {
+        size_t vertexArrayBinds = 0;
+        size_t shaderBinds = 0;
+        size_t textureBinds = 0;
+        size_t frameBufferBinds = 0;
+    };
+
     // GL_MAX_TEXTURE_IMAGE_UNITS is 16 in GL 3.3
     static constexpr size_t maxTextureUnits = 16;
 
     static State& instance();
 
     ~State() = default;
+
+    void resetStatistics();
+    Statistics getStatistics() const;
 
     std::tuple<int, int, size_t, size_t> getViewport() const;
     void setViewport(int x, int y, size_t width, size_t height);
@@ -116,6 +126,7 @@ private:
     State(const State&) = delete;
     State& operator=(const State&) = delete;
 
+    Statistics statistics_;
     std::tuple<int, int, size_t, size_t> viewport_ = { 0, 0, 0, 0 };
     DepthFunc depthFunc_ = DepthFunc::Less;
     GLuint vao_ = 0;
