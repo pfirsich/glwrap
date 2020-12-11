@@ -45,6 +45,7 @@ public:
         bool stencil = false;
         bool srgb = false;
         int msaaSamples = 0;
+        bool allowHighDpi = true;
     };
 
     Window() = default;
@@ -61,6 +62,8 @@ public:
     bool setSwapInterval(int interval) const;
     void maximize() const;
     void setTitle(const std::string& title) const;
+    SDL_Window* getSdlWindow() const;
+    SDL_GLContext getSdlGlContext() const;
 
 private:
     SDL_Window* window_ = nullptr;

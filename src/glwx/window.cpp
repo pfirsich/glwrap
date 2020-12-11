@@ -176,6 +176,7 @@ bool Window::init(
     flags |= (properties.resizable ? SDL_WINDOW_RESIZABLE : 0);
     flags |= (properties.maximized ? SDL_WINDOW_MAXIMIZED : 0);
     flags |= (properties.minimized ? SDL_WINDOW_MINIMIZED : 0);
+    flags |= (properties.allowHighDpi ? SDL_WINDOW_ALLOW_HIGHDPI : 0);
     window_ = SDL_CreateWindow(
         title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
     if (!window_) {
@@ -226,6 +227,16 @@ void Window::maximize() const
 void Window::setTitle(const std::string& title) const
 {
     SDL_SetWindowTitle(window_, title.c_str());
+}
+
+SDL_Window* Window::getSdlWindow() const
+{
+    return window_;
+}
+
+SDL_GLContext Window::getSdlGlContext() const
+{
+    return glContext_;
 }
 
 float getTime()
