@@ -73,6 +73,6 @@ struct fmt::formatter<glm::qua<T, Q>> {
     template <typename FormatContext>
     auto format(const glm::qua<T, Q>& q, FormatContext& ctx)
     {
-        return format_to(ctx.out(), glm::to_string(q));
+        return format_to(ctx.out(), "quat({}, ({}, {}, {}))", q.w, q.x, q.y, q.z);
     }
 };
