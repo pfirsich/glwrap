@@ -188,6 +188,8 @@ public:
 private:
     static DataFormat getStorageFormat(ImageFormat format);
 
+    size_t getMaxNumMipLevels() const;
+
     void setParameter(GLenum param, GLint val);
     void setParameter(GLenum param, GLenum val);
     void setParameter(GLenum param, float val);

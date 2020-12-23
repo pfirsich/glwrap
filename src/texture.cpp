@@ -96,16 +96,21 @@ void Texture::subImage(size_t level, DataFormat dataFormat, DataType dataType, c
     subImage(target_, level, 0, 0, width_, height_, dataFormat, dataType, data);
 }
 
+size_t Texture::getMaxNumMipLevels() const
+{
+    return 1 + static_cast<size_t>(std::floor(std::log2(std::max(width_, height_))));
+}
+
 void Texture::storage(
     Target target, size_t levels, ImageFormat imageFormat, size_t width, size_t height)
 {
     assert(width > 0 && height > 0);
-    if (levels == 0)
-        levels = 1 + static_cast<size_t>(std::floor(std::log2(std::max(width, height))));
-
     imageFormat_ = imageFormat;
     width_ = width;
     height_ = height;
+    if (levels == 0)
+        levels = getMaxNumMipLevels();
+
     bind(0);
     // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
     assert(target == Target::Texture2D || target == Target::TextureRectangle);
@@ -130,6 +135,7 @@ void Texture::generateMipmaps() const
 {
     bind(0);
     glGenerateMipmap(static_cast<GLenum>(target_));
+    glTexParameteri(static_cast<GLenum>(target_), GL_TEXTURE_MAX_LEVEL, getMaxNumMipLevels() - 1);
 }
 
 void Texture::setWrapS(WrapMode wrap)
