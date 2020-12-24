@@ -134,8 +134,8 @@ void Texture::storage(size_t levels, ImageFormat imageFormat, size_t width, size
 void Texture::generateMipmaps() const
 {
     bind(0);
-    glGenerateMipmap(static_cast<GLenum>(target_));
     glTexParameteri(static_cast<GLenum>(target_), GL_TEXTURE_MAX_LEVEL, getMaxNumMipLevels() - 1);
+    glGenerateMipmap(static_cast<GLenum>(target_));
 }
 
 void Texture::setWrapS(WrapMode wrap)
