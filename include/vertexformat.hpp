@@ -30,6 +30,29 @@ enum class IndexType {
     U32 = GL_UNSIGNED_INT,
 };
 
+namespace detail {
+    template <typename T>
+    struct IndexEnum;
+
+    template <>
+    struct IndexEnum<uint8_t> {
+        static constexpr auto value = IndexType::U8;
+    };
+
+    template <>
+    struct IndexEnum<uint16_t> {
+        static constexpr auto value = IndexType::U16;
+    };
+
+    template <>
+    struct IndexEnum<uint32_t> {
+        static constexpr auto value = IndexType::U32;
+    };
+}
+
+template <typename T>
+constexpr IndexType IndexEnum = detail::IndexEnum<T>::value;
+
 IndexType getIndexType(size_t vertexCount);
 size_t getIndexTypeSize(IndexType type);
 
