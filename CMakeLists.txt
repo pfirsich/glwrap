@@ -62,6 +62,7 @@ set(GLWX_SRC
   shader.cpp
   texture.cpp
   transform.cpp
+  transform2d.cpp
   utility.cpp
   vertexaccessor.cpp
   window.cpp
