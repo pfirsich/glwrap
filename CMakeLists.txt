@@ -60,6 +60,7 @@ set(GLWX_SRC
   primitive.cpp
   rendertarget.cpp
   shader.cpp
+  spriterenderer.cpp
   texture.cpp
   transform.cpp
   transform2d.cpp

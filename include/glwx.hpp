@@ -8,6 +8,7 @@
 #include "glwx/meshgen.hpp"
 #include "glwx/rendertarget.hpp"
 #include "glwx/shader.hpp"
+#include "glwx/spriterenderer.hpp"
 #include "glwx/texture.hpp"
 #include "glwx/transform.hpp"
 #include "glwx/transform2d.hpp"
