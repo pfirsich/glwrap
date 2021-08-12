@@ -88,6 +88,17 @@ public:
         unbind(target);
     }
 
+    template <typename... Args>
+    void update(Target target, UsageHint usage, Args&&... args)
+    {
+        const auto [ptr, size] = toPtrRange(std::forward<Args>(args)...);
+        if (size_ < size) {
+            data(target, usage, ptr, size);
+        } else {
+            subData(target, ptr, size);
+        }
+    }
+
     GLuint getBuffer() const;
 
     size_t getSize() const;

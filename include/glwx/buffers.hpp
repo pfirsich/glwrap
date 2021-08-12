@@ -57,6 +57,14 @@ struct DefaultBuffer : public glw::Buffer {
         assert(target != Target::Undefined);
         Buffer::subData(target, std::forward<Args>(args)...);
     }
+
+    template <typename... Args>
+    void update(Args&&... args)
+    {
+        assert(target != Target::Undefined);
+        assert(usage != UsageHint::Undefined);
+        Buffer::update(target, usage, std::forward<Args>(args)...);
+    }
 };
 
 // This class saves a GL Buffer and it's local data.
