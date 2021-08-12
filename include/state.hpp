@@ -27,6 +27,7 @@ public:
         size_t shaderBinds = 0;
         size_t textureBinds = 0;
         size_t frameBufferBinds = 0;
+        size_t drawCalls = 0;
     };
 
     // GL_MAX_TEXTURE_IMAGE_UNITS is 16 in GL 3.3
@@ -37,7 +38,7 @@ public:
     ~State() = default;
 
     void resetStatistics();
-    Statistics getStatistics() const;
+    Statistics& getStatistics();
 
     std::tuple<int, int, size_t, size_t> getViewport() const;
     void setViewport(int x, int y, size_t width, size_t height);

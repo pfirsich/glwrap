@@ -54,6 +54,7 @@ void Primitive::draw(size_t offset, size_t count) const
         glDrawArrays(m, offset, count);
     }
     vertexArray.unbind();
+    State::instance().getStatistics().drawCalls++;
 }
 
 void Primitive::draw() const
@@ -77,6 +78,7 @@ void Primitive::draw(size_t offset, size_t count, size_t instanceCount) const
         glDrawArraysInstanced(m, offset, count, instanceCount);
     }
     vertexArray.unbind();
+    State::instance().getStatistics().drawCalls++;
 }
 
 void Primitive::draw(size_t instanceCount) const

@@ -11,7 +11,7 @@ void State::resetStatistics()
 {
     statistics_ = Statistics {};
 }
-State::Statistics State::getStatistics() const
+State::Statistics& State::getStatistics()
 {
     return statistics_;
 }
