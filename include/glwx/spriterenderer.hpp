@@ -39,6 +39,9 @@ public:
 
     void addIndex(IndexType index);
 
+    size_t getNumVertices() const;
+    size_t getNumIndices() const;
+
     void clear();
 
     void flush();
@@ -93,7 +96,13 @@ public:
 
     glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
+    void setCurrentTexture(const glw::Texture* texture);
+
     void draw(const glw::Texture& texture, const Transform2D& transform,
+        const TextureRegion& region = TextureRegion {});
+
+    void draw(const glw::Texture& texture, const std::vector<glm::vec2>& points,
+        const Transform2D& transform = Transform2D {},
         const TextureRegion& region = TextureRegion {});
 
     void flush();

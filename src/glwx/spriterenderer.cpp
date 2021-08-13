@@ -29,6 +29,16 @@ void SpriteBatch::addIndex(IndexType index)
     indices_.push_back(index);
 }
 
+size_t SpriteBatch::getNumVertices() const
+{
+    return vertices_.size();
+}
+
+size_t SpriteBatch::getNumIndices() const
+{
+    return indices_.size();
+}
+
 void SpriteBatch::clear()
 {
     vertices_.clear();
@@ -37,9 +47,11 @@ void SpriteBatch::clear()
 
 void SpriteBatch::flush()
 {
-    vertexBuffer_.update(vertices_);
-    indexBuffer_.update(indices_);
-    primitive_.draw(0, indices_.size());
+    if (!indices_.empty()) {
+        vertexBuffer_.update(vertices_);
+        indexBuffer_.update(indices_);
+        primitive_.draw(0, indices_.size());
+    }
     clear();
 }
 
@@ -60,15 +72,20 @@ glw::ShaderProgram& SpriteRenderer::getDefaultShaderProgram()
     return shader;
 }
 
-void SpriteRenderer::draw(
-    const glw::Texture& texture, const Transform2D& transform, const TextureRegion& region)
+void SpriteRenderer::setCurrentTexture(const glw::Texture* texture)
 {
-    if (currentTexture_ != &texture) {
+    if (currentTexture_ != texture) {
         if (currentTexture_) {
             flush();
         }
-        currentTexture_ = &texture;
+        currentTexture_ = texture;
     }
+}
+
+void SpriteRenderer::draw(
+    const glw::Texture& texture, const Transform2D& transform, const TextureRegion& region)
+{
+    setCurrentTexture(&texture);
 
     const auto p = transform.transformPoint(glm::vec2(0.0f, 0.0f));
     const auto s = transform.transformDirection(
@@ -90,9 +107,30 @@ void SpriteRenderer::draw(
     batch_.addIndex(tr);
 }
 
+void SpriteRenderer::draw(const glw::Texture& texture, const std::vector<glm::vec2>& points,
+    const Transform2D& transform, const TextureRegion& region)
+{
+    assert(points.size() >= 3);
+
+    setCurrentTexture(&texture);
+
+    const auto baseIdx = batch_.getNumVertices();
+    for (const auto& point : points) {
+        batch_.addVertex(
+            transform.transformPoint(point), point * region.size + region.position, color);
+    }
+
+    for (size_t i = 1; i < points.size() - 1; ++i) {
+        batch_.addIndex(baseIdx + 0);
+        batch_.addIndex(baseIdx + i);
+        batch_.addIndex(baseIdx + i + 1);
+    }
+}
+
 void SpriteRenderer::flush()
 {
     // We could (should!) be cleverer with allocating texture units here
+    assert(currentTexture_);
     currentTexture_->bind(0);
     batch_.flush();
 }
