@@ -38,7 +38,7 @@ private:
      * c  d  y
      * 0  0  1
      */
-    float a = 1.0f, b = 0.0f, c = 1.0f, d = 0.0f;
+    float a = 1.0f, b = 0.0f, c = 0.0f, d = 1.0f;
     float x = 0.0f, y = 0.0f;
 };
 
