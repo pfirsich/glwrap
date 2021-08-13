@@ -16,7 +16,6 @@ Transform2D::Transform2D(float a, float b, float c, float d, float x, float y)
 Transform2D::Transform2D(
     const glm::vec2& position, float rotation, const glm::vec2& scale, const glm::vec2& offset)
 {
-    reset();
     translate(offset);
     this->scale(scale);
     rotate(rotation);
@@ -67,7 +66,7 @@ void Transform2D::apply(const Transform2D& other)
     c = nc;
     d = nd;
     const auto nx = other.a * x + other.b * y + other.x;
-    const auto ny = other.c * x + other.d + y * other.y;
+    const auto ny = other.c * x + other.d * y + other.y;
     x = nx;
     y = ny;
 }
