@@ -88,7 +88,7 @@ public:
         out vec4 fragColor;
 
         void main() {
-            fragColor = texture2D(base, texCoords) * color;
+            fragColor = texture(base, texCoords) * color;
         }
     )";
 
