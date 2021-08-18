@@ -1,9 +1,10 @@
 #pragma once
 
+#include <filesystem>
 #include <istream>
 #include <optional>
+#include <stddef.h>
 #include <streambuf>
-#include <filesystem>
 
 #include <glm/glm.hpp>
 

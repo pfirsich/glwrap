@@ -1,6 +1,7 @@
 #include "vertexformat.hpp"
 
 #include <cassert>
+#include <limits>
 
 namespace glw {
 IndexType getIndexType(size_t vertexCount)

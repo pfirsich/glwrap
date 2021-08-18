@@ -1,6 +1,7 @@
 #include "vertexaccessor.hpp"
 
 #include <cassert>
+#include <limits>
 
 namespace glwx {
 namespace detail {
@@ -112,7 +113,8 @@ namespace detail {
         case glw::AttributeType::F32:
             return *reinterpret_cast<const float*>(data + sizeof(float) * component);
         case glw::AttributeType::F64:
-            return static_cast<float>(*reinterpret_cast<const double*>(data + sizeof(double) * component));
+            return static_cast<float>(
+                *reinterpret_cast<const double*>(data + sizeof(double) * component));
         case glw::AttributeType::IW2Z10Y10X10:
             // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
             assert(normalized);
@@ -122,8 +124,10 @@ namespace detail {
             return convertUi2101010(data, component);
         case glw::AttributeType::UiZ10FY11FX11F:
             assert(false && "UiZ10Y11X11 unimplemented");
+            std::abort();
         }
         assert(false);
+        std::abort();
     }
 
     template <typename IntType>
