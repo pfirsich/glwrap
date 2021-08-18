@@ -88,15 +88,17 @@ void SpriteRenderer::draw(
     setCurrentTexture(&texture);
 
     const auto p = transform.transformPoint(glm::vec2(0.0f, 0.0f));
-    const auto s = transform.transformDirection(
-        glm::vec2(static_cast<float>(texture.getWidth()), static_cast<float>(texture.getHeight())));
+    const auto sx
+        = transform.transformDirection(glm::vec2(static_cast<float>(texture.getWidth()), 0.0f));
+    const auto sy
+        = transform.transformDirection(glm::vec2(0.0f, static_cast<float>(texture.getHeight())));
 
     const auto tl = batch_.addVertex(p, region.position, color);
-    const auto tr = batch_.addVertex(
-        p + glm::vec2(s.x, 0.0f), region.position + glm::vec2(region.size.x, 0.0f), color);
-    const auto br = batch_.addVertex(p + s, region.position + region.size, color);
-    const auto bl = batch_.addVertex(
-        p + glm::vec2(0.0f, s.y), region.position + glm::vec2(0.0f, region.size.y), color);
+    const auto tr
+        = batch_.addVertex(p + sx, region.position + glm::vec2(region.size.x, 0.0f), color);
+    const auto br = batch_.addVertex(p + sx + sy, region.position + region.size, color);
+    const auto bl
+        = batch_.addVertex(p + sy, region.position + glm::vec2(0.0f, region.size.y), color);
 
     batch_.addIndex(tl);
     batch_.addIndex(bl);

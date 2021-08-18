@@ -13,13 +13,12 @@ Transform2D::Transform2D(float a, float b, float c, float d, float x, float y)
 }
 
 // T * R * S * O
-Transform2D::Transform2D(
-    const glm::vec2& position, float rotation, const glm::vec2& scale, const glm::vec2& offset)
+Transform2D::Transform2D(const glm::vec2& p, float r, const glm::vec2& s, const glm::vec2& o)
 {
-    translate(offset);
-    this->scale(scale);
-    rotate(rotation);
-    translate(position);
+    translate(o);
+    scale(s);
+    rotate(r);
+    translate(p);
 }
 
 void Transform2D::reset()
