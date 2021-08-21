@@ -17,9 +17,9 @@ struct TextureRegion {
 };
 
 class SpriteBatch {
+public:
     using IndexType = uint16_t;
 
-public:
     struct AttributeLocations {
         static constexpr size_t Position = 0;
         static constexpr size_t TexCoord = 1;

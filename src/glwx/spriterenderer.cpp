@@ -123,9 +123,9 @@ void SpriteRenderer::draw(const glw::Texture& texture, const std::vector<glm::ve
     }
 
     for (size_t i = 1; i < points.size() - 1; ++i) {
-        batch_.addIndex(baseIdx + 0);
-        batch_.addIndex(baseIdx + i);
-        batch_.addIndex(baseIdx + i + 1);
+        batch_.addIndex(static_cast<SpriteBatch::IndexType>(baseIdx + 0));
+        batch_.addIndex(static_cast<SpriteBatch::IndexType>(baseIdx + i));
+        batch_.addIndex(static_cast<SpriteBatch::IndexType>(baseIdx + i + 1));
     }
 }
 

@@ -38,7 +38,8 @@ void Renderbuffer::bind() const
 void Renderbuffer::storage(ImageFormat format, size_t width, size_t height)
 {
     bind();
-    glRenderbufferStorage(GL_RENDERBUFFER, static_cast<GLenum>(format), width, height);
+    glRenderbufferStorage(GL_RENDERBUFFER, static_cast<GLenum>(format), static_cast<GLsizei>(width),
+        static_cast<GLsizei>(height));
 }
 
 GLuint Renderbuffer::getRenderbuffer() const

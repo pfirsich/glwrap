@@ -50,7 +50,7 @@ void Texture::bind(unsigned int unit) const
     State::instance().bindTexture(unit, static_cast<GLenum>(target_), texture_);
 }
 
-void Texture::bind(unsigned unit, Target target) const
+void Texture::bind(unsigned int unit, Target target) const
 {
     State::instance().bindTexture(unit, static_cast<GLenum>(target), texture_);
 }
@@ -62,8 +62,9 @@ void Texture::image(Target target, size_t level, ImageFormat imageFormat, size_t
     width_ = width;
     height_ = height;
     bind(0);
-    glTexImage2D(static_cast<GLenum>(target), level, static_cast<GLenum>(imageFormat), width,
-        height, 0, static_cast<GLenum>(dataFormat), static_cast<GLenum>(dataType), data);
+    glTexImage2D(static_cast<GLenum>(target), static_cast<GLint>(level),
+        static_cast<GLenum>(imageFormat), static_cast<GLsizei>(width), static_cast<GLsizei>(height),
+        0, static_cast<GLenum>(dataFormat), static_cast<GLenum>(dataType), data);
 }
 
 void Texture::image(ImageFormat imageFormat, size_t width, size_t height, DataFormat dataFormat,
@@ -82,7 +83,8 @@ void Texture::subImage(Target target, size_t level, size_t x, size_t y, size_t w
     DataFormat dataFormat, DataType dataType, const void* data) const
 {
     bind(0);
-    glTexSubImage2D(static_cast<GLenum>(target), level, x, y, width, height,
+    glTexSubImage2D(static_cast<GLenum>(target), static_cast<GLint>(level), static_cast<GLint>(x),
+        static_cast<GLint>(y), static_cast<GLsizei>(width), static_cast<GLsizei>(height),
         static_cast<GLenum>(dataFormat), static_cast<GLenum>(dataType), data);
 }
 

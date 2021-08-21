@@ -23,7 +23,7 @@ std::tuple<int, int, size_t, size_t> State::getViewport() const
 
 void State::setViewport(int x, int y, size_t width, size_t height)
 {
-    glViewport(x, y, width, height);
+    glViewport(x, y, static_cast<GLsizei>(width), static_cast<GLsizei>(height));
     viewport_ = std::tuple(x, y, width, height);
 }
 
@@ -112,8 +112,8 @@ GLuint State::getCurrentTexture(unsigned int unit, GLenum target) const
 std::optional<unsigned int> State::getTextureUnit(GLenum target, GLuint texture) const
 {
     for (size_t unit = 0; unit < textures_.size(); ++unit) {
-        if (getCurrentTexture(unit, target) == texture)
-            return unit;
+        if (getCurrentTexture(static_cast<unsigned int>(unit), target) == texture)
+            return static_cast<unsigned int>(unit);
     }
     return std::nullopt;
 }

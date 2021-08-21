@@ -91,9 +91,10 @@ VertexFormat& VertexFormat::add(
 void VertexFormat::set() const
 {
     for (const auto& attr : attributes_) {
-        glEnableVertexAttribArray(attr.location);
-        glVertexAttribPointer(attr.location, attr.components, static_cast<GLenum>(attr.dataType),
-            attr.normalized ? GL_TRUE : GL_FALSE, stride_,
+        glEnableVertexAttribArray(static_cast<GLuint>(attr.location));
+        glVertexAttribPointer(static_cast<GLuint>(attr.location),
+            static_cast<GLint>(attr.components), static_cast<GLenum>(attr.dataType),
+            attr.normalized ? GL_TRUE : GL_FALSE, static_cast<GLsizei>(stride_),
             reinterpret_cast<const GLvoid*>(attr.offset));
         if (attr.divisor > 0)
             glVertexAttribDivisor(attr.location, attr.divisor);

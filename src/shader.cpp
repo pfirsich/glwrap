@@ -221,7 +221,7 @@ void ShaderProgram::setUniform(UniformLocation loc, int value) const
 void ShaderProgram::setUniform(UniformLocation loc, const int* vals, size_t count)
 {
     bind();
-    glUniform1iv(loc, count, vals);
+    glUniform1iv(loc, static_cast<GLsizei>(count), vals);
 }
 
 void ShaderProgram::setUniform(UniformLocation loc, float value) const
@@ -233,7 +233,7 @@ void ShaderProgram::setUniform(UniformLocation loc, float value) const
 void ShaderProgram::setUniform(UniformLocation loc, const float* vals, size_t count) const
 {
     bind();
-    glUniform1fv(loc, count, vals);
+    glUniform1fv(loc, static_cast<GLsizei>(count), vals);
 }
 
 void ShaderProgram::setUniform(UniformLocation loc, const glm::vec2& val) const
@@ -245,7 +245,7 @@ void ShaderProgram::setUniform(UniformLocation loc, const glm::vec2& val) const
 void ShaderProgram::setUniform(UniformLocation loc, const glm::vec2* vals, size_t count) const
 {
     bind();
-    glUniform2fv(loc, count, glm::value_ptr(*vals));
+    glUniform2fv(loc, static_cast<GLsizei>(count), glm::value_ptr(*vals));
 }
 
 void ShaderProgram::setUniform(UniformLocation loc, const glm::vec3& val) const
@@ -257,7 +257,7 @@ void ShaderProgram::setUniform(UniformLocation loc, const glm::vec3& val) const
 void ShaderProgram::setUniform(UniformLocation loc, const glm::vec3* vals, size_t count) const
 {
     bind();
-    glUniform3fv(loc, count, glm::value_ptr(*vals));
+    glUniform3fv(loc, static_cast<GLsizei>(count), glm::value_ptr(*vals));
 }
 
 void ShaderProgram::setUniform(UniformLocation loc, const glm::vec4& val) const
@@ -269,7 +269,7 @@ void ShaderProgram::setUniform(UniformLocation loc, const glm::vec4& val) const
 void ShaderProgram::setUniform(UniformLocation loc, const glm::vec4* vals, size_t count) const
 {
     bind();
-    glUniform4fv(loc, count, glm::value_ptr(*vals));
+    glUniform4fv(loc, static_cast<GLsizei>(count), glm::value_ptr(*vals));
 }
 
 void ShaderProgram::setUniform(UniformLocation loc, const glm::mat2& val) const
@@ -281,7 +281,7 @@ void ShaderProgram::setUniform(UniformLocation loc, const glm::mat2& val) const
 void ShaderProgram::setUniform(UniformLocation loc, const glm::mat2* vals, size_t count) const
 {
     bind();
-    glUniformMatrix2fv(loc, count, GL_FALSE, glm::value_ptr(*vals));
+    glUniformMatrix2fv(loc, static_cast<GLsizei>(count), GL_FALSE, glm::value_ptr(*vals));
 }
 
 void ShaderProgram::setUniform(UniformLocation loc, const glm::mat3& val) const
@@ -293,7 +293,7 @@ void ShaderProgram::setUniform(UniformLocation loc, const glm::mat3& val) const
 void ShaderProgram::setUniform(UniformLocation loc, const glm::mat3* vals, size_t count) const
 {
     bind();
-    glUniformMatrix3fv(loc, count, GL_FALSE, glm::value_ptr(*vals));
+    glUniformMatrix3fv(loc, static_cast<GLsizei>(count), GL_FALSE, glm::value_ptr(*vals));
 }
 
 void ShaderProgram::setUniform(UniformLocation loc, const glm::mat4& val) const
@@ -305,7 +305,7 @@ void ShaderProgram::setUniform(UniformLocation loc, const glm::mat4& val) const
 void ShaderProgram::setUniform(UniformLocation loc, const glm::mat4* vals, size_t count) const
 {
     bind();
-    glUniformMatrix4fv(loc, count, GL_FALSE, glm::value_ptr(*vals));
+    glUniformMatrix4fv(loc, static_cast<GLsizei>(count), GL_FALSE, glm::value_ptr(*vals));
 }
 
 void ShaderProgram::retrieveUniformInfo()

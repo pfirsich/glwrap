@@ -48,10 +48,10 @@ void Primitive::draw(size_t offset, size_t count) const
     vertexArray.bind();
     const auto m = static_cast<GLenum>(mode);
     if (indexType_) {
-        glDrawElements(m, count, static_cast<GLenum>(*indexType_),
+        glDrawElements(m, static_cast<GLsizei>(count), static_cast<GLenum>(*indexType_),
             reinterpret_cast<const void*>(glw::getIndexTypeSize(*indexType_) * offset));
     } else {
-        glDrawArrays(m, offset, count);
+        glDrawArrays(m, static_cast<GLsizei>(offset), static_cast<GLsizei>(count));
     }
     vertexArray.unbind();
     State::instance().getStatistics().drawCalls++;
@@ -71,11 +71,12 @@ void Primitive::draw(size_t offset, size_t count, size_t instanceCount) const
     vertexArray.bind();
     const auto m = static_cast<GLenum>(mode);
     if (indexType_) {
-        glDrawElementsInstanced(m, count, static_cast<GLenum>(*indexType_),
+        glDrawElementsInstanced(m, static_cast<GLsizei>(count), static_cast<GLenum>(*indexType_),
             reinterpret_cast<const void*>(glw::getIndexTypeSize(*indexType_) * offset),
-            instanceCount);
+            static_cast<GLsizei>(instanceCount));
     } else {
-        glDrawArraysInstanced(m, offset, count, instanceCount);
+        glDrawArraysInstanced(m, static_cast<GLint>(offset), static_cast<GLsizei>(count),
+            static_cast<GLsizei>(instanceCount));
     }
     vertexArray.unbind();
     State::instance().getStatistics().drawCalls++;

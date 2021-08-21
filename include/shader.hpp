@@ -54,7 +54,7 @@ public:
     template <typename Iterator>
     void setSources(Iterator begin, Iterator end) const
     {
-        // We take a detour to a vector<string_view> so we can consume elmeents of type
+        // We take a detour to a vector<string_view> so we can consume elements of type
         // const char*, string and string_view.
         // It's not cool, but it does what I want it to.
         // You can use the other functions, if you hate it.
@@ -63,7 +63,7 @@ public:
         std::vector<int> lengths;
         for (const auto& source : sources) {
             ptrs.push_back(source.data());
-            lengths.push_back(source.size());
+            lengths.push_back(static_cast<int>(source.size()));
         }
         setSources(sources.size(), ptrs.data(), lengths.data());
     }

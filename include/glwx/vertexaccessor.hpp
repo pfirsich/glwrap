@@ -46,7 +46,7 @@ public:
         bool normalized;
     };
 
-    VertexAccessor(VertexBuffer& buffer, int location)
+    VertexAccessor(VertexBuffer& buffer, size_t location)
         : buffer_(buffer)
         , attribute_(*buffer.getVertexFormat().get(location))
     {

@@ -130,7 +130,7 @@ public:
 
     void bind(unsigned int unit) const;
 
-    void bind(unsigned unit, Target target) const;
+    void bind(unsigned int unit, Target target) const;
 
     void image(Target target, size_t level, ImageFormat imageFormat, size_t width, size_t height,
         DataFormat dataFormat, DataType dataType, const void* data);

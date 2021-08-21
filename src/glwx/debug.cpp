@@ -31,7 +31,8 @@ namespace debug {
     Group::Group(Source source, GLuint id, std::string_view message)
     {
         assert(source == Source::Application || source == Source::ThirdParty);
-        glPushDebugGroup(static_cast<GLenum>(source), id, message.size(), message.data());
+        glPushDebugGroup(
+            static_cast<GLenum>(source), id, static_cast<GLsizei>(message.size()), message.data());
     }
 
     Group::~Group()
@@ -59,49 +60,56 @@ namespace debug {
     void control(Source source, Type type, std::vector<GLuint> ids, bool enabled)
     {
         glDebugMessageControl(static_cast<GLenum>(source), static_cast<GLenum>(type), GL_DONT_CARE,
-            ids.size(), ids.data(), enabled);
+            static_cast<GLsizei>(ids.size()), ids.data(), enabled);
     }
 
     void insert(Source source, Type type, GLuint id, Severity severity, std::string_view message)
     {
         assert(source == Source::Application || source == Source::ThirdParty);
         glDebugMessageInsert(static_cast<GLenum>(source), static_cast<GLenum>(type), id,
-            static_cast<GLenum>(severity), message.size(), message.data());
+            static_cast<GLenum>(severity), static_cast<GLsizei>(message.size()), message.data());
     }
 
     void setLabel(const glw::Buffer& buffer, std::string_view label)
     {
-        glObjectLabel(GL_BUFFER, buffer.getBuffer(), label.size(), label.data());
+        glObjectLabel(
+            GL_BUFFER, buffer.getBuffer(), static_cast<GLsizei>(label.size()), label.data());
     }
 
     void setLabel(const glw::Shader& shader, std::string_view label)
     {
-        glObjectLabel(GL_SHADER, shader.getShader(), label.size(), label.data());
+        glObjectLabel(
+            GL_SHADER, shader.getShader(), static_cast<GLsizei>(label.size()), label.data());
     }
 
     void setLabel(const glw::ShaderProgram& program, std::string_view label)
     {
-        glObjectLabel(GL_PROGRAM, program.getProgram(), label.size(), label.data());
+        glObjectLabel(
+            GL_PROGRAM, program.getProgram(), static_cast<GLsizei>(label.size()), label.data());
     }
 
     void setLabel(const glw::VertexArray& vertexArray, std::string_view label)
     {
-        glObjectLabel(GL_VERTEX_ARRAY, vertexArray.getVertexArray(), label.size(), label.data());
+        glObjectLabel(GL_VERTEX_ARRAY, vertexArray.getVertexArray(),
+            static_cast<GLsizei>(label.size()), label.data());
     }
 
     void setLabel(const glw::Texture& texture, std::string_view label)
     {
-        glObjectLabel(GL_TEXTURE, texture.getTexture(), label.size(), label.data());
+        glObjectLabel(
+            GL_TEXTURE, texture.getTexture(), static_cast<GLsizei>(label.size()), label.data());
     }
 
     void setLabel(const glw::Renderbuffer& renderbuffer, std::string_view label)
     {
-        glObjectLabel(GL_RENDERBUFFER, renderbuffer.getRenderbuffer(), label.size(), label.data());
+        glObjectLabel(GL_RENDERBUFFER, renderbuffer.getRenderbuffer(),
+            static_cast<GLsizei>(label.size()), label.data());
     }
 
     void setLabel(const glw::Framebuffer& framebuffer, std::string_view label)
     {
-        glObjectLabel(GL_FRAMEBUFFER, framebuffer.getFramebuffer(), label.size(), label.data());
+        glObjectLabel(GL_FRAMEBUFFER, framebuffer.getFramebuffer(),
+            static_cast<GLsizei>(label.size()), label.data());
     }
 
     std::string_view toString(Source source)

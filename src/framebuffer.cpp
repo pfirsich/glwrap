@@ -39,8 +39,8 @@ void Framebuffer::texture(
     Target target, Attachment attachment, const Texture& tex, size_t level) const
 {
     bind(target);
-    glFramebufferTexture(
-        static_cast<GLenum>(target), static_cast<GLenum>(attachment), tex.getTexture(), level);
+    glFramebufferTexture(static_cast<GLenum>(target), static_cast<GLenum>(attachment),
+        tex.getTexture(), static_cast<GLint>(level));
 }
 
 void Framebuffer::texture(Attachment attachment, const Texture& tex, size_t level) const
@@ -53,7 +53,7 @@ void Framebuffer::texture2D(Target target, Attachment attachment, Texture::Targe
 {
     bind(target);
     glFramebufferTexture2D(static_cast<GLenum>(target), static_cast<GLenum>(attachment),
-        static_cast<GLenum>(texTarget), tex.getTexture(), level);
+        static_cast<GLenum>(texTarget), tex.getTexture(), static_cast<GLint>(level));
 }
 
 void Framebuffer::texture2D(
