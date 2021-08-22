@@ -131,10 +131,13 @@ void SpriteRenderer::draw(const glw::Texture& texture, const std::vector<glm::ve
 
 void SpriteRenderer::flush()
 {
-    // We could (should!) be cleverer with allocating texture units here
-    assert(currentTexture_);
-    currentTexture_->bind(0);
-    batch_.flush();
+    // This was an assert(currentTexture_) before and it should not be nullptr, except if the
+    // SpriteRenderer was not used yet.
+    if (currentTexture_) {
+        // We could (should!) be cleverer with allocating texture units here
+        currentTexture_->bind(0);
+        batch_.flush();
+    }
 }
 
 }
