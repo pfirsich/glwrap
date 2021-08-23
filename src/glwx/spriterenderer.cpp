@@ -132,6 +132,8 @@ void SpriteRenderer::draw(const glw::Texture& texture, const std::vector<glm::ve
 void SpriteRenderer::drawLine(const glw::Texture& texture, const std::vector<glm::vec2>& points,
     float width, bool closed, const Transform2D& transform)
 {
+    assert(points.size() >= 2);
+
     setCurrentTexture(&texture);
 
     std::vector<glm::vec2> edgeNormals(closed ? points.size() : points.size() - 1);
