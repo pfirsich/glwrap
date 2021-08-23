@@ -62,6 +62,7 @@ public:
         #version 330 core
 
         uniform mat4 projectionMatrix;
+        uniform float depth = 0.0;
 
         layout (location = 0) in vec2 attrPosition;
         layout (location = 1) in vec2 attrTexCoords;
@@ -73,7 +74,7 @@ public:
         void main() {
             texCoords = attrTexCoords;
             color = attrColor;
-            gl_Position = projectionMatrix * vec4(attrPosition, 0.0, 1.0);
+            gl_Position = projectionMatrix * vec4(attrPosition, depth, 1.0);
         }
     )";
 
