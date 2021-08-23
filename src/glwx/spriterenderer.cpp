@@ -152,16 +152,17 @@ void SpriteRenderer::drawLine(const glw::Texture& texture, const std::vector<glm
         }
     }
 
+    const auto hWidth = width / 2.0f;
     for (size_t i = 0; i < (closed ? points.size() : points.size() - 1); ++i) {
         const auto n = (i + 1) % points.size();
         const auto v0 = batch_.addVertex(
-            transform.transformPoint(points[i] + pointNormals[i] * width), glm::vec2(i, 1), color);
+            transform.transformPoint(points[i] + pointNormals[i] * hWidth), glm::vec2(i, 1), color);
         const auto v1 = batch_.addVertex(
-            transform.transformPoint(points[i] - pointNormals[i] * width), glm::vec2(i, 0), color);
+            transform.transformPoint(points[i] - pointNormals[i] * hWidth), glm::vec2(i, 0), color);
         const auto v2 = batch_.addVertex(
-            transform.transformPoint(points[n] - pointNormals[n] * width), glm::vec2(n, 0), color);
+            transform.transformPoint(points[n] - pointNormals[n] * hWidth), glm::vec2(n, 0), color);
         const auto v3 = batch_.addVertex(
-            transform.transformPoint(points[n] + pointNormals[n] * width), glm::vec2(n, 1), color);
+            transform.transformPoint(points[n] + pointNormals[n] * hWidth), glm::vec2(n, 1), color);
 
         batch_.addIndex(v0);
         batch_.addIndex(v1);
