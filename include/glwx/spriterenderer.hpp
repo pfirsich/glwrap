@@ -105,6 +105,9 @@ public:
         const Transform2D& transform = Transform2D {},
         const TextureRegion& region = TextureRegion {});
 
+    void drawLine(const glw::Texture& texture, const std::vector<glm::vec2>& points, float width,
+        bool closed = false, const Transform2D& transform = {});
+
     void flush();
 
 private:

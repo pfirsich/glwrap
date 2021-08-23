@@ -129,6 +129,50 @@ void SpriteRenderer::draw(const glw::Texture& texture, const std::vector<glm::ve
     }
 }
 
+void SpriteRenderer::drawLine(const glw::Texture& texture, const std::vector<glm::vec2>& points,
+    float width, bool closed, const Transform2D& transform)
+{
+    setCurrentTexture(&texture);
+
+    std::vector<glm::vec2> edgeNormals(closed ? points.size() : points.size() - 1);
+    for (size_t i = 0; i < edgeNormals.size(); ++i) {
+        const auto n = (i + 1) % points.size();
+        const auto rel = points[n] - points[i];
+        // For a counter-clockwise polygon, these should point outside
+        edgeNormals[i] = glm::normalize(glm::vec2(-rel.y, rel.x));
+    }
+
+    std::vector<glm::vec2> pointNormals(points.size());
+    for (size_t i = 0; i < points.size(); ++i) {
+        if (!closed && (i == 0 || i == points.size() - 1)) {
+            pointNormals[i] = edgeNormals[i];
+        } else {
+            const auto prev = i == 0 ? points.size() - 1 : i - 1;
+            pointNormals[i] = glm::normalize(edgeNormals[i] + edgeNormals[prev]);
+        }
+    }
+
+    for (size_t i = 0; i < (closed ? points.size() : points.size() - 1); ++i) {
+        const auto n = (i + 1) % points.size();
+        const auto v0 = batch_.addVertex(
+            transform.transformPoint(points[i] + pointNormals[i] * width), glm::vec2(i, 1), color);
+        const auto v1 = batch_.addVertex(
+            transform.transformPoint(points[i] - pointNormals[i] * width), glm::vec2(i, 0), color);
+        const auto v2 = batch_.addVertex(
+            transform.transformPoint(points[n] - pointNormals[n] * width), glm::vec2(n, 0), color);
+        const auto v3 = batch_.addVertex(
+            transform.transformPoint(points[n] + pointNormals[n] * width), glm::vec2(n, 1), color);
+
+        batch_.addIndex(v0);
+        batch_.addIndex(v1);
+        batch_.addIndex(v3);
+
+        batch_.addIndex(v1);
+        batch_.addIndex(v2);
+        batch_.addIndex(v3);
+    }
+}
+
 void SpriteRenderer::flush()
 {
     // This was an assert(currentTexture_) before and it should not be nullptr, except if the
