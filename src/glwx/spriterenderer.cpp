@@ -5,7 +5,8 @@
 namespace glwx {
 
 SpriteBatch::SpriteBatch(size_t vertexCount, size_t indexCount)
-    : vertexBuffer_(glw::Buffer::Target::Array, glw::Buffer::UsageHint::StreamDraw)
+    : primitive_(glw::DrawMode::Triangles)
+    , vertexBuffer_(glw::Buffer::Target::Array, glw::Buffer::UsageHint::StreamDraw)
     , indexBuffer_(glw::Buffer::Target::ElementArray, glw::Buffer::UsageHint::StreamDraw)
 {
     vertices_.reserve(vertexCount);
@@ -93,20 +94,18 @@ void SpriteRenderer::draw(
     const auto sy
         = transform.transformDirection(glm::vec2(0.0f, static_cast<float>(texture.getHeight())));
 
-    const auto tl = batch_.addVertex(p, region.position, color);
-    const auto tr
-        = batch_.addVertex(p + sx, region.position + glm::vec2(region.size.x, 0.0f), color);
-    const auto br = batch_.addVertex(p + sx + sy, region.position + region.size, color);
-    const auto bl
-        = batch_.addVertex(p + sy, region.position + glm::vec2(0.0f, region.size.y), color);
+    const auto tl = addVertex(p, region.position);
+    const auto tr = addVertex(p + sx, region.position + glm::vec2(region.size.x, 0.0f));
+    const auto br = addVertex(p + sx + sy, region.position + region.size);
+    const auto bl = addVertex(p + sy, region.position + glm::vec2(0.0f, region.size.y));
 
-    batch_.addIndex(tl);
-    batch_.addIndex(bl);
-    batch_.addIndex(tr);
+    addIndex(tl);
+    addIndex(bl);
+    addIndex(tr);
 
-    batch_.addIndex(bl);
-    batch_.addIndex(br);
-    batch_.addIndex(tr);
+    addIndex(bl);
+    addIndex(br);
+    addIndex(tr);
 }
 
 void SpriteRenderer::draw(const glw::Texture& texture, const std::vector<glm::vec2>& points,
@@ -116,16 +115,15 @@ void SpriteRenderer::draw(const glw::Texture& texture, const std::vector<glm::ve
 
     setCurrentTexture(&texture);
 
-    const auto baseIdx = batch_.getNumVertices();
+    const auto baseIdx = getVertexOffset();
     for (const auto& point : points) {
-        batch_.addVertex(
-            transform.transformPoint(point), point * region.size + region.position, color);
+        addVertex(transform.transformPoint(point), point * region.size + region.position);
     }
 
     for (size_t i = 1; i < points.size() - 1; ++i) {
-        batch_.addIndex(static_cast<SpriteBatch::IndexType>(baseIdx + 0));
-        batch_.addIndex(static_cast<SpriteBatch::IndexType>(baseIdx + i));
-        batch_.addIndex(static_cast<SpriteBatch::IndexType>(baseIdx + i + 1));
+        addIndex(static_cast<SpriteBatch::IndexType>(baseIdx + 0));
+        addIndex(static_cast<SpriteBatch::IndexType>(baseIdx + i));
+        addIndex(static_cast<SpriteBatch::IndexType>(baseIdx + i + 1));
     }
 }
 
@@ -157,23 +155,57 @@ void SpriteRenderer::drawLine(const glw::Texture& texture, const std::vector<glm
     const auto hWidth = width / 2.0f;
     for (size_t i = 0; i < (closed ? points.size() : points.size() - 1); ++i) {
         const auto n = (i + 1) % points.size();
-        const auto v0 = batch_.addVertex(
-            transform.transformPoint(points[i] + pointNormals[i] * hWidth), glm::vec2(i, 1), color);
-        const auto v1 = batch_.addVertex(
-            transform.transformPoint(points[i] - pointNormals[i] * hWidth), glm::vec2(i, 0), color);
-        const auto v2 = batch_.addVertex(
-            transform.transformPoint(points[n] - pointNormals[n] * hWidth), glm::vec2(n, 0), color);
-        const auto v3 = batch_.addVertex(
-            transform.transformPoint(points[n] + pointNormals[n] * hWidth), glm::vec2(n, 1), color);
+        const auto v0 = addVertex(
+            transform.transformPoint(points[i] + pointNormals[i] * hWidth), glm::vec2(i, 1));
+        const auto v1 = addVertex(
+            transform.transformPoint(points[i] - pointNormals[i] * hWidth), glm::vec2(i, 0));
+        const auto v2 = addVertex(
+            transform.transformPoint(points[n] - pointNormals[n] * hWidth), glm::vec2(n, 0));
+        const auto v3 = addVertex(
+            transform.transformPoint(points[n] + pointNormals[n] * hWidth), glm::vec2(n, 1));
 
-        batch_.addIndex(v0);
-        batch_.addIndex(v1);
-        batch_.addIndex(v3);
+        addIndex(v0);
+        addIndex(v1);
+        addIndex(v3);
 
-        batch_.addIndex(v1);
-        batch_.addIndex(v2);
-        batch_.addIndex(v3);
+        addIndex(v1);
+        addIndex(v2);
+        addIndex(v3);
     }
+}
+
+void SpriteRenderer::drawCircle(const glw::Texture& texture, const glm::vec2& position,
+    float radius, size_t segments, const Transform2D& transform)
+{
+    assert(segments >= 3);
+
+    setCurrentTexture(&texture);
+
+    const auto base = addVertex(transform.transformPoint(position), glm::vec2(0.5f));
+    for (size_t i = 0; i < segments; ++i) {
+        const auto angle = 2.0f * glm::pi<float>() / (segments - 1) * i;
+        const auto v = glm::vec2(std::cos(angle), std::sin(angle));
+        addVertex(transform.transformPoint(position + v * radius), glm::vec2(0.5f) + v * 0.5f);
+        addIndex(base);
+        addIndex(base + 1 + i);
+        addIndex(base + 1 + ((i + 1) % segments));
+    }
+}
+
+SpriteBatch::IndexType SpriteRenderer::getVertexOffset() const
+{
+    return batch_.getNumVertices();
+}
+
+SpriteBatch::IndexType SpriteRenderer::addVertex(
+    const glm::vec2& position, const glm::vec2& texCoord)
+{
+    return batch_.addVertex(position, texCoord, color);
+}
+
+void SpriteRenderer::addIndex(SpriteBatch::IndexType index)
+{
+    batch_.addIndex(index);
 }
 
 void SpriteRenderer::flush()

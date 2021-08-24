@@ -26,12 +26,6 @@ public:
         static constexpr size_t Color = 2;
     };
 
-    struct Vertex {
-        glm::vec2 position;
-        glm::vec2 texCoord;
-        glm::vec4 color;
-    };
-
     SpriteBatch(size_t vertexCount = 0, size_t indexCount = 0);
 
     IndexType addVertex(
@@ -47,6 +41,12 @@ public:
     void flush();
 
 private:
+    struct Vertex {
+        glm::vec2 position;
+        glm::vec2 texCoord;
+        glm::vec4 color;
+    };
+
     static const glw::VertexFormat& getVertexFormat();
 
     std::vector<Vertex> vertices_;
@@ -108,6 +108,13 @@ public:
 
     void drawLine(const glw::Texture& texture, const std::vector<glm::vec2>& points, float width,
         bool closed = false, const Transform2D& transform = {});
+
+    void drawCircle(const glw::Texture& texture, const glm::vec2& position, float radius,
+        size_t segments = 32, const Transform2D& transform = {});
+
+    SpriteBatch::IndexType getVertexOffset() const;
+    SpriteBatch::IndexType addVertex(const glm::vec2& position, const glm::vec2& texCoord);
+    void addIndex(SpriteBatch::IndexType index);
 
     void flush();
 
