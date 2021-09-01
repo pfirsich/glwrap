@@ -11,15 +11,15 @@ size_t IndexAccessor::Proxy::operator=(size_t index)
     switch (elementSize) {
     case 1:
         assert(index <= std::numeric_limits<uint8_t>::max());
-        *reinterpret_cast<uint8_t*>(data) = index;
+        *reinterpret_cast<uint8_t*>(data) = static_cast<uint8_t>(index);
         break;
     case 2:
         assert(index <= std::numeric_limits<uint16_t>::max());
-        *reinterpret_cast<uint16_t*>(data) = index;
+        *reinterpret_cast<uint16_t*>(data) = static_cast<uint16_t>(index);
         break;
     case 4:
         assert(index <= std::numeric_limits<uint32_t>::max());
-        *reinterpret_cast<uint32_t*>(data) = index;
+        *reinterpret_cast<uint32_t*>(data) = static_cast<uint32_t>(index);
         break;
     }
     return index;

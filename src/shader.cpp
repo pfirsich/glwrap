@@ -52,12 +52,12 @@ void Shader::setSource(const char* source, int length) const
 
 void Shader::setSource(std::string_view source) const
 {
-    setSource(source.data(), source.size());
+    setSource(source.data(), static_cast<int>(source.size()));
 }
 
 void Shader::setSources(size_t count, const char** sources, const int* lengths) const
 {
-    glShaderSource(shader_, count, sources, lengths);
+    glShaderSource(shader_, static_cast<GLsizei>(count), sources, lengths);
 }
 
 void Shader::setSources(std::initializer_list<std::string_view> sources) const

@@ -119,13 +119,15 @@ void Texture::storage(
     const auto format = static_cast<GLenum>(imageFormat);
     const auto dataFormat = static_cast<GLenum>(getStorageFormat(imageFormat));
     for (size_t level = 0; level < levels; ++level) {
-        glTexImage2D(static_cast<GLenum>(target), level, format, width, height, 0, dataFormat,
-            GL_FLOAT, nullptr);
+        glTexImage2D(static_cast<GLenum>(target), static_cast<GLint>(level), format,
+            static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0, dataFormat, GL_FLOAT,
+            nullptr);
         width = std::max(static_cast<size_t>(1), width / 2);
         height = std::max(static_cast<size_t>(1), height / 2);
     }
     // glTexStorage would do this too
-    glTexParameteri(static_cast<GLenum>(target), GL_TEXTURE_MAX_LEVEL, levels - 1);
+    glTexParameteri(
+        static_cast<GLenum>(target), GL_TEXTURE_MAX_LEVEL, static_cast<GLint>(levels - 1));
 }
 
 void Texture::storage(size_t levels, ImageFormat imageFormat, size_t width, size_t height)
@@ -136,7 +138,8 @@ void Texture::storage(size_t levels, ImageFormat imageFormat, size_t width, size
 void Texture::generateMipmaps() const
 {
     bind(0);
-    glTexParameteri(static_cast<GLenum>(target_), GL_TEXTURE_MAX_LEVEL, getMaxNumMipLevels() - 1);
+    glTexParameteri(static_cast<GLenum>(target_), GL_TEXTURE_MAX_LEVEL,
+        static_cast<GLint>(getMaxNumMipLevels() - 1));
     glGenerateMipmap(static_cast<GLenum>(target_));
 }
 
