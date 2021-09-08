@@ -20,6 +20,7 @@ It includes:
 * Helper classes:
     - [Aabb](include/glwx/aabb.hpp)
     - [Transform](include/glwx/transform.hpp)
+    - [Transform2D](include/glwx/transform2d.hpp)
 * Higher-Level wrappers:
     - [DefaultBuffer, BufferData, VertexBuffer, IndexBuffer](include/glwx/buffers.hpp)
     - [RenderTarget](include/glwx/rendertarget.hpp)
@@ -30,10 +31,11 @@ It includes:
     - [makeTexture, makeCubeTexture](include/glwx/texture.hpp)
 * Window creation with SDL2 ([header](include/glwx/window.hpp))
 * Helpers for OpenGL's debug API ([header](include/glwx/debug.hpp))
+* A batched sprite renderer for 2D geometry (polygons, lines) ([header](include/glwx/spriterenderer.hpp))
 * Some math functions
 
 ## To Do
 * The `Mesh` class is pretty useless, but the idea is to provide a `Primitive` that also owns it's buffers. In my engines at least the Buffers are often shared though, so maybe I want the mesh to have a `vector<shared_ptr<Buffer>>`? Most of the time you want a mesh to represent multiple drawcalls anyways. Would I need some Material abstraction to make this useful? In that case this would be entirely inappropriate for this library. Maybe I should just delete Mesh? Then I can't really use meshgen though.
 * Support ivec/dvec vertex attributes (glVertexAttribIPointer/glVertexAttribLPointer)
-* Text Rendering?
+* Text Rendering? I have already prepared this, but it requires an additional dependency ([cppasta](https://github.com/pfirsich/cppasta)) for UTF-8 functions and I am not sure if I want that.
 * Imgui integration? (this is very simple to do in a project though)

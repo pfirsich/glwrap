@@ -7,7 +7,12 @@
 #include "glad/glad.h"
 #include <fmt/format.h>
 
-#include "../glw.hpp"
+#include "glw/buffer.hpp"
+#include "glw/framebuffer.hpp"
+#include "glw/renderbuffer.hpp"
+#include "glw/shader.hpp"
+#include "glw/texture.hpp"
+#include "glw/vertexarray.hpp"
 
 namespace glwx {
 namespace debug {

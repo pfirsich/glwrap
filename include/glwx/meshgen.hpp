@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "mesh.hpp"
+#include "glwx/mesh.hpp"
 
 namespace glwx {
 struct AttributeLocations {

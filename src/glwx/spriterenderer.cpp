@@ -1,6 +1,6 @@
-#include "spriterenderer.hpp"
+#include "glwx/spriterenderer.hpp"
 
-#include "shader.hpp"
+#include "glwx/shader.hpp"
 
 namespace glwx {
 

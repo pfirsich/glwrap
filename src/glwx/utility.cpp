@@ -1,10 +1,10 @@
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <filesystem>
 
-#include "utility.hpp"
+#include "glwx/utility.hpp"
 
 namespace glwx {
 // http://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html

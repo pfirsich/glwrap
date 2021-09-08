@@ -2,8 +2,8 @@
 
 #include <glm/glm.hpp>
 
-#include "buffers.hpp"
-#include "log.hpp"
+#include "glw/log.hpp"
+#include "glwx/buffers.hpp"
 
 namespace glwx {
 namespace detail {

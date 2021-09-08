@@ -38,7 +38,7 @@ find_package(fmt CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
 add_library(glw STATIC ${GLW_SRC})
-target_include_directories(glw PUBLIC include)
+target_include_directories(glw PUBLIC include/)
 target_include_directories(glw SYSTEM PUBLIC deps/glad/include)
 target_link_libraries(glw PUBLIC fmt::fmt)
 if (TARGET glm::glm) # new target name (Ubuntu 20.04)
@@ -74,7 +74,7 @@ find_package(SDL2 CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS "stb.h" HINTS deps/stb)
 
 add_library(glwx STATIC ${GLWX_SRC})
-target_include_directories(glwx PUBLIC include/glwx)
+target_include_directories(glwx PUBLIC include/)
 target_include_directories(glwx SYSTEM PUBLIC ${SDL2_INCLUDE_DIRS})
 target_include_directories(glwx SYSTEM PUBLIC ${STB_INCLUDE_DIRS})
 # CMAKE_DL_LIBS is for glad

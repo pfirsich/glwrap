@@ -1,4 +1,4 @@
-#include "primitive.hpp"
+#include "glwx/primitive.hpp"
 
 using namespace glw;
 

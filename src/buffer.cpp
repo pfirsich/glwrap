@@ -1,4 +1,4 @@
-#include "buffer.hpp"
+#include "glw/buffer.hpp"
 
 namespace glw {
 void Buffer::unbind(Target target)

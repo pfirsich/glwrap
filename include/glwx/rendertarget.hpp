@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../framebuffer.hpp"
+#include "glw/framebuffer.hpp"
 
 namespace glwx {
 // This is essentially a framebuffer that also contains(owns) all it's attachments

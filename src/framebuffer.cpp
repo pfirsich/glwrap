@@ -1,4 +1,4 @@
-#include "framebuffer.hpp"
+#include "glw/framebuffer.hpp"
 
 namespace glw {
 Framebuffer::Framebuffer()

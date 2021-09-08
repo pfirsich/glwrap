@@ -1,4 +1,4 @@
-#include "vertexaccessor.hpp"
+#include "glwx/vertexaccessor.hpp"
 
 #include <cassert>
 #include <limits>

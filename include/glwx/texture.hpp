@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-#include "../texture.hpp"
+#include "glw/texture.hpp"
 
 namespace glwx {
 glw::Texture makeTexture2D(

@@ -6,8 +6,8 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-#include "imageformat.hpp"
-#include "state.hpp"
+#include "glw/imageformat.hpp"
+#include "glw/state.hpp"
 
 namespace glw {
 

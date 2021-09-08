@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <optional>
 
-#include "../shader.hpp"
+#include "glw/shader.hpp"
 
 namespace glwx {
 std::optional<glw::Shader> makeShader(glw::Shader::Type type, std::string_view source);

@@ -1,6 +1,6 @@
-#include "shader.hpp"
+#include "glw/shader.hpp"
 
-#include "log.hpp"
+#include "glw/log.hpp"
 
 namespace glw {
 

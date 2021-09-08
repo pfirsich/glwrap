@@ -1,10 +1,10 @@
-#include "window.hpp"
+#include "glwx/window.hpp"
 
 #include <cassert>
 
 #include "glad/glad.h"
 
-#include "../log.hpp"
+#include "glw/log.hpp"
 
 namespace glwx {
 Sdl& Sdl::instance()

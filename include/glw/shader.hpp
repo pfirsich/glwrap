@@ -8,9 +8,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "log.hpp"
-#include "state.hpp"
-#include "uniforminfo.hpp"
+#include "glw/log.hpp"
+#include "glw/state.hpp"
+#include "glw/uniforminfo.hpp"
 
 namespace glw {
 struct ShaderResult {

@@ -1,11 +1,11 @@
-#include "texture.hpp"
+#include "glwx/texture.hpp"
 
 #define STBI_WINDOWS_UTF8 // Windows, I hate you
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include "../log.hpp"
-#include "utility.hpp"
+#include "glw/log.hpp"
+#include "glwx/utility.hpp"
 
 using namespace glw;
 

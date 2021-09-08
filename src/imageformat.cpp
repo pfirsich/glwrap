@@ -1,4 +1,4 @@
-#include "imageformat.hpp"
+#include "glw/imageformat.hpp"
 
 namespace glw {
 bool hasDepth(ImageFormat format)

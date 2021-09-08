@@ -1,4 +1,4 @@
-#include "vertexformat.hpp"
+#include "glw/vertexformat.hpp"
 
 #include <cassert>
 #include <limits>

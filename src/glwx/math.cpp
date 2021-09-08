@@ -1,4 +1,4 @@
-#include "math.hpp"
+#include "glwx/math.hpp"
 
 namespace glwx {
 glm::mat4 matAbs(const glm::mat4& mat)

@@ -1,6 +1,6 @@
-#include "shader.hpp"
+#include "glwx/shader.hpp"
 
-#include "utility.hpp"
+#include "glwx/utility.hpp"
 
 using namespace glw;
 

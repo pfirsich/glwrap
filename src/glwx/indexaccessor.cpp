@@ -1,8 +1,8 @@
-#include "indexaccessor.hpp"
+#include "glwx/indexaccessor.hpp"
 
 #include <cassert>
 
-#include "log.hpp"
+#include "glw/log.hpp"
 
 namespace glwx {
 size_t IndexAccessor::Proxy::operator=(size_t index)

@@ -1,4 +1,4 @@
-#include "vertexarray.hpp"
+#include "glw/vertexarray.hpp"
 
 namespace glw {
 VertexArray::VertexArray()

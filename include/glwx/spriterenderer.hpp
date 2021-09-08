@@ -2,11 +2,11 @@
 
 #include <vector>
 
-#include "buffers.hpp"
-#include "primitive.hpp"
-#include "shader.hpp"
-#include "texture.hpp"
-#include "transform2d.hpp"
+#include "glw/shader.hpp"
+#include "glw/texture.hpp"
+#include "glwx/buffers.hpp"
+#include "glwx/primitive.hpp"
+#include "glwx/transform2d.hpp"
 
 namespace glwx {
 

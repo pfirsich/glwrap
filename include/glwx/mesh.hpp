@@ -3,10 +3,10 @@
 #include <memory>
 #include <vector>
 
-#include "../vertexarray.hpp"
-#include "buffers.hpp"
-#include "enums.hpp"
-#include "primitive.hpp"
+#include "glw/enums.hpp"
+#include "glw/vertexarray.hpp"
+#include "glwx/buffers.hpp"
+#include "glwx/primitive.hpp"
 
 namespace glwx {
 class Mesh {

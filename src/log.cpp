@@ -1,9 +1,9 @@
+#include "glw/log.hpp"
+
 #include <cstdio>
 #include <ctime>
 
 #include <fmt/chrono.h>
-
-#include "log.hpp"
 
 namespace glw {
 const std::unordered_map<LogLevel, std::string> logLevelNames {

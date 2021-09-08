@@ -2,7 +2,7 @@
 
 #include "glad/glad.h"
 
-#include "state.hpp"
+#include "glw/state.hpp"
 
 namespace glw {
 class VertexArray {

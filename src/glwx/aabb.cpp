@@ -1,4 +1,4 @@
-#include "aabb.hpp"
+#include "glwx/aabb.hpp"
 
 #include <glwx/math.hpp>
 

@@ -2,8 +2,8 @@
 
 #include "glad/glad.h"
 
-#include "state.hpp"
-#include "utility.hpp"
+#include "glw/state.hpp"
+#include "glw/utility.hpp"
 
 namespace glw {
 // I could have this thing store a Target to use as a default target for method

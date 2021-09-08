@@ -7,7 +7,7 @@
 
 #include <fmt/format.h>
 
-#include "fmt.hpp"
+#include "glw/fmt.hpp"
 
 namespace glw {
 enum class LogLevel {

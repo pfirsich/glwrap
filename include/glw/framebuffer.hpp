@@ -2,9 +2,9 @@
 
 #include "glad/glad.h"
 
-#include "renderbuffer.hpp"
-#include "state.hpp"
-#include "texture.hpp"
+#include "glw/renderbuffer.hpp"
+#include "glw/state.hpp"
+#include "glw/texture.hpp"
 
 namespace glw {
 class Framebuffer {

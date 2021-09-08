@@ -3,9 +3,9 @@
 #include <cassert>
 #include <vector>
 
-#include "../buffer.hpp"
-#include "../utility.hpp"
-#include "../vertexformat.hpp"
+#include "glw/buffer.hpp"
+#include "glw/utility.hpp"
+#include "glw/vertexformat.hpp"
 
 namespace glwx {
 

@@ -1,4 +1,4 @@
-#include "renderbuffer.hpp"
+#include "glw/renderbuffer.hpp"
 
 namespace glw {
 Renderbuffer::Renderbuffer()

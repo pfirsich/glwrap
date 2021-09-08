@@ -1,4 +1,4 @@
-#include "debug.hpp"
+#include "glwx/debug.hpp"
 
 namespace glwx {
 namespace debug {

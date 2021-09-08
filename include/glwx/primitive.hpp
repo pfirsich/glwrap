@@ -1,8 +1,8 @@
 #pragma once
 
-#include "buffers.hpp"
-#include "enums.hpp"
-#include "vertexarray.hpp"
+#include "glw/enums.hpp"
+#include "glw/vertexarray.hpp"
+#include "glwx/buffers.hpp"
 
 namespace glwx {
 class Primitive {

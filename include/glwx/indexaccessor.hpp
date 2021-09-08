@@ -1,6 +1,6 @@
 #pragma once
 
-#include "buffers.hpp"
+#include "glwx/buffers.hpp"
 
 namespace glwx {
 class IndexAccessor {

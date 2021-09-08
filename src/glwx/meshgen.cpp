@@ -1,10 +1,10 @@
-#include "meshgen.hpp"
+#include "glwx/meshgen.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include "indexaccessor.hpp"
-#include "log.hpp"
-#include "vertexaccessor.hpp"
+#include "glw/log.hpp"
+#include "glwx/indexaccessor.hpp"
+#include "glwx/vertexaccessor.hpp"
 
 namespace glwx {
 

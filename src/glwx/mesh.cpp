@@ -1,4 +1,4 @@
-#include "mesh.hpp"
+#include "glwx/mesh.hpp"
 
 using namespace glw;
 

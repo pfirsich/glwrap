@@ -1,6 +1,6 @@
-#include "texture.hpp"
+#include "glw/texture.hpp"
 
-#include "log.hpp"
+#include "glw/log.hpp"
 
 namespace glw {
 Texture::Texture(Target target)
