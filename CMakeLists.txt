@@ -13,7 +13,7 @@ add_compile_definitions(NOMINMAX) # Windows is trash
 
 include(cmake/wall.cmake)
 
-if (GLWRAP_ENABLE_ASAN)
+if(GLWRAP_ENABLE_ASAN)
   include(cmake/asan.cmake)
 endif()
 
@@ -32,22 +32,24 @@ set(GLW_SRC
 )
 list(TRANSFORM GLW_SRC PREPEND src/)
 
-list(APPEND GLW_SRC deps/glad/glad.c)
+add_library(glad "deps/glad/glad.c")
+target_include_directories(glad SYSTEM PUBLIC deps/glad/include)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
 add_library(glw STATIC ${GLW_SRC})
 target_include_directories(glw PUBLIC include/)
-target_include_directories(glw SYSTEM PUBLIC deps/glad/include)
+target_link_libraries(glw PUBLIC glad)
 target_link_libraries(glw PUBLIC fmt::fmt)
-if (TARGET glm::glm) # new target name (Ubuntu 20.04)
+
+if(TARGET glm::glm) # new target name (Ubuntu 20.04)
   target_link_libraries(glw PUBLIC glm::glm)
 else() # old target name (vcpkg)
   target_link_libraries(glw PUBLIC glm)
 endif()
-set_wall(glw)
 
+set_wall(glw)
 
 set(GLWX_SRC
   aabb.cpp
@@ -77,17 +79,20 @@ add_library(glwx STATIC ${GLWX_SRC})
 target_include_directories(glwx PUBLIC include/)
 target_include_directories(glwx SYSTEM PUBLIC ${SDL2_INCLUDE_DIRS})
 target_include_directories(glwx SYSTEM PUBLIC ${STB_INCLUDE_DIRS})
+
 # CMAKE_DL_LIBS is for glad
 target_link_libraries(glwx PUBLIC glw)
 target_link_libraries(glwx PUBLIC ${CMAKE_DL_LIBS})
+
 if(SDL2_LIBRARIES) # for older CMake files (Ubuntu 20.04 package)
   target_link_libraries(glwx PUBLIC ${SDL2_LIBRARIES})
 else() # for newer CMake files (incl. vcpkg)
   target_link_libraries(glwx PUBLIC SDL2::SDL2 SDL2::SDL2main)
 endif()
+
 set_wall(glwx)
 
-if (GLWRAP_BUILD_EXAMPLES)
+if(GLWRAP_BUILD_EXAMPLES)
   message("Building examples")
   add_subdirectory(examples)
 endif()
