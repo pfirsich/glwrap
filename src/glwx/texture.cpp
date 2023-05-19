@@ -78,8 +78,7 @@ std::optional<glw::Texture> makeTexture2D(const uint8_t* encodedBuffer, size_t s
 std::optional<glw::Texture> makeTexture2D(const std::filesystem::path& path, bool mipmaps)
 {
     int width = 0, height = 0, channels = 0;
-    const auto image
-        = stbiImagePtr(stbi_load(path.u8string().c_str(), &width, &height, &channels, 0));
+    const auto image = stbiImagePtr(stbi_load(path.c_str(), &width, &height, &channels, 0));
     if (!image) {
         LOG_ERROR("Could not load image from file: {}", stbi_failure_reason());
         return std::nullopt;
@@ -97,7 +96,7 @@ std::optional<glw::Texture> makeCubeTexture(const std::filesystem::path& posX,
     std::array<std::filesystem::path, 6> files { posX, negX, posY, negY, posZ, negZ };
     for (size_t i = 0; i < 6; ++i) {
         int w = 0, h = 0, c = 0;
-        const auto image = stbiImagePtr(stbi_load(files[i].u8string().c_str(), &w, &h, &c, 0));
+        const auto image = stbiImagePtr(stbi_load(files[i].c_str(), &w, &h, &c, 0));
         if (!image) {
             LOG_ERROR("Could not load image from file: {}", stbi_failure_reason());
             return std::nullopt;

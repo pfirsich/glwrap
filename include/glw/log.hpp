@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -26,12 +27,12 @@ extern std::vector<LoggingHandler> loggingHandlers;
 void defaultLogger(LogLevel level, const char* filename, int line, const std::string& message);
 
 template <typename... Args>
-void log(LogLevel level, const char* filename, int line, const std::string& format, Args&&... args)
+void log(LogLevel level, const char* filename, int line, std::string_view format, Args&&... args)
 {
     if (loggingHandlers.empty())
         loggingHandlers.push_back(defaultLogger);
 
-    const auto msg = fmt::format(format, std::forward<Args>(args)...);
+    const auto msg = fmt::format(fmt::runtime(format), std::forward<Args>(args)...);
     for (auto& handler : loggingHandlers)
         handler(level, filename, line, msg);
 }

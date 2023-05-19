@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <optional>
 
+#include <fmt/core.h>
 #include <fmt/format.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -15,9 +16,9 @@ struct fmt::formatter<std::filesystem::path> {
     }
 
     template <typename FormatContext>
-    auto format(const std::filesystem::path& path, FormatContext& ctx)
+    auto format(const std::filesystem::path& path, FormatContext& ctx) const
     {
-        return format_to(ctx.out(), "{}", path.u8string());
+        return format_to(ctx.out(), "{}", path.c_str());
     }
 };
 

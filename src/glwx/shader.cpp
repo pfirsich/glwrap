@@ -1,5 +1,6 @@
 #include "glwx/shader.hpp"
 
+#include "glw/fmt.hpp"
 #include "glwx/utility.hpp"
 
 using namespace glw;
