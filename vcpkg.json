@@ -1,0 +1,8 @@
+{
+    "dependencies": [
+        "fmt",
+        "glm",
+        "sdl2",
+        "stb"
+    ]
+}

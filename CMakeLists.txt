@@ -32,8 +32,8 @@ set(GLW_SRC
 )
 list(TRANSFORM GLW_SRC PREPEND src/)
 
-add_library(glad "deps/glad/glad.c")
-target_include_directories(glad SYSTEM PUBLIC deps/glad/include)
+add_library(glad "subprojects/glad/glad.c")
+target_include_directories(glad SYSTEM PUBLIC subprojects/glad/include)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
