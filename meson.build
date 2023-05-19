@@ -7,9 +7,9 @@ run_command(vcpkg,
   '--x-manifest-root=' + meson.current_source_dir(),
   check: true)
 
-fmt_dep = dependency('fmt')
-glm_dep = dependency('glm')
-glad_dep = dependency('glad', fallback: ['glad', 'glad_dep'])
+fmt_dep = dependency('fmt', include_type: 'system')
+glm_dep = dependency('glm', include_type: 'system')
+glad_dep = dependency('glad', fallback: ['glad', 'glad_dep'], include_type: 'system')
 
 glw_src = [
   'src/buffer.cpp',
@@ -34,9 +34,8 @@ glw_dep = declare_dependency(
   link_with: [glw],
   dependencies: glw_deps)
 
-sdl2_dep = dependency('sdl2')
-#stb_dep = declare_dependency(include_directories: 'deps/stb')
-stb_dep = declare_dependency()
+sdl2_dep = dependency('sdl2', include_type: 'system')
+stb_dep = declare_dependency() # handled by vcpkg include directory
 
 glwx_src = [
   'src/glwx/aabb.cpp',
