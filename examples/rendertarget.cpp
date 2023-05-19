@@ -1,7 +1,12 @@
 #include <iostream>
 
-#include <glw.hpp>
-#include <glwx.hpp>
+#include "glwx/debug.hpp"
+#include "glwx/mesh.hpp"
+#include "glwx/meshgen.hpp"
+#include "glwx/rendertarget.hpp"
+#include "glwx/shader.hpp"
+#include "glwx/texture.hpp"
+#include "glwx/window.hpp"
 
 int main(int, char**)
 {
@@ -42,7 +47,8 @@ int main(int, char**)
         }
     )"s;
 
-    const auto prog = glwx::makeShaderProgram(std::string_view(vert), std::string_view(frag)).value();
+    const auto prog
+        = glwx::makeShaderProgram(std::string_view(vert), std::string_view(frag)).value();
 
     auto renderTarget = glwx::makeRenderTarget(
         512, 512, { glw::ImageFormat::Rgba }, { glw::ImageFormat::Depth24 });

@@ -1,10 +1,12 @@
 #include <array>
 #include <iostream>
 
-#include <glw.hpp>
-#include <glwx.hpp>
-
+#include "glwx/debug.hpp"
+#include "glwx/mesh.hpp"
+#include "glwx/shader.hpp"
+#include "glwx/texture.hpp"
 #include "glwx/vertexaccessor.hpp"
+#include "glwx/window.hpp"
 
 int main(int, char**)
 {
@@ -45,7 +47,8 @@ int main(int, char**)
         }
     )"s;
 
-    const auto prog = glwx::makeShaderProgram(std::string_view(vert), std::string_view(frag)).value();
+    const auto prog
+        = glwx::makeShaderProgram(std::string_view(vert), std::string_view(frag)).value();
 
     // clang-format off
     const std::array<float, 16> vertices {
