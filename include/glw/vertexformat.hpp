@@ -24,7 +24,7 @@ enum class AttributeType : GLenum {
 };
 
 // Not really supposed to be here, but when you need it, you most likely need the rest of this file
-enum class IndexType {
+enum class IndexType : GLenum {
     U8 = GL_UNSIGNED_BYTE,
     U16 = GL_UNSIGNED_SHORT,
     U32 = GL_UNSIGNED_INT,
