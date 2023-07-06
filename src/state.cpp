@@ -1,6 +1,17 @@
 #include "glw/state.hpp"
 
 namespace glw {
+namespace {
+    void setEnabled(GLenum capability, bool enabled)
+    {
+        if (enabled) {
+            glEnable(capability);
+        } else {
+            glDisable(capability);
+        }
+    }
+}
+
 State& State::instance()
 {
     static State inst;
@@ -45,8 +56,144 @@ DepthFunc State::getDepthFunc() const
 
 void State::setDepthFunc(DepthFunc func)
 {
+    if (depthFunc_ == func)
+        return;
     glDepthFunc(static_cast<GLenum>(func));
     depthFunc_ = func;
+}
+
+bool State::getDepthWrite() const
+{
+    return depthWrite_;
+}
+
+void State::setDepthWrite(bool write)
+{
+    if (depthWrite_ == write)
+        return;
+    glDepthMask(write ? GL_TRUE : GL_FALSE);
+    depthWrite_ = write;
+}
+
+bool State::getCullFaceEnabled() const
+{
+    return cullFaceEnabled_;
+}
+
+void State::setCullFaceEnabled(bool enabled)
+{
+    if (cullFaceEnabled_ == enabled)
+        return;
+    setEnabled(GL_CULL_FACE, enabled);
+    cullFaceEnabled_ = enabled;
+}
+
+FrontFaceMode State::getFrontFaceMode() const
+{
+    return frontFaceMode_;
+}
+
+void State::setFrontFaceMode(FrontFaceMode mode)
+{
+    if (frontFaceMode_ == mode)
+        return;
+    glFrontFace(static_cast<GLenum>(mode));
+    frontFaceMode_ = mode;
+}
+
+FaceCullMode State::getFaceCullMode() const
+{
+    return faceCullMode_;
+}
+
+void State::setFaceCullMode(FaceCullMode mode)
+{
+    if (faceCullMode_ == mode)
+        return;
+    glCullFace(static_cast<GLenum>(mode));
+    faceCullMode_ = mode;
+}
+
+bool State::getBlendEnabled() const
+{
+    return blendEnabled_;
+}
+
+void State::setBlendEnabled(bool enabled)
+{
+    if (blendEnabled_ == enabled)
+        return;
+    setEnabled(GL_BLEND, enabled);
+    blendEnabled_ = enabled;
+}
+
+std::tuple<float, float, float, float> State::getBlendColor() const
+{
+    return blendColor_;
+}
+
+void State::setBlendColor(float r, float g, float b, float a)
+{
+    const auto color = std::tuple(r, g, b, a);
+    if (blendColor_ != color)
+        return;
+    glBlendColor(r, g, b, a);
+    blendColor_ = color;
+}
+
+void State::setBlendColor(const std::tuple<float, float, float, float>& color)
+{
+    setBlendColor(std::get<0>(color), std::get<1>(color), std::get<2>(color), std::get<3>(color));
+}
+
+BlendFuncSeparate State::getBlendFunc() const
+{
+    return blendFunc_;
+}
+
+void State::setBlendFunc(BlendFunc srcRgb, BlendFunc srcAlpha, BlendFunc dstRgb, BlendFunc dstAlpha)
+{
+    if (blendFunc_.srcRgb != srcRgb || blendFunc_.srcAlpha != srcAlpha
+        || blendFunc_.dstRgb != dstRgb || blendFunc_.dstAlpha != dstAlpha)
+        return;
+    glBlendFuncSeparate(static_cast<GLenum>(srcRgb), static_cast<GLenum>(dstRgb),
+        static_cast<GLenum>(srcAlpha), static_cast<GLenum>(dstAlpha));
+    blendFunc_ = BlendFuncSeparate {
+        .srcRgb = srcRgb, .srcAlpha = srcAlpha, .dstRgb = dstRgb, .dstAlpha = dstAlpha
+    };
+}
+
+void State::setBlendFunc(const BlendFuncSeparate& func)
+{
+    setBlendFunc(func.srcRgb, func.srcAlpha, func.dstRgb, func.dstAlpha);
+}
+
+void State::setBlendFunc(BlendFunc src, BlendFunc dst)
+{
+    setBlendFunc(src, src, dst, dst);
+}
+
+BlendEquationRgba State::getBlendEquation() const
+{
+    return blendEquation_;
+}
+
+void State::setBlendEquation(BlendEquation rgb, BlendEquation a)
+{
+    if (blendEquation_.rgb != rgb || blendEquation_.a != a)
+        return;
+    glBlendEquationSeparate(static_cast<GLenum>(rgb), static_cast<GLenum>(a));
+    blendEquation_ = BlendEquationRgba { .rgb = rgb, .a = a };
+}
+
+void State::setBlendEquation(const BlendEquationRgba& eq)
+{
+    setBlendEquation(eq.rgb, eq.a);
+}
+
+void State::setBlendEquation(BlendEquation eq)
+{
+    setBlendEquation(eq, eq);
 }
 
 GLuint State::getCurrentVao() const

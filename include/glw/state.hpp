@@ -20,6 +20,59 @@ enum class DepthFunc : GLenum {
     Always = GL_ALWAYS,
 };
 
+enum FrontFaceMode : GLenum {
+    Cw = GL_CW,
+    Ccw = GL_CCW,
+};
+
+enum FaceCullMode : GLenum {
+    Front = GL_FRONT,
+    Back = GL_BACK,
+    FrontAndBack = GL_FRONT_AND_BACK,
+};
+
+enum BlendEquation : GLenum {
+    Add = GL_FUNC_ADD,
+    Subtract = GL_FUNC_SUBTRACT,
+    ReverseSubtract = GL_FUNC_REVERSE_SUBTRACT,
+    Min = GL_MIN,
+    Max = GL_MAX,
+};
+
+enum BlendFunc : GLenum {
+    Zero = GL_ZERO,
+    One = GL_ONE,
+    SrcColor = GL_SRC_COLOR,
+    OneMinusSrcColor = GL_ONE_MINUS_SRC_COLOR,
+    DstColor = GL_DST_COLOR,
+    OneMinusDstColor = GL_ONE_MINUS_DST_COLOR,
+    SrcAlpha = GL_SRC_ALPHA,
+    OneMinusSrcAlpha = GL_ONE_MINUS_SRC_ALPHA,
+    DstAlpha = GL_DST_ALPHA,
+    OneMinusDstAlpha = GL_ONE_MINUS_DST_ALPHA,
+    ConstantColor = GL_CONSTANT_COLOR,
+    OneMinusConstantColor = GL_ONE_MINUS_CONSTANT_COLOR,
+    ConstantAlpha = GL_CONSTANT_ALPHA,
+    OneMinusConstantAlpha = GL_ONE_MINUS_CONSTANT_ALPHA,
+    SrcAlphaSaturate = GL_SRC_ALPHA_SATURATE,
+    Src1Color = GL_SRC1_COLOR,
+    OneMinusSrc1Color = GL_ONE_MINUS_SRC1_COLOR,
+    Src1Alpha = GL_SRC1_ALPHA,
+    OneMinusSrc1Alpha = GL_ONE_MINUS_SRC1_ALPHA,
+};
+
+struct BlendFuncSeparate {
+    BlendFunc srcRgb;
+    BlendFunc srcAlpha;
+    BlendFunc dstRgb;
+    BlendFunc dstAlpha;
+};
+
+struct BlendEquationRgba {
+    BlendEquation rgb;
+    BlendEquation a;
+};
+
 class State {
 public:
     struct Statistics {
@@ -47,6 +100,35 @@ public:
 
     DepthFunc getDepthFunc() const;
     void setDepthFunc(DepthFunc func);
+
+    bool getDepthWrite() const;
+    void setDepthWrite(bool write);
+
+    bool getCullFaceEnabled() const;
+    void setCullFaceEnabled(bool enabled);
+
+    FrontFaceMode getFrontFaceMode() const;
+    void setFrontFaceMode(FrontFaceMode mode);
+
+    FaceCullMode getFaceCullMode() const;
+    void setFaceCullMode(FaceCullMode mode);
+
+    bool getBlendEnabled() const;
+    void setBlendEnabled(bool enabled);
+
+    std::tuple<float, float, float, float> getBlendColor() const;
+    void setBlendColor(float r, float g, float b, float a);
+    void setBlendColor(const std::tuple<float, float, float, float>& color);
+
+    BlendFuncSeparate getBlendFunc() const;
+    void setBlendFunc(BlendFunc srcRgb, BlendFunc srcAlpha, BlendFunc dstRgb, BlendFunc dstAlpha);
+    void setBlendFunc(const BlendFuncSeparate& func);
+    void setBlendFunc(BlendFunc src, BlendFunc dst);
+
+    BlendEquationRgba getBlendEquation() const;
+    void setBlendEquation(BlendEquation rgb, BlendEquation a);
+    void setBlendEquation(const BlendEquationRgba& eq);
+    void setBlendEquation(BlendEquation eq);
 
     GLuint getCurrentVao() const;
     void bindVao(GLuint vao);
@@ -130,6 +212,19 @@ private:
     Statistics statistics_;
     std::tuple<int, int, size_t, size_t> viewport_ = { 0, 0, 0, 0 };
     DepthFunc depthFunc_ = DepthFunc::Less;
+    bool depthWrite_ = true;
+    bool cullFaceEnabled_ = false;
+    FrontFaceMode frontFaceMode_ = FrontFaceMode::Ccw;
+    FaceCullMode faceCullMode_ = FaceCullMode::Back;
+    bool blendEnabled_ = false;
+    std::tuple<float, float, float, float> blendColor_ = { 0.0f, 0.0f, 0.0f, 0.0f };
+    BlendFuncSeparate blendFunc_ = {
+        .srcRgb = BlendFunc::One,
+        .srcAlpha = BlendFunc::One,
+        .dstRgb = BlendFunc::Zero,
+        .dstAlpha = BlendFunc::Zero,
+    };
+    BlendEquationRgba blendEquation_ = { .rgb = BlendEquation::Add, .a = BlendEquation::Add };
     GLuint vao_ = 0;
     GLuint shaderProgram_ = 0;
     std::array<GLuint, bufferBindings.size()> buffers_;
