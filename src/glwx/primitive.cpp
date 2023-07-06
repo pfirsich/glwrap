@@ -16,6 +16,7 @@ void Primitive::addVertexBuffer(const Buffer& buffer, const VertexFormat& vfmt)
     vfmt.set();
     vertexArray.unbind();
     buffer.unbind(Buffer::Target::Array);
+    vertexRange = Range { 0, buffer.getSize() / vfmt.getStride() };
 }
 
 void Primitive::addVertexBuffer(const VertexBuffer& buffer)
@@ -35,6 +36,7 @@ void Primitive::setIndexBuffer(const Buffer& buffer, IndexType indexType)
     vertexArray.unbind();
     buffer.unbind(Buffer::Target::ElementArray);
     indexType_ = indexType;
+    indexRange = Range { 0, buffer.getSize() / glw::getIndexTypeSize(indexType) };
 }
 
 void Primitive::setIndexBuffer(const IndexBuffer& buffer)
