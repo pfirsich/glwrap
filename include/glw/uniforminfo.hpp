@@ -73,9 +73,9 @@ public:
         USampler2DRect = GL_UNSIGNED_INT_SAMPLER_2D_RECT
     };
 
-    std::string name;
-    int index;
-    int size;
-    Type type;
+    std::string name = {};
+    int index = -1;
+    int size = 0;
+    Type type = Type::Invalid;
 };
 }
