@@ -319,7 +319,9 @@ void ShaderProgram::retrieveUniformInfo()
         GLsizei length = 0;
         GLint size = 0;
         GLenum type = 0;
+        name.resize(maxUniformNameLength, '\0');
         glGetActiveUniform(program_, i, maxUniformNameLength, &length, &size, &type, name.data());
+        name.resize(length);
         if (length > 0) {
             uniformInfo_.emplace(
                 name, UniformInfo { name, i, size, static_cast<UniformInfo::Type>(type) });
