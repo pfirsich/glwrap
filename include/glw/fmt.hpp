@@ -18,7 +18,9 @@ struct fmt::formatter<std::filesystem::path> {
     template <typename FormatContext>
     auto format(const std::filesystem::path& path, FormatContext& ctx) const
     {
-        return format_to(ctx.out(), "{}", path.c_str());
+        // This is so much better than path.c_str().
+        // Thank you, commitee, for finally fixing unicode in C++!
+        return format_to(ctx.out(), "{}", reinterpret_cast<const char*>(path.u8string().c_str()));
     }
 };
 
