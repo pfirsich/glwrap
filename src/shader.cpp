@@ -321,10 +321,20 @@ void ShaderProgram::retrieveUniformInfo()
         GLenum type = 0;
         name.resize(maxUniformNameLength, '\0');
         glGetActiveUniform(program_, i, maxUniformNameLength, &length, &size, &type, name.data());
-        name.resize(length);
         if (length > 0) {
-            uniformInfo_.emplace(
-                name, UniformInfo { name, i, size, static_cast<UniformInfo::Type>(type) });
+            name.resize(length);
+            const auto info = UniformInfo { name, i, size, static_cast<UniformInfo::Type>(type) };
+            uniformInfo_.emplace(name, info);
+
+            // For arrays the name will include '[0]' (and only that).
+            // So we insert another entry without this silly index, because the query-by-name API
+            // will allow both options as well.
+            // Since the name of the uniform includes '[0]', we don't change the UniformInfo, just
+            // the key.
+            const auto bracket = name.find('[');
+            if (bracket != std::string::npos) {
+                uniformInfo_.emplace(name.substr(0, bracket), info);
+            }
         }
     }
 }
