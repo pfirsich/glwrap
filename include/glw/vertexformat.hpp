@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cassert>
 #include <optional>
 #include <vector>
 
@@ -59,17 +60,18 @@ size_t getIndexTypeSize(IndexType type);
 class VertexFormat {
 public:
     struct Attribute {
-        size_t offset;
         size_t location;
         size_t components;
         AttributeType dataType;
         bool normalized = false;
         size_t divisor = 0;
+        size_t offset = static_cast<size_t>(-1);
 
         size_t getAlignedSize() const;
     };
 
     VertexFormat() = default;
+    VertexFormat(std::initializer_list<Attribute> attrs);
     ~VertexFormat() = default;
     VertexFormat(const VertexFormat& other) = default;
     VertexFormat& operator=(const VertexFormat& other) = default;
@@ -77,13 +79,13 @@ public:
     // add might obviously invalidate the pointers!
     const Attribute* get(size_t location) const;
 
-    // this sets the stride to max(stride, offset + attribute.getAlignedSize)
-    VertexFormat& add(size_t offset, size_t location, size_t components, AttributeType dataType,
-        bool normalized = false, size_t divisor = 0);
+    // If offset is -1, it's set to getStride().
+    // Sets the stride to max(stride, offset + attribute.getAlignedSize)
+    VertexFormat& add(Attribute attr);
 
-    // calls add(getStride(), ...)
-    VertexFormat& add(size_t location, size_t components, AttributeType dataType,
-        bool normalized = false, size_t divisor = 0);
+    // I just keep this for backwards compatibility
+    VertexFormat& add(
+        size_t location, size_t components, AttributeType dataType, bool normalized = false);
 
     void set() const;
 

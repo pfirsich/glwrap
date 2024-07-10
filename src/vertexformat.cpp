@@ -40,12 +40,12 @@ size_t VertexFormat::Attribute::getAlignedSize() const
     case AttributeType::I16:
     case AttributeType::U16:
     case AttributeType::F16:
+        assert(components >= 1 && components <= 4 && "Invalid component size");
         // No clever formulas, we just handle every case explicitly
         if (components == 1 || components == 2)
             return 4;
         else if (components == 3 || components == 4)
             return 8;
-        assert(false && "Invalid component size");
         return 2 * components;
     // Everything below is already sufficiently aligned
     case AttributeType::I32:
@@ -62,6 +62,13 @@ size_t VertexFormat::Attribute::getAlignedSize() const
     std::abort();
 }
 
+VertexFormat::VertexFormat(std::initializer_list<Attribute> attrs)
+{
+    for (const auto attr : attrs) {
+        add(attr);
+    }
+}
+
 const VertexFormat::Attribute* VertexFormat::get(size_t location) const
 {
     const auto it = std::find_if(attributes_.begin(), attributes_.end(),
@@ -71,21 +78,23 @@ const VertexFormat::Attribute* VertexFormat::get(size_t location) const
     return &(*it);
 }
 
-VertexFormat& VertexFormat::add(size_t offset, size_t location, size_t components,
-    AttributeType dataType, bool normalized, size_t divisor)
+VertexFormat& VertexFormat::add(Attribute attr)
 {
-    assert(components >= 1 && components <= 4);
-    assert(!get(location));
-    attributes_.push_back(
-        Attribute { offset, location, components, dataType, normalized, divisor });
-    stride_ = std::max(stride_, offset + attributes_.back().getAlignedSize());
+    assert(attr.components >= 1 && attr.components <= 4);
+    assert(!get(attr.location));
+    if (attr.offset == static_cast<size_t>(-1)) {
+        attr.offset = stride_;
+    }
+    const auto alignedSize = attr.getAlignedSize();
+    attributes_.push_back(std::move(attr));
+    stride_ = std::max(stride_, attr.offset + alignedSize);
     return *this;
 }
 
 VertexFormat& VertexFormat::add(
-    size_t location, size_t components, AttributeType dataType, bool normalized, size_t divisor)
+    size_t location, size_t components, AttributeType dataType, bool normalized)
 {
-    return add(stride_, location, components, dataType, normalized, divisor);
+    return add(Attribute { location, components, dataType, normalized });
 }
 
 void VertexFormat::set() const
@@ -103,13 +112,14 @@ void VertexFormat::set() const
     }
 }
 
+size_t VertexFormat::getStride() const
+{
+    return stride_;
+}
+
 void VertexFormat::setStride(size_t stride)
 {
     stride_ = stride;
 }
 
-size_t VertexFormat::getStride() const
-{
-    return stride_;
-}
 }
