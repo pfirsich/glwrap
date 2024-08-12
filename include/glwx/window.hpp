@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <glm/glm.hpp>
 
 namespace glwx {
