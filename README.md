@@ -35,6 +35,11 @@ It includes:
 * Some math functions
 
 ## To Do
+* Occlusion Queries
+* Add `glwx::setRenderTarget()` that just takes a bunch of textures and builds/caches FBOs on the fly
+* Move to 4.3? Mac is stuck on 4.1 and there is not a lot of cool new stuff in 4.1.
+    - Compute Shaders
+    - Replace VertexArray abstraction with something that maps [Separate attribute format](https://www.khronos.org/opengl/wiki/Vertex_Specification#Separate_attribute_format), i.e. specifying a VertexFormat and a couple of buffers to bind.
 * The `Mesh` class is pretty useless, but the idea is to provide a `Primitive` that also owns it's buffers. In my engines at least the Buffers are often shared though, so maybe I want the mesh to have a `vector<shared_ptr<Buffer>>`? Most of the time you want a mesh to represent multiple drawcalls anyways. Would I need some Material abstraction to make this useful? In that case this would be entirely inappropriate for this library. Maybe I should just delete Mesh? Then I can't really use meshgen though.
 * Support ivec/dvec vertex attributes (glVertexAttribIPointer/glVertexAttribLPointer)
 * Text Rendering? I have already prepared this, but it requires an additional dependency ([cppasta](https://github.com/pfirsich/cppasta)) for UTF-8 functions and I am not sure if I want that.
