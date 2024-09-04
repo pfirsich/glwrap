@@ -153,9 +153,10 @@ BlendFuncSeparate State::getBlendFunc() const
 
 void State::setBlendFunc(BlendFunc srcRgb, BlendFunc srcAlpha, BlendFunc dstRgb, BlendFunc dstAlpha)
 {
-    if (blendFunc_.srcRgb != srcRgb || blendFunc_.srcAlpha != srcAlpha
-        || blendFunc_.dstRgb != dstRgb || blendFunc_.dstAlpha != dstAlpha)
+    if (blendFunc_.srcRgb == srcRgb && blendFunc_.srcAlpha == srcAlpha
+        && blendFunc_.dstRgb == dstRgb && blendFunc_.dstAlpha == dstAlpha) {
         return;
+    }
     glBlendFuncSeparate(static_cast<GLenum>(srcRgb), static_cast<GLenum>(dstRgb),
         static_cast<GLenum>(srcAlpha), static_cast<GLenum>(dstAlpha));
     blendFunc_ = BlendFuncSeparate {
@@ -180,7 +181,7 @@ BlendEquationRgba State::getBlendEquation() const
 
 void State::setBlendEquation(BlendEquation rgb, BlendEquation a)
 {
-    if (blendEquation_.rgb != rgb || blendEquation_.a != a)
+    if (blendEquation_.rgb == rgb && blendEquation_.a == a)
         return;
     glBlendEquationSeparate(static_cast<GLenum>(rgb), static_cast<GLenum>(a));
     blendEquation_ = BlendEquationRgba { .rgb = rgb, .a = a };
