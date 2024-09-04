@@ -23,7 +23,9 @@ public:
     void moveLocal(const glm::vec3& v);
 
     const glm::vec3& getScale() const;
+    void setScale(float scale);
     void setScale(const glm::vec3& scale);
+    void scale(float scale);
     void scale(const glm::vec3& v);
 
     const glm::quat& getOrientation() const;

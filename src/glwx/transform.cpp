@@ -53,10 +53,20 @@ const glm::vec3& Transform::getScale() const
     return scale_;
 }
 
+void Transform::setScale(float scale)
+{
+    setScale(glm::vec3(scale));
+}
+
 void Transform::setScale(const glm::vec3& scale)
 {
     scale_ = scale;
     dirty_ = true;
+}
+
+void Transform::scale(float s)
+{
+    scale(glm::vec3(s));
 }
 
 void Transform::scale(const glm::vec3& v)
