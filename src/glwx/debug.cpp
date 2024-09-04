@@ -5,7 +5,7 @@ namespace debug {
     namespace detail {
         std::function<void(Source, Type, GLuint, Severity, std::string_view)> callback;
 
-#if !_MSC_VER
+#if !defined(__stdcall) // linux
 #define __stdcall
 #endif
 
