@@ -1,83 +1,86 @@
 #pragma once
 
-#include <filesystem>
-#include <optional>
-
-#include <fmt/core.h>
 #include <fmt/format.h>
-#include <glm/glm.hpp>
-#include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/mat2x2.hpp>
+#include <glm/mat3x3.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
-template <>
-struct fmt::formatter<std::filesystem::path> {
-    constexpr auto parse(format_parse_context& ctx)
-    {
-        return ctx.begin();
+namespace detail {
+// avoid including <algorithm> (which is HUGE)
+template <typename Out, typename In>
+auto copy_n(Out out, In in, size_t n)
+{
+    for (size_t i = 0; i < n; ++i) {
+        *out++ = *in++;
     }
+    return out;
+}
+}
 
-    template <typename FormatContext>
-    auto format(const std::filesystem::path& path, FormatContext& ctx) const
+template <glm::length_t L, typename T>
+struct fmt::formatter<glm::vec<L, T>> : fmt::formatter<T> {
+    auto format(const glm::vec<L, T>& v, format_context& ctx) const
     {
-        // This is so much better than path.c_str().
-        // Thank you, commitee, for finally fixing unicode in C++!
-        return format_to(ctx.out(), "{}", reinterpret_cast<const char*>(path.u8string().c_str()));
-    }
-};
-
-template <typename T>
-struct fmt::formatter<std::optional<T>> {
-    constexpr auto parse(format_parse_context& ctx)
-    {
-        return ctx.begin();
-    }
-
-    template <typename FormatContext>
-    auto format(const std::optional<T>& opt, FormatContext& ctx)
-    {
-        if (opt)
-            return format_to(ctx.out(), "{}", *opt);
-        return format_to(ctx.out(), "nullopt");
-    }
-};
-
-template <glm::length_t L, typename T, glm::qualifier Q>
-struct fmt::formatter<glm::vec<L, T, Q>> {
-    constexpr auto parse(format_parse_context& ctx)
-    {
-        return ctx.begin();
-    }
-
-    template <typename FormatContext>
-    auto format(const glm::vec<L, T, Q>& v, FormatContext& ctx)
-    {
-        return format_to(ctx.out(), glm::to_string(v));
-    }
-};
-
-template <glm::length_t C, glm::length_t R, typename T, glm::qualifier Q>
-struct fmt::formatter<glm::mat<C, R, T, Q>> {
-    constexpr auto parse(format_parse_context& ctx)
-    {
-        return ctx.begin();
-    }
-
-    template <typename FormatContext>
-    auto format(const glm::mat<C, R, T, Q>& m, FormatContext& ctx)
-    {
-        return format_to(ctx.out(), glm::to_string(m));
+        auto out = ::detail::copy_n(ctx.out(), "vec", 3);
+        *out++ = '0' + L;
+        *out++ = '(';
+        for (glm::length_t i = 0; i < L; ++i) {
+            if (i > 0) {
+                out = ::detail::copy_n(out, ", ", 2);
+            }
+            out = formatter<T>::format(v[i], ctx);
+        }
+        *out++ = ')';
+        return out;
     }
 };
 
 template <typename T, glm::qualifier Q>
-struct fmt::formatter<glm::qua<T, Q>> {
-    constexpr auto parse(format_parse_context& ctx)
+struct fmt::formatter<glm::qua<T, Q>> : fmt::formatter<T> {
+    auto format(const glm::qua<T, Q>& q, format_context& ctx) const
     {
-        return ctx.begin();
+        auto out = ::detail::copy_n(ctx.out(), "quat(", 5);
+        out = formatter<T>::format(q.w, ctx);
+        out = ::detail::copy_n(out, ", {", 3);
+        out = formatter<T>::format(q.x, ctx);
+        out = ::detail::copy_n(out, ", ", 2);
+        out = formatter<T>::format(q.y, ctx);
+        out = ::detail::copy_n(out, ", ", 2);
+        out = formatter<T>::format(q.z, ctx);
+        out = ::detail::copy_n(out, "})", 2);
+        return out;
     }
+};
 
-    template <typename FormatContext>
-    auto format(const glm::qua<T, Q>& q, FormatContext& ctx)
+template <glm::length_t C, glm::length_t R, typename T, glm::qualifier Q>
+struct fmt::formatter<glm::mat<C, R, T, Q>> : fmt::formatter<T> {
+    auto format(const glm::mat<C, R, T, Q>& m, format_context& ctx) const
     {
-        return format_to(ctx.out(), "quat({}, ({}, {}, {}))", q.w, q.x, q.y, q.z);
+        auto out = ::detail::copy_n(ctx.out(), "mat", 3);
+        *out++ = '0' + C;
+        if (C != R) {
+            *out++ = 'x';
+            *out++ = '0' + R;
+        }
+        *out++ = '(';
+        for (size_t c = 0; c < C; ++c) {
+            if (c > 0) {
+                out = ::detail::copy_n(out, ", ", 2);
+            }
+            *out++ = '(';
+            for (size_t r = 0; r < R; ++r) {
+                if (r > 0) {
+                    out = ::detail::copy_n(out, ", ", 2);
+                }
+                out = formatter<T>::format(m[c][r], ctx);
+            }
+            *out++ = ')';
+        }
+        *out++ = ')';
+        return out;
     }
 };

@@ -15,9 +15,27 @@ if(GLWRAP_ENABLE_ASAN)
 endif()
 
 include(cmake/CPM.cmake)
-CPMAddPackage("https://github.com/fmtlib/fmt/releases/download/9.1.0/fmt-9.1.0.zip#MD5=6133244fe8ef6f75c5601e8069b37b04")
-CPMAddPackage("https://github.com/g-truc/glm/releases/download/1.0.1/glm-1.0.1-light.zip#MD5=7d235d4813a2e7b1e10cc711b8e25213")
-CPMAddPackage("https://github.com/libsdl-org/SDL/releases/download/release-2.26.5/SDL2-2.26.5.zip#MD5=0664f3980570c4641128866e6c9f2e29")
+
+CPMAddPackage(
+  NAME fmt
+  VERSION 11.0.2
+  URL "https://github.com/fmtlib/fmt/releases/download/11.0.2/fmt-11.0.2.zip"
+  URL_HASH MD5=c622dca45ec3fc95254c48370a9f7a1d
+)
+
+CPMAddPackage(
+  NAME glm
+  VERSION 1.0.1
+  URL "https://github.com/g-truc/glm/archive/refs/tags/1.0.1.zip"
+  URL_HASH MD5=78e541dadeee540ff9cedb5b618df821
+)
+
+CPMAddPackage(
+  NAME SDL2
+  VERSION 2.26.5
+  URL "https://github.com/libsdl-org/SDL/releases/download/rqelease-2.26.5/SDL2-2.26.5.zip"
+  URL_HASH MD5=0664f3980570c4641128866e6c9f2e29
+)
 
 set(GLW_SRC
   buffer.cpp
@@ -43,6 +61,7 @@ target_include_directories(glw PUBLIC include/)
 target_link_libraries(glw PUBLIC glad)
 target_link_libraries(glw PUBLIC fmt::fmt)
 target_link_libraries(glw PUBLIC glm::glm)
+target_compile_definitions(glw PUBLIC GLM_ENABLE_EXPERIMENTAL) # for string_cast, quaternion and more
 
 set_wall(glw)
 
@@ -71,7 +90,8 @@ add_library(glwx STATIC ${GLWX_SRC})
 target_include_directories(glwx PUBLIC include/)
 target_include_directories(glwx SYSTEM PUBLIC deps/stb)
 target_link_libraries(glwx PUBLIC glw)
-target_link_libraries(glwx PUBLIC SDL2::SDL2 SDL2::SDL2main)
+target_link_libraries(glwx PUBLIC SDL2::SDL2)
+target_compile_definitions(glwx PUBLIC SDL_MAIN_HANDLED) # don't override main()
 
 set_wall(glwx)
 

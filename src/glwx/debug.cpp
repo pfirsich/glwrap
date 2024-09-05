@@ -187,3 +187,21 @@ namespace debug {
     }
 }
 }
+
+auto fmt::formatter<glwx::debug::Source>::format(
+    glwx::debug::Source level, format_context& ctx) const -> format_context::iterator
+{
+    return formatter<std::string_view>::format(toString(level), ctx);
+}
+
+auto fmt::formatter<glwx::debug::Type>::format(
+    glwx::debug::Type level, format_context& ctx) const -> format_context::iterator
+{
+    return formatter<std::string_view>::format(toString(level), ctx);
+}
+
+auto fmt::formatter<glwx::debug::Severity>::format(
+    glwx::debug::Severity level, format_context& ctx) const -> format_context::iterator
+{
+    return formatter<std::string_view>::format(toString(level), ctx);
+}

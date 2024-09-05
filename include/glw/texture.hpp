@@ -4,7 +4,7 @@
 #include <cassert>
 
 #include <glad/glad.h>
-#include <glm/glm.hpp>
+#include <glm/vec4.hpp>
 
 #include "glw/imageformat.hpp"
 #include "glw/state.hpp"

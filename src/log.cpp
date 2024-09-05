@@ -4,15 +4,27 @@
 #include <ctime>
 
 #include <fmt/chrono.h>
+#include <fmt/format.h>
 
 namespace glw {
-const std::unordered_map<LogLevel, std::string> logLevelNames {
-    { LogLevel::Debug, "debug" },
-    { LogLevel::Info, "info" },
-    { LogLevel::Warning, "warning" },
-    { LogLevel::Error, "error" },
-    { LogLevel::Critical, "critical" },
-};
+
+std::string_view toString(LogLevel level)
+{
+    switch (level) {
+    case LogLevel::Debug:
+        return "debug";
+    case LogLevel::Info:
+        return "info";
+    case LogLevel::Warning:
+        return "warning";
+    case LogLevel::Error:
+        return "error";
+    case LogLevel::Critical:
+        return "critical";
+    default:
+        return "unknown";
+    }
+}
 
 std::vector<LoggingHandler> loggingHandlers;
 
@@ -24,4 +36,11 @@ void defaultLogger(LogLevel level, const char* filename, int line, const std::st
     fmt::print(toStderr ? stderr : stdout, "[{:%Y-%m-%d %H:%M:%S}] [{}] [{}:{}] {}\n",
         *std::localtime(&t), level, filename, line, message);
 }
+
+}
+
+auto fmt::formatter<glw::LogLevel>::format(
+    glw::LogLevel level, format_context& ctx) const -> format_context::iterator
+{
+    return formatter<std::string_view>::format(toString(level), ctx);
 }

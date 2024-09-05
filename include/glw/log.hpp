@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <fmt/format.h>
+#include <fmt/base.h>
 
 #include "glw/fmt.hpp"
 
@@ -19,7 +19,7 @@ enum class LogLevel {
     Critical = 4, // Something went wrong and we can't keep going
 };
 
-extern const std::unordered_map<LogLevel, std::string> logLevelNames;
+std::string_view toString(LogLevel level);
 
 using LoggingHandler = std::function<void(LogLevel, const char*, int, const std::string&)>;
 extern std::vector<LoggingHandler> loggingHandlers;
@@ -47,15 +47,6 @@ void log(LogLevel level, const char* filename, int line, std::string_view format
 }
 
 template <>
-struct fmt::formatter<glw::LogLevel> {
-    constexpr auto parse(format_parse_context& ctx)
-    {
-        return ctx.begin();
-    }
-
-    template <typename FormatContext>
-    auto format(glw::LogLevel level, FormatContext& ctx)
-    {
-        return format_to(ctx.out(), "{}", glw::logLevelNames.at(level));
-    }
+struct fmt::formatter<glw::LogLevel> : formatter<std::string_view> {
+    auto format(glw::LogLevel level, format_context& ctx) const -> format_context::iterator;
 };

@@ -90,43 +90,16 @@ namespace debug {
 }
 
 template <>
-struct fmt::formatter<glwx::debug::Source> {
-    constexpr auto parse(format_parse_context& ctx)
-    {
-        return ctx.begin();
-    }
-
-    template <typename FormatContext>
-    auto format(glwx::debug::Source source, FormatContext& ctx)
-    {
-        return format_to(ctx.out(), "{}", glwx::debug::toString(source));
-    }
+struct fmt::formatter<glwx::debug::Source> : formatter<std::string_view> {
+    auto format(glwx::debug::Source level, format_context& ctx) const -> format_context::iterator;
 };
 
 template <>
-struct fmt::formatter<glwx::debug::Type> {
-    constexpr auto parse(format_parse_context& ctx)
-    {
-        return ctx.begin();
-    }
-
-    template <typename FormatContext>
-    auto format(glwx::debug::Type type, FormatContext& ctx)
-    {
-        return format_to(ctx.out(), "{}", glwx::debug::toString(type));
-    }
+struct fmt::formatter<glwx::debug::Type> : formatter<std::string_view> {
+    auto format(glwx::debug::Type level, format_context& ctx) const -> format_context::iterator;
 };
 
 template <>
-struct fmt::formatter<glwx::debug::Severity> {
-    constexpr auto parse(format_parse_context& ctx)
-    {
-        return ctx.begin();
-    }
-
-    template <typename FormatContext>
-    auto format(glwx::debug::Severity severity, FormatContext& ctx)
-    {
-        return format_to(ctx.out(), "{}", glwx::debug::toString(severity));
-    }
+struct fmt::formatter<glwx::debug::Severity> : formatter<std::string_view> {
+    auto format(glwx::debug::Severity level, format_context& ctx) const -> format_context::iterator;
 };

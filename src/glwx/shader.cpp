@@ -1,5 +1,7 @@
 #include "glwx/shader.hpp"
 
+#include <fmt/std.h>
+
 #include "glw/fmt.hpp"
 #include "glwx/utility.hpp"
 
