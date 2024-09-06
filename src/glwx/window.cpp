@@ -132,7 +132,7 @@ bool Window::init(
     const std::string& title, size_t width, size_t height, const Properties& properties)
 {
     SDL_LogSetOutputFunction(sdlLogFunction, nullptr);
-    SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
+    SDL_LogSetAllPriority(SDL_LOG_PRIORITY_INFO);
 
     if (Sdl::instance().getResult() < 0) {
         LOG_CRITICAL("Could not initialize SDL: {}", SDL_GetError());
