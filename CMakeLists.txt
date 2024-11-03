@@ -33,7 +33,7 @@ CPMAddPackage(
 CPMAddPackage(
   NAME SDL2
   VERSION 2.26.5
-  URL "https://github.com/libsdl-org/SDL/releases/download/rqelease-2.26.5/SDL2-2.26.5.zip"
+  URL "https://github.com/libsdl-org/SDL/releases/download/release-2.26.5/SDL2-2.26.5.zip"
   URL_HASH MD5=0664f3980570c4641128866e6c9f2e29
 )
 
