@@ -127,8 +127,10 @@ namespace debug {
             return "Application";
         case Source::Other:
             return "Other";
+        default:
+            assert(false);
+            return "UNKNOWN";
         }
-        assert(false);
     }
 
     std::string_view toString(Type type)
@@ -152,8 +154,10 @@ namespace debug {
             return "PopGroup";
         case Type::Other:
             return "Other";
+        default:
+            assert(false);
+            return "UNKNOWN";
         }
-        assert(false);
     }
 
     std::string_view toString(Severity severity)
@@ -167,8 +171,10 @@ namespace debug {
             return "Low";
         case Severity::Notification:
             return "Notification";
+        default:
+            assert(false);
+            return "UNKNOWN";
         }
-        assert(false);
     }
 
     std::ostream& operator<<(std::ostream& os, Source source)
@@ -194,8 +200,8 @@ auto fmt::formatter<glwx::debug::Source>::format(
     return formatter<std::string_view>::format(toString(level), ctx);
 }
 
-auto fmt::formatter<glwx::debug::Type>::format(
-    glwx::debug::Type level, format_context& ctx) const -> format_context::iterator
+auto fmt::formatter<glwx::debug::Type>::format(glwx::debug::Type level, format_context& ctx) const
+    -> format_context::iterator
 {
     return formatter<std::string_view>::format(toString(level), ctx);
 }
